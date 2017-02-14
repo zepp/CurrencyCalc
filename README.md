@@ -1,0 +1,2 @@
+# CurrencyCalc
+Currency calculator
