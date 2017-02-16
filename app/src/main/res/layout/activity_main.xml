@@ -11,7 +11,66 @@
     tools:context="com.example.pavl.currencycalc.MainActivity">
 
     <TextView
+        android:text="original currency"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/txtOrig" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:ems="10"
+        android:layout_marginTop="20dp"
+        android:id="@+id/edtOrigAmount"
+        android:layout_below="@+id/txtOrig"
+        android:layout_alignParentStart="true"
+        android:text="100" />
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/edtOrigAmount"
+        android:layout_toEndOf="@+id/edtOrigAmount"
+        android:layout_marginStart="37dp"
+        android:id="@+id/spnOrigCode" />
+
+    <TextView
+        android:text="desired currency"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/edtOrigAmount"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="13dp"
+        android:id="@+id/txtDest" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:ems="10"
+        android:layout_below="@+id/txtDest"
+        android:layout_toStartOf="@+id/spnOrigCode"
+        android:layout_marginTop="23dp"
+        android:id="@+id/edtDestCur" />
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/edtDestCur"
+        android:layout_toEndOf="@+id/edtDestCur"
+        android:id="@+id/spnDestCode"
+        android:layout_alignStart="@+id/spnOrigCode" />
+
+    <Button
+        android:text="Convert"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="26dp"
+        android:id="@+id/btnConv"
+        android:layout_below="@+id/edtDestCur"
+        android:layout_alignParentStart="true"
+        android:onClick="onConvBtnClick" />
 </RelativeLayout>
