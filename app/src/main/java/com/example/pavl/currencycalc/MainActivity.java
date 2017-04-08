@@ -2,7 +2,6 @@ package com.example.pavl.currencycalc;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -18,37 +17,53 @@ public class MainActivity extends AppCompatActivity {
     private final String url = "http://www.cbr.ru/scripts/XML_daily.asp";
 
     private Converter converter;
-    private Spinner spnOrigCode, spnDestCode;
-    private EditText edtOrigAmount, edtDestCur;
-    private Button btnConv;
-    private ArrayAdapter<String> codeAdapter;
+    private EditText fromAmount;
+    private Spinner fromCurrency;
+    private EditText toAmount;
+    private Spinner toCurrency;
+    private Button go;
+    private ArrayAdapter<String> currencyAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        spnOrigCode = (Spinner) findViewById(R.id.spnOrigCode);
-        spnDestCode = (Spinner) findViewById(R.id.spnDestCode);
-        edtOrigAmount = (EditText) findViewById(R.id.edtOrigAmount);
-        edtDestCur = (EditText) findViewById(R.id.edtDestCur);
-        btnConv = (Button) findViewById(R.id.btnConv);
+        fromCurrency = (Spinner) findViewById(R.id.from_currency);
+        toCurrency = (Spinner) findViewById(R.id.to_currency);
+        fromAmount = (EditText) findViewById(R.id.from_amount);
+        toAmount = (EditText) findViewById(R.id.to_amount);
+        go = (Button) findViewById(R.id.go);
+        go.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    double result = converter.process(fromCurrency.getSelectedItem().toString(),
+                            toCurrency.getSelectedItem().toString(),
+                            Double.valueOf(fromAmount.getText().toString()));
+                    toAmount.setText(String.format("%.2f", result));
+                }
+                catch (Exception e)
+                {
+                    Toast.makeText(MainActivity.this, "conversion error - " + e.getMessage(),
+                            Toast.LENGTH_LONG).show();
+                }
+            }
+        });
 
-        btnConv.setEnabled(false);
-        edtDestCur.setEnabled(false);
+        go.setEnabled(false);
+        toAmount.setEnabled(false);
 
-        codeAdapter = new ArrayAdapter<String>(MainActivity.this,
-                android.R.layout.simple_spinner_dropdown_item);
-        codeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spnOrigCode.setAdapter(codeAdapter);
-        spnDestCode.setAdapter(codeAdapter);
+        currencyAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item);
+        fromCurrency.setAdapter(currencyAdapter);
+        toCurrency.setAdapter(currencyAdapter);
 
         converter = new Converter(MainActivity.this, file, url) {
             @Override
             public void onUpdated(boolean result) {
                 if (result) {
-                    btnConv.setEnabled(true);
+                    go.setEnabled(true);
                     for (String s : charCodes()) {
-                        codeAdapter.add(s);
+                        currencyAdapter.add(s);
                     }
                 }
                 else
@@ -62,20 +77,5 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         converter.update();
-    }
-
-    public void onConvBtnClick(View v)
-    {
-        try {
-            double result = converter.process(spnOrigCode.getSelectedItem().toString(),
-                    spnDestCode.getSelectedItem().toString(),
-                    Double.valueOf(edtOrigAmount.getText().toString()));
-            edtDestCur.setText(String.format("%.2f", result));
-        }
-        catch (Exception e)
-        {
-            Toast.makeText(this, "conversion error - " + e.getMessage(),
-                    Toast.LENGTH_LONG).show();
-        }
     }
 }

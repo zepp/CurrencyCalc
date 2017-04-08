@@ -1,76 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
+    android:padding="16dp"
     tools:context="com.example.pavl.currencycalc.MainActivity">
 
     <TextView
-        android:text="original currency"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:id="@+id/txtOrig" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="numberDecimal"
-        android:ems="10"
-        android:layout_marginTop="20dp"
-        android:id="@+id/edtOrigAmount"
-        android:layout_below="@+id/txtOrig"
-        android:layout_alignParentStart="true"
-        android:text="100" />
-
-    <Spinner
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/edtOrigAmount"
-        android:layout_toEndOf="@+id/edtOrigAmount"
-        android:layout_marginStart="37dp"
-        android:id="@+id/spnOrigCode" />
+        android:text="original currency" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/from_amount"
+            android:layout_width="128dp"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal" />
+
+        <Spinner
+            android:id="@+id/from_currency"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical" />
+
+    </LinearLayout>
 
     <TextView
-        android:text="desired currency"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/edtOrigAmount"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="13dp"
-        android:id="@+id/txtDest" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="numberDecimal"
-        android:ems="10"
-        android:layout_below="@+id/txtDest"
-        android:layout_toStartOf="@+id/spnOrigCode"
-        android:layout_marginTop="23dp"
-        android:id="@+id/edtDestCur" />
-
-    <Spinner
+        android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/edtDestCur"
-        android:layout_toEndOf="@+id/edtDestCur"
-        android:id="@+id/spnDestCode"
-        android:layout_alignStart="@+id/spnOrigCode" />
+        android:text="desired currency" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/to_amount"
+            android:layout_width="128dp"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal" />
+
+        <Spinner
+            android:id="@+id/to_currency"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical" />
+
+    </LinearLayout>
 
     <Button
-        android:text="Convert"
+        android:id="@+id/go"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="26dp"
-        android:id="@+id/btnConv"
-        android:layout_below="@+id/edtDestCur"
-        android:layout_alignParentStart="true"
-        android:onClick="onConvBtnClick" />
-</RelativeLayout>
+        android:text="Convert" />
+</LinearLayout>
