@@ -2,12 +2,16 @@ package com.example.pavl.currencycalc;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -16,13 +20,27 @@ public class MainActivity extends AppCompatActivity {
     private final String file = "rates.xml";
     private final String url = "http://www.cbr.ru/scripts/XML_daily.asp";
 
-    private Converter converter;
+    private Fetcher fetcher;
     private EditText fromAmount;
     private Spinner fromCurrency;
     private EditText toAmount;
     private Spinner toCurrency;
-    private Button go;
-    private ArrayAdapter<String> currencyAdapter;
+    private CurrencyAdapter currencyAdapter;
+    private List<Currency> currencies = new ArrayList<>();
+    private Currency from;
+    private Currency to;
+
+    private void updateUI()
+    {
+        try {
+            double amount = Double.valueOf(fromAmount.getText().toString());
+            toAmount.setText(String.format("%.2f", CurrencyList.convert(from, to, amount)));
+        }
+        catch (Exception e)
+        {
+            Toast.makeText(this, "Failed to convert currency: " + e, Toast.LENGTH_SHORT);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,50 +50,60 @@ public class MainActivity extends AppCompatActivity {
         toCurrency = (Spinner) findViewById(R.id.to_currency);
         fromAmount = (EditText) findViewById(R.id.from_amount);
         toAmount = (EditText) findViewById(R.id.to_amount);
-        go = (Button) findViewById(R.id.go);
-        go.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    double result = converter.process(fromCurrency.getSelectedItem().toString(),
-                            toCurrency.getSelectedItem().toString(),
-                            Double.valueOf(fromAmount.getText().toString()));
-                    toAmount.setText(String.format("%.2f", result));
-                }
-                catch (Exception e)
-                {
-                    Toast.makeText(MainActivity.this, "conversion error - " + e.getMessage(),
-                            Toast.LENGTH_LONG).show();
-                }
-            }
-        });
 
-        go.setEnabled(false);
-        toAmount.setEnabled(false);
-
-        currencyAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item);
+        currencyAdapter = new CurrencyAdapter(this, currencies);
         fromCurrency.setAdapter(currencyAdapter);
         toCurrency.setAdapter(currencyAdapter);
 
-        converter = new Converter(MainActivity.this, file, url) {
+        toCurrency.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onUpdated(boolean result) {
-                if (result) {
-                    go.setEnabled(true);
-                    for (String s : charCodes()) {
-                        currencyAdapter.add(s);
-                    }
-                }
-                else
-                    Toast.makeText(MainActivity.this, "failed to update XML data",
-                            Toast.LENGTH_LONG).show();
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                to = (Currency)adapterView.getItemAtPosition(i);
+                updateUI();
             }
-        };
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {}
+        });
+        fromCurrency.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                from = (Currency)adapterView.getItemAtPosition(i);
+                updateUI();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {}
+        });
+        fromAmount.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editable.toString().equals(""))
+                    toAmount.setText("");
+                else
+                    updateUI();
+            }
+        });
+
+        fetcher = new Fetcher(MainActivity.this, file, url);
+        fetcher.setListener(new Fetcher.OnUpdateListener() {
+            @Override
+            public void onUpdated(List<Currency> currencyList) {
+                currencies.addAll(currencyList);
+                currencyAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        converter.update();
+        fetcher.get();
     }
 }

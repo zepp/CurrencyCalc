@@ -14,28 +14,28 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Converter {
+public final class Fetcher {
 
-    private final boolean reloadCache = true;
-    private final String TAG = Converter.class.getCanonicalName();
+    private final String TAG = Fetcher.class.getCanonicalName();
+    private final static int bufferSize = 1024;
+    private final boolean reloadCache = true; // for debug purposes
 
-    private Context context;
     private String url;
     private File file;
+    private OnUpdateListener listener;
 
-    private CurrencyList curList;
-
-    private class URLDownloader extends AsyncTask<String, Void, Boolean>
+    private class URLDownloader extends AsyncTask<String, Void, List<Currency>>
     {
         @Override
-        protected Boolean doInBackground(String ...urls)
+        protected List<Currency> doInBackground(String ... urls)
         {
             try
             {
                 URL url = new URL(urls[0]);
-                byte data[] = new byte[1024];
+                byte data[] = new byte[bufferSize];
                 int count;
 
                 Log.d(TAG, "downloading XML " + url.toString());
@@ -61,67 +61,62 @@ public abstract class Converter {
                 output.close();
                 input.close();
             }
-            catch (Exception e)
-            {
+            catch (Exception e) {
                 Log.e(TAG, "failed to download XML " + e.getMessage());
-                return false;
             }
-            return true;
+            if (file.exists())
+                return load();
+            else
+                return new ArrayList<>();
         }
 
         @Override
-        protected void onPostExecute(Boolean result)
+        protected void onPostExecute(List<Currency> result)
         {
-            if (result || file.exists()) {
-                load();
-                onUpdated(true);
-            }
-            onUpdated(result);
+            if (listener != null)
+                listener.onUpdated(result);
         }
     }
 
-    private void load()
+    private List<Currency> load()
     {
+        CurrencyList curList;
+
         try {
             Serializer serializer = new Persister(new CustomMatcher());
             curList = serializer.read(CurrencyList.class, file);
         } catch (Exception e) {
             Log.e(TAG, "failed to load currency exchange rates from XML file:" + e.getMessage());
+            return new ArrayList<>();
         }
-        for(String code : curList.getCharCodes())
-        {
-            Log.d(TAG, code + " - " + curList.getRubbles(code));
-        }
+        for(Currency c : curList.getCurrencies())
+            Log.d(TAG, c.getCharCode() + " - " + c.getRubbles());
+        return curList.getCurrencies();
     }
 
-    public abstract void onUpdated(boolean result);
-
-    public final void update()
+    public void get()
     {
-        if (file.exists() && !reloadCache) {
-            load();
-            onUpdated(true);
-        } else {
+        if (reloadCache)
             new URLDownloader().execute(url);
+        else {
+            if (listener != null)
+                listener.onUpdated(load());
         }
     }
 
-    public final List<String> charCodes()
+    public void setListener(OnUpdateListener listener)
     {
-        List<String> codes = curList.getCharCodes();
-        java.util.Collections.sort(codes);
-        return codes;
+        this.listener = listener;
     }
 
-    public final double process(String from, String to, double amount)
+    Fetcher(Context context, String fileName, String url)
     {
-        return amount * (curList.getRubbles(from)/curList.getRubbles(to));
-    }
-
-    Converter (Context context, String fileName, String url)
-    {
-        this.context = context;
         this.url = url;
         this.file = new File(context.getCacheDir(), fileName);
     }
+
+    public interface OnUpdateListener
+    {
+        void onUpdated (List<Currency> currencyList);
+    };
 }

@@ -19,21 +19,13 @@ public class CurrencyList {
     @ElementList(inline=true)
     private List<Currency> curList = new ArrayList<>();
 
-    public List<String> getCharCodes()
+    public static double convert(Currency from, Currency to, double amount)
     {
-        List<String> list = new ArrayList<>(curList.size());
-        for(Currency cur: curList) {
-            list.add(cur.getCharCode());
-        }
-        return list;
+        return amount * (from.getRubbles() / to.getRubbles());
     }
 
-    public double getRubbles (String charCode) throws InvalidParameterException
+    public List<Currency> getCurrencies()
     {
-        for(Currency cur: curList) {
-            if (cur.getCharCode() == charCode)
-                return cur.getRubbles();
-        }
-        throw new InvalidParameterException("char code \"" + charCode + "\" is unknown");
+        return curList;
     }
 }
