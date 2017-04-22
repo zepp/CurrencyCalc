@@ -19,21 +19,55 @@ import java.util.List;
 
 public final class Fetcher {
 
-    private final String TAG = Fetcher.class.getCanonicalName();
     private final static int bufferSize = 1024;
+    private final String TAG = Fetcher.class.getCanonicalName();
     private final boolean reloadCache = true; // for debug purposes
 
     private String url;
     private File file;
     private OnUpdateListener listener;
 
-    private class URLDownloader extends AsyncTask<String, Void, List<Currency>>
-    {
+    Fetcher(Context context, String fileName, String url) {
+        this.url = url;
+        this.file = new File(context.getCacheDir(), fileName);
+    }
+
+    private CurrencyList load() {
+        CurrencyList list;
+
+        try {
+            Serializer serializer = new Persister(new CustomMatcher());
+            list = serializer.read(CurrencyList.class, file);
+        } catch (Exception e) {
+            Log.e(TAG, "failed to load currency exchange rates from XML file:" + e.getMessage());
+            return new CurrencyList();
+        }
+        for (Currency c : list.getCurrencies())
+            Log.d(TAG, c.getCharCode() + " - " + c.getRubbles());
+        return list;
+    }
+
+    public void get() {
+        if (reloadCache)
+            new URLDownloader().execute(url);
+        else {
+            if (listener != null)
+                listener.onUpdated(load());
+        }
+    }
+
+    public void setListener(OnUpdateListener listener) {
+        this.listener = listener;
+    }
+
+    public interface OnUpdateListener {
+        void onUpdated(CurrencyList list);
+    }
+
+    private class URLDownloader extends AsyncTask<String, Void, CurrencyList> {
         @Override
-        protected List<Currency> doInBackground(String ... urls)
-        {
-            try
-            {
+        protected CurrencyList doInBackground(String... urls) {
+            try {
                 URL url = new URL(urls[0]);
                 byte data[] = new byte[bufferSize];
                 int count;
@@ -48,8 +82,7 @@ public final class Fetcher {
                 OutputStream output = new FileOutputStream(file);
 
 
-                while ((count = input.read(data)) != -1)
-                {
+                while ((count = input.read(data)) != -1) {
                     // writing data to file
                     output.write(data, 0, count);
                 }
@@ -60,63 +93,21 @@ public final class Fetcher {
                 // closing streams
                 output.close();
                 input.close();
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 Log.e(TAG, "failed to download XML " + e.getMessage());
             }
             if (file.exists())
                 return load();
             else
-                return new ArrayList<>();
+                return new CurrencyList();
         }
 
         @Override
-        protected void onPostExecute(List<Currency> result)
-        {
+        protected void onPostExecute(CurrencyList result) {
             if (listener != null)
                 listener.onUpdated(result);
         }
     }
 
-    private List<Currency> load()
-    {
-        CurrencyList curList;
-
-        try {
-            Serializer serializer = new Persister(new CustomMatcher());
-            curList = serializer.read(CurrencyList.class, file);
-        } catch (Exception e) {
-            Log.e(TAG, "failed to load currency exchange rates from XML file:" + e.getMessage());
-            return new ArrayList<>();
-        }
-        for(Currency c : curList.getCurrencies())
-            Log.d(TAG, c.getCharCode() + " - " + c.getRubbles());
-        return curList.getCurrencies();
-    }
-
-    public void get()
-    {
-        if (reloadCache)
-            new URLDownloader().execute(url);
-        else {
-            if (listener != null)
-                listener.onUpdated(load());
-        }
-    }
-
-    public void setListener(OnUpdateListener listener)
-    {
-        this.listener = listener;
-    }
-
-    Fetcher(Context context, String fileName, String url)
-    {
-        this.url = url;
-        this.file = new File(context.getCacheDir(), fileName);
-    }
-
-    public interface OnUpdateListener
-    {
-        void onUpdated (List<Currency> currencyList);
-    };
+    ;
 }

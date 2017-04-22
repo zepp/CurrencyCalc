@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
     private Spinner toCurrency;
     private CurrencyAdapter currencyAdapter;
     private List<Currency> currencies = new ArrayList<>();
+    private TextView date;
     private Currency from;
     private Currency to;
 
@@ -44,31 +46,21 @@ public class MainFragment extends android.support.v4.app.Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        String url = "";
-        String fileName = "";
-
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        if (getArguments() != null) {
-            url = getArguments().getString(ARG_URL);
-            fileName = getArguments().getString(ARG_FILE_NAME);
-        }
-
-        fetcher = new Fetcher(getContext(), fileName, url);
-        fetcher.setListener(new Fetcher.OnUpdateListener() {
-            @Override
-            public void onUpdated(List<Currency> currencyList) {
-                currencies.addAll(currencyList);
-                currencyAdapter.notifyDataSetChanged();
-            }
-        });
-        if (savedInstanceState == null)
-            fetcher.get();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        String url = "";
+        String fileName = "";
+
+        if (getArguments() != null) {
+            url = getArguments().getString(ARG_URL);
+            fileName = getArguments().getString(ARG_FILE_NAME);
+        }
+
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_main, container, false);
 
@@ -76,6 +68,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
         toCurrency = (Spinner) root.findViewById(R.id.to_currency);
         fromAmount = (EditText) root.findViewById(R.id.from_amount);
         toAmount = (EditText) root.findViewById(R.id.to_amount);
+        date = (TextView) root.findViewById(R.id.date);
 
         currencyAdapter = new CurrencyAdapter(getContext(), currencies);
         fromCurrency.setAdapter(currencyAdapter);
@@ -116,6 +109,17 @@ public class MainFragment extends android.support.v4.app.Fragment {
                     updateUI();
             }
         });
+        fetcher = new Fetcher(getContext(), fileName, url);
+        fetcher.setListener(new Fetcher.OnUpdateListener() {
+            @Override
+            public void onUpdated(CurrencyList list) {
+                currencies.addAll(list.getCurrencies());
+                currencyAdapter.notifyDataSetChanged();
+                date.setText(list.getDate());
+            }
+        });
+        if (savedInstanceState == null)
+            fetcher.get();
 
         return root;
     }
