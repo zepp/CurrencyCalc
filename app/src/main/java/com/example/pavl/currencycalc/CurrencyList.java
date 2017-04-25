@@ -16,7 +16,7 @@ public class CurrencyList {
     private List<Currency> currencies = new ArrayList<>();
 
     public static double convert(Currency from, Currency to, double amount) {
-        if (from == to)
+        if (from.equals(to))
             return amount;
         else
             return amount * (from.getRubbles() / to.getRubbles());

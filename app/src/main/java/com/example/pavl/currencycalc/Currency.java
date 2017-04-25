@@ -28,4 +28,33 @@ public class Currency {
     public double getRubbles() {
         return rubbles / amount;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Currency currency = (Currency) o;
+
+        if (amount != currency.amount) return false;
+        if (Double.compare(currency.rubbles, rubbles) != 0) return false;
+        return charCode.equals(currency.charCode);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        result = charCode.hashCode();
+        result = 31 * result + amount;
+        temp = Double.doubleToLongBits(rubbles);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return charCode + " ( " + name + " )";
+    }
 }

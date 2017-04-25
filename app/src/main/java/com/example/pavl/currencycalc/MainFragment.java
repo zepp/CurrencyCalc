@@ -19,14 +19,13 @@ import java.util.List;
 public class MainFragment extends android.support.v4.app.Fragment {
     private static final String ARG_URL = "arg-url";
     private static final String ARG_FILE_NAME = "arg-file-name";
-
+    private final List<Currency> currencies = new ArrayList<>();
     private Fetcher fetcher;
     private EditText fromAmount;
     private Spinner fromCurrency;
     private EditText toAmount;
     private Spinner toCurrency;
     private CurrencyAdapter currencyAdapter;
-    private List<Currency> currencies = new ArrayList<>();
     private TextView date;
     private Currency from;
     private Currency to;
@@ -113,8 +112,7 @@ public class MainFragment extends android.support.v4.app.Fragment {
         fetcher.setListener(new Fetcher.OnUpdateListener() {
             @Override
             public void onUpdated(CurrencyList list) {
-                currencies.addAll(list.getCurrencies());
-                currencyAdapter.notifyDataSetChanged();
+                currencyAdapter.addAll(list.getCurrencies());
                 date.setText(list.getDate());
             }
         });
