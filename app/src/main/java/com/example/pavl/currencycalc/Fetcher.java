@@ -12,7 +12,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.ref.WeakReference;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -46,7 +45,9 @@ public final class Fetcher extends AsyncTask<String, Void, Exception> {
 
     public void fetch(){
         if (reloadCache) {
-            execute(url);
+            if (getStatus() == Status.PENDING) {
+                execute(url);
+            }
         } else {
             try {
                 currencyList = load();

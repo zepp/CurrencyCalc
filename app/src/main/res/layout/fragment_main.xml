@@ -1,100 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_main"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center_horizontal"
-    android:orientation="vertical"
-    android:padding="16dp"
-    tools:context="com.example.pavl.currencycalc.MainActivity">
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:id="@+id/activity_main"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center_horizontal"
+              android:orientation="vertical"
+              android:padding="16dp"
+              tools:context="com.example.pavl.currencycalc.MainActivity">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <TextView
+            android:orientation="horizontal"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/currency_from" />
+            android:layout_height="wrap_content">
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <EditText
-                android:id="@+id/from_amount"
-                android:layout_width="128dp"
-                android:layout_height="wrap_content"
-                android:inputType="numberDecimal" />
-
-            <Spinner
-                android:id="@+id/from_currency"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical" />
+                android:orientation="vertical">
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/currency_from"
+                    android:id="@+id/original_title"
+                    android:minLines="2"/>
+
+            <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                <EditText
+                        android:id="@+id/original_amount"
+                        android:layout_width="64dp"
+                        android:layout_height="wrap_content"
+                        android:inputType="numberDecimal"
+                        android:enabled="false"/>
+
+                <Spinner
+                        android:id="@+id/original_currency"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"/>
+
+            </LinearLayout>
 
         </LinearLayout>
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/currency_to" />
-
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <EditText
-                android:id="@+id/to_amount"
-                android:layout_width="128dp"
-                android:layout_height="wrap_content"
-                android:inputType="numberDecimal" />
-
-            <Spinner
-                android:id="@+id/to_currency"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical" />
+                android:orientation="vertical">
+
+            <TextView
+                    android:id="@+id/result_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/currency_to"
+                    android:minLines="2"/>
+
+            <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                <EditText
+                        android:id="@+id/result_amount"
+                        android:layout_width="64dp"
+                        android:layout_height="wrap_content"
+                        android:inputType="numberDecimal"
+                        android:enabled="false"/>
+
+                <Spinner
+                        android:id="@+id/result_currency"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"/>
+
+            </LinearLayout>
 
         </LinearLayout>
 
     </LinearLayout>
 
     <Space
-        android:layout_width="match_parent"
-        android:layout_height="16dp" />
+            android:layout_width="match_parent"
+            android:layout_height="16dp"/>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/updated" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/updated"/>
 
         <Space
-            android:layout_width="16dp"
-            android:layout_height="match_parent" />
+                android:layout_width="16dp"
+                android:layout_height="match_parent"/>
 
         <TextView
-            android:id="@+id/date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:freezesText="true" />
+                android:id="@+id/date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:freezesText="true"/>
     </LinearLayout>
 
 </LinearLayout>
