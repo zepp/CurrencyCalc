@@ -2,7 +2,7 @@ package com.example.pavl.currencycalc.model;
 
 import org.simpleframework.xml.transform.Transform;
 
-public class CommaDoubleTransform implements Transform<Double> {
+class CommaDoubleTransform implements Transform<Double> {
 
     public Double read(String value) {
         return Double.valueOf(value.replace(',','.'));

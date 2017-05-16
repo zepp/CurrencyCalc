@@ -53,7 +53,7 @@ public class MainViewImpl implements MainView {
     }
 
     @Override
-    public void setListener (Listener listener) {
+    public void setListener(Listener listener) {
         this.listener = listener;
     }
 
@@ -109,7 +109,7 @@ public class MainViewImpl implements MainView {
     private class ResultCurrencyListener implements AdapterView.OnItemSelectedListener {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-            Currency result = (Currency)adapterView.getItemAtPosition(i);
+            Currency result = (Currency) adapterView.getItemAtPosition(i);
             resultTitle.setText(result.getName());
             if (listener != null) {
                 listener.resultCurrencyChanged(result);
@@ -117,13 +117,14 @@ public class MainViewImpl implements MainView {
         }
 
         @Override
-        public void onNothingSelected(AdapterView<?> adapterView) {}
+        public void onNothingSelected(AdapterView<?> adapterView) {
+        }
     }
 
     private class OriginalCurrencyListener implements AdapterView.OnItemSelectedListener {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-            Currency original = (Currency)adapterView.getItemAtPosition(i);
+            Currency original = (Currency) adapterView.getItemAtPosition(i);
             originalTitle.setText(original.getName());
             if (listener != null) {
                 listener.originalCurrencyChanged(original);
@@ -131,6 +132,7 @@ public class MainViewImpl implements MainView {
         }
 
         @Override
-        public void onNothingSelected(AdapterView<?> adapterView) {}
+        public void onNothingSelected(AdapterView<?> adapterView) {
+        }
     }
 }

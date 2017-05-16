@@ -27,10 +27,10 @@ public final class Fetcher extends AsyncTask<String, Void, Exception> {
     private final static int bufferSize = 1024; // intermediate buffer size
     private final static boolean reloadCache = true; // for debug purposes
 
-    private String url;
-    private File file;
-    private File tempFile;
-    private List<Listener> listeners = new ArrayList<>();
+    private final String url;
+    private final File file;
+    private final File tempFile;
+    private final List<Listener> listeners = new ArrayList<>();
     private volatile CurrencyList currencyList;
 
     Fetcher(Context context, String fileName, String url) {
@@ -47,7 +47,7 @@ public final class Fetcher extends AsyncTask<String, Void, Exception> {
         listeners.remove(listener);
     }
 
-    public void fetch(){
+    public void fetch() {
         if (reloadCache) {
             if (getStatus() == Status.PENDING) {
                 execute(url);
@@ -55,11 +55,10 @@ public final class Fetcher extends AsyncTask<String, Void, Exception> {
         } else {
             try {
                 currencyList = load();
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 if (e == null) {
                     notify(currencyList);
-                }else {
+                } else {
                     notify(e);
                 }
             }
@@ -84,14 +83,14 @@ public final class Fetcher extends AsyncTask<String, Void, Exception> {
         return list;
     }
 
-    private void notify (CurrencyList list) {
-        for (Listener listener: listeners) {
+    private void notify(CurrencyList list) {
+        for (Listener listener : listeners) {
             listener.onDataFetched(list);
         }
     }
 
-    private void notify (Exception e) {
-        for (Listener listener: listeners) {
+    private void notify(Exception e) {
+        for (Listener listener : listeners) {
             listener.onFetchError(e);
         }
     }
@@ -134,7 +133,9 @@ public final class Fetcher extends AsyncTask<String, Void, Exception> {
                 // closing streams
                 output.close();
                 input.close();
-            } catch (Exception e) {}
+            } catch (Exception e) {
+                Log.e(TAG, "failed to flush or close streams: " + e);
+            }
         }
 
         return null;
@@ -144,13 +145,14 @@ public final class Fetcher extends AsyncTask<String, Void, Exception> {
     protected void onPostExecute(Exception e) {
         if (e == null) {
             notify(currencyList);
-        }else {
+        } else {
             notify(e);
         }
     }
 
     public interface Listener {
         void onDataFetched(CurrencyList list);
+
         void onFetchError(Exception e);
     }
 }

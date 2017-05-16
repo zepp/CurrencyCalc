@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 
-public class MainFragment extends android.support.v4.app.Fragment implements Fetcher.Listener, MainView.Listener{
+public class MainFragment extends android.support.v4.app.Fragment implements Fetcher.Listener, MainView.Listener {
     private static final String ARG_URL = "arg-url";
     private static final String ARG_FILE_NAME = "arg-file-name";
 
@@ -113,7 +113,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Fet
         setResult();
     }
 
-    private void setResult (){
+    private void setResult() {
         if (original == null || result == null || amount < 0) {
             return;
         }

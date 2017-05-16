@@ -12,22 +12,19 @@ import android.widget.CheckedTextView;
 
 import java.util.List;
 
-public class CurrencyAdapter extends ArrayAdapter<Currency> {
+class CurrencyAdapter extends ArrayAdapter<Currency> {
 
     class Holder
     {
-        CheckedTextView view;
-        Currency currency;
+        private final CheckedTextView view;
 
         public void bind (Currency currency)
         {
-            this.currency = currency;
             view.setText(currency.getCharCode());
         }
 
         public void bindFull (Currency currency)
         {
-            this.currency = currency;
             view.setText(currency.getCharCode() + " (" + currency.getName() + ")");
         }
 

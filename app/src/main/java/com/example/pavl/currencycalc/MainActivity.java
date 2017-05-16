@@ -6,8 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 public class MainActivity extends AppCompatActivity {
-    private final String file = "rates.xml";
-    private final String url = "http://www.cbr.ru/scripts/XML_daily.asp";
+    private final static String file = "rates.xml";
+    private final static String url = "http://www.cbr.ru/scripts/XML_daily.asp";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
