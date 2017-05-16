@@ -1,6 +1,6 @@
 package com.example.pavl.currencycalc.ui;
 
-import com.example.pavl.currencycalc.Currency;
+import com.example.pavl.currencycalc.model.Currency;
 
 import android.content.Context;
 import android.support.annotation.NonNull;

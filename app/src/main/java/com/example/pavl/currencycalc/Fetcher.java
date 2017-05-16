@@ -1,5 +1,9 @@
 package com.example.pavl.currencycalc;
 
+import com.example.pavl.currencycalc.model.Currency;
+import com.example.pavl.currencycalc.model.CurrencyList;
+import com.example.pavl.currencycalc.model.CustomMatcher;
+
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;

@@ -1,5 +1,7 @@
 package com.example.pavl.currencycalc;
 
+import com.example.pavl.currencycalc.model.Currency;
+import com.example.pavl.currencycalc.model.CurrencyList;
 import com.example.pavl.currencycalc.ui.MainView;
 import com.example.pavl.currencycalc.ui.MainViewImpl;
 

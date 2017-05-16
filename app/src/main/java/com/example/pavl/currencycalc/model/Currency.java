@@ -1,4 +1,4 @@
-package com.example.pavl.currencycalc;
+package com.example.pavl.currencycalc.model;
 
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;

@@ -1,7 +1,7 @@
 package com.example.pavl.currencycalc.ui;
 
-import com.example.pavl.currencycalc.Currency;
-import com.example.pavl.currencycalc.CurrencyList;
+import com.example.pavl.currencycalc.model.Currency;
+import com.example.pavl.currencycalc.model.CurrencyList;
 import com.example.pavl.currencycalc.R;
 
 import android.os.Bundle;
