@@ -12,102 +12,140 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.ref.WeakReference;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class Fetcher {
+public final class Fetcher extends AsyncTask<String, Void, Exception> {
 
-    private final static int bufferSize = 1024;
-    private final String TAG = Fetcher.class.getCanonicalName();
-    private final boolean reloadCache = true; // for debug purposes
+    private final static String TAG = Fetcher.class.getCanonicalName();
+    private final static int bufferSize = 1024; // intermediate buffer size
+    private final static boolean reloadCache = true; // for debug purposes
 
     private String url;
     private File file;
-    private OnUpdateListener listener;
+    private File tempFile;
+    private List<Listener> listeners = new ArrayList<>();
+    private volatile CurrencyList currencyList;
 
     Fetcher(Context context, String fileName, String url) {
         this.url = url;
         this.file = new File(context.getCacheDir(), fileName);
+        this.tempFile = new File(context.getCacheDir(), "temp.xml");
     }
 
-    private CurrencyList load() {
-        CurrencyList list;
+    public void registerListener(Listener listener) {
+        listeners.add(listener);
+    }
 
-        try {
+    public void unregisterListener(Listener listener) {
+        listeners.remove(listener);
+    }
+
+    public void fetch(){
+        if (reloadCache) {
+            execute(url);
+        } else {
+            try {
+                currencyList = load();
+            }
+            catch (Exception e) {
+                if (e == null) {
+                    notify(currencyList);
+                }else {
+                    notify(e);
+                }
+            }
+        }
+    }
+
+    public CurrencyList getCurrencyList() {
+        return currencyList;
+    }
+
+    private CurrencyList load() throws Exception {
+        CurrencyList list = new CurrencyList();
+
+        if (file.exists()) {
             Serializer serializer = new Persister(new CustomMatcher());
             list = serializer.read(CurrencyList.class, file);
-        } catch (Exception e) {
-            Log.e(TAG, "failed to load currency exchange rates from XML file:" + e.getMessage());
-            return new CurrencyList();
         }
-        for (Currency c : list.getCurrencies())
+        for (Currency c : list.getCurrencies()) {
             Log.d(TAG, c.getCharCode() + " - " + c.getRubbles());
+        }
+
         return list;
     }
 
-    public void get() {
-        if (reloadCache)
-            new URLDownloader().execute(url);
-        else {
-            if (listener != null)
-                listener.onUpdated(load());
+    private void notify (CurrencyList list) {
+        for (Listener listener: listeners) {
+            listener.onDataFetched(list);
         }
     }
 
-    public void setListener(OnUpdateListener listener) {
-        this.listener = listener;
+    private void notify (Exception e) {
+        for (Listener listener: listeners) {
+            listener.onFetchError(e);
+        }
     }
 
-    public interface OnUpdateListener {
-        void onUpdated(CurrencyList list);
-    }
+    @Override
+    protected Exception doInBackground(String... urls) {
+        InputStream input = null;
+        OutputStream output = null;
 
-    private class URLDownloader extends AsyncTask<String, Void, CurrencyList> {
-        @Override
-        protected CurrencyList doInBackground(String... urls) {
+        try {
+            URL url = new URL(urls[0]);
+            byte data[] = new byte[bufferSize];
+            int count;
+
+            Log.d(TAG, "downloading XML " + url.toString());
+
+            URLConnection connection = url.openConnection();
+            connection.connect();
+
+            input = new BufferedInputStream(url.openStream(), bufferSize);
+            output = new FileOutputStream(tempFile);
+
+            while ((count = input.read(data)) != -1) {
+                // writing data to file
+                output.write(data, 0, count);
+            }
+
+            tempFile.renameTo(file);
+
+            currencyList = load();
+        } catch (Exception e) {
+            Log.e(TAG, "failed to fetch XML: " + e.getMessage());
+            return e;
+        } finally {
+            // with-resources does it better
             try {
-                URL url = new URL(urls[0]);
-                byte data[] = new byte[bufferSize];
-                int count;
-
-                Log.d(TAG, "downloading XML " + url.toString());
-
-                URLConnection connection = url.openConnection();
-                connection.connect();
-
-                InputStream input = new BufferedInputStream(url.openStream(), 8192);
-
-                OutputStream output = new FileOutputStream(file);
-
-
-                while ((count = input.read(data)) != -1) {
-                    // writing data to file
-                    output.write(data, 0, count);
-                }
-
                 // flushing output
                 output.flush();
 
                 // closing streams
                 output.close();
                 input.close();
-            } catch (Exception e) {
-                Log.e(TAG, "failed to download XML " + e.getMessage());
-            }
-            if (file.exists())
-                return load();
-            else
-                return new CurrencyList();
+            } catch (Exception e) {}
         }
 
-        @Override
-        protected void onPostExecute(CurrencyList result) {
-            if (listener != null)
-                listener.onUpdated(result);
+        return null;
+    }
+
+    @Override
+    protected void onPostExecute(Exception e) {
+        if (e == null) {
+            notify(currencyList);
+        }else {
+            notify(e);
         }
     }
 
-    ;
+    public interface Listener {
+        void onDataFetched(CurrencyList list);
+        void onFetchError(Exception e);
+    }
 }

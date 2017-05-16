@@ -5,6 +5,9 @@ import org.simpleframework.xml.Root;
 
 @Root(name = "Valute", strict = false)
 public class Currency {
+    @Element(name = "NumCode")
+    private int numCode = 0;
+
     @Element(name = "CharCode")
     private String charCode = "RUB";
 
@@ -16,6 +19,10 @@ public class Currency {
 
     @Element(name = "Value")
     private double rubbles = 1.0;
+
+    public int getNumCode() {
+        return numCode;
+    }
 
     public String getCharCode() {
         return charCode;
@@ -29,6 +36,10 @@ public class Currency {
         return rubbles / amount;
     }
 
+    public boolean numCodeEquals (Currency currency) {
+        return numCode == currency.numCode;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -36,6 +47,7 @@ public class Currency {
 
         Currency currency = (Currency) o;
 
+        if (numCode != currency.numCode) return false;
         if (amount != currency.amount) return false;
         if (Double.compare(currency.rubbles, rubbles) != 0) return false;
         return charCode.equals(currency.charCode);
@@ -47,6 +59,7 @@ public class Currency {
         int result;
         long temp;
         result = charCode.hashCode();
+        result = 31 * result + numCode;
         result = 31 * result + amount;
         temp = Double.doubleToLongBits(rubbles);
         result = 31 * result + (int) (temp ^ (temp >>> 32));

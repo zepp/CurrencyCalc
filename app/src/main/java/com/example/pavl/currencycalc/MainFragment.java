@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainFragment extends android.support.v4.app.Fragment {
+public class MainFragment extends android.support.v4.app.Fragment implements Fetcher.Listener{
     private static final String ARG_URL = "arg-url";
     private static final String ARG_FILE_NAME = "arg-file-name";
     private final List<Currency> currencies = new ArrayList<>();
@@ -71,55 +71,41 @@ public class MainFragment extends android.support.v4.app.Fragment {
 
         currencyAdapter = new CurrencyAdapter(getContext(), currencies);
         fromCurrency.setAdapter(currencyAdapter);
+        fromCurrency.setOnItemSelectedListener(new FromCurrencyListener());
         toCurrency.setAdapter(currencyAdapter);
-
-        toCurrency.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                to = (Currency)adapterView.getItemAtPosition(i);
-                updateUI();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {}
-        });
-        fromCurrency.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                from = (Currency)adapterView.getItemAtPosition(i);
-                updateUI();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {}
-        });
-        fromAmount.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                if (editable.toString().equals(""))
-                    toAmount.setText("");
-                else
-                    updateUI();
-            }
-        });
+        toCurrency.setOnItemSelectedListener(new ToCurrencyListener());
+        fromAmount.addTextChangedListener(new CurrencyTextWatcher());
         fetcher = new Fetcher(getContext(), fileName, url);
-        fetcher.setListener(new Fetcher.OnUpdateListener() {
-            @Override
-            public void onUpdated(CurrencyList list) {
-                currencyAdapter.addAll(list.getCurrencies());
-                date.setText(list.getDate());
-            }
-        });
-        if (savedInstanceState == null)
-            fetcher.get();
 
         return root;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        fetcher.registerListener(this);
+        fetcher.fetch();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        fetcher.unregisterListener(this);
+    }
+
+    @Override
+    public void onFetchError(Exception e) {
+        // more complicated exception class handling should be put here
+        Toast.makeText(getContext(), "failed to fetch data: " + e.getMessage(), Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onDataFetched(CurrencyList list) {
+        // since ArrayAdapter does not provide a way to notify about particular item change
+        // all data is just replaced by new one :-(
+        currencyAdapter.clear();
+        currencyAdapter.addAll(list.getCurrencies());
+        date.setText(list.getDate());
     }
 
     private void updateUI()
@@ -132,5 +118,45 @@ public class MainFragment extends android.support.v4.app.Fragment {
         {
             Toast.makeText(getContext(), "Failed to convert currency: " + e, Toast.LENGTH_SHORT);
         }
+    }
+
+    private class CurrencyTextWatcher implements TextWatcher {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+            if (editable.toString().length() == 0)
+                toAmount.setText("");
+            else
+                updateUI();
+        }
+    }
+
+    private class ToCurrencyListener implements AdapterView.OnItemSelectedListener {
+        @Override
+        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+            to = (Currency)adapterView.getItemAtPosition(i);
+            updateUI();
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> adapterView) {}
+    }
+
+    private class FromCurrencyListener implements AdapterView.OnItemSelectedListener {
+        @Override
+        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+            from = (Currency)adapterView.getItemAtPosition(i);
+            updateUI();
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> adapterView) {}
     }
 }
