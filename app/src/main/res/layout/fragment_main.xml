@@ -3,83 +3,123 @@
               xmlns:app="http://schemas.android.com/apk/res-auto"
               xmlns:tools="http://schemas.android.com/tools"
               android:id="@+id/activity_main"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
               android:layout_gravity="center_horizontal"
               android:orientation="vertical"
-              android:padding="16dp"
+              android:padding="32dp"
               tools:context="com.example.pavl.currencycalc.MainActivity">
 
     <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="wrap_content"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
         <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-            <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/currency_from"
-                    android:id="@+id/original_title"
-                    android:minLines="2"/>
+                android:orientation="horizontal">
 
             <LinearLayout
+                    android:orientation="horizontal"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="start">
 
-                <EditText
-                        android:id="@+id/original_amount"
-                        android:layout_width="64dp"
-                        android:layout_height="wrap_content"
-                        android:inputType="numberDecimal"
-                        android:enabled="false"/>
+                <ImageView
+                    android:id="@+id/original_flag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/ic_aed" />
 
-                <Spinner
-                        android:id="@+id/original_currency"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"/>
+                <TextView
+                    android:id="@+id/original_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:minLines="2"
+                    android:text="@string/original_currency"
+                    android:visibility="gone" />
 
             </LinearLayout>
+
+            <EditText
+                    android:id="@+id/original_amount"
+                    android:layout_width="96dp"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+                    android:enabled="false"
+                    android:gravity="end"/>
+
+            <Spinner
+                    android:id="@+id/original_currency"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"/>
 
         </LinearLayout>
 
-        <LinearLayout
+        <Space
+                android:layout_width="match_parent"
+                android:layout_height="16dp"/>
+
+        <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                app:srcCompat="@drawable/ic_swap"
+                android:id="@+id/swap"
+                android:layout_gravity="center"/>
 
-            <TextView
-                    android:id="@+id/result_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/currency_to"
-                    android:minLines="2"/>
+        <Space
+                android:layout_width="match_parent"
+                android:layout_height="16dp"/>
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
             <LinearLayout
+                    android:orientation="horizontal"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
 
-                <EditText
-                        android:id="@+id/result_amount"
-                        android:layout_width="64dp"
-                        android:layout_height="wrap_content"
-                        android:inputType="numberDecimal"
-                        android:enabled="false"/>
+                <ImageView
+                    android:id="@+id/result_flag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/ic_aed" />
 
-                <Spinner
-                        android:id="@+id/result_currency"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"/>
+                <TextView
+                    android:id="@+id/result_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:minLines="2"
+                    android:text="@string/result_currency"
+                    android:visibility="gone" />
 
             </LinearLayout>
+
+            <EditText
+                    android:id="@+id/result_amount"
+                    android:layout_width="96dp"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+                    android:enabled="false"
+                    android:gravity="end"
+                    />
+
+            <Spinner
+                    android:id="@+id/result_currency"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    />
 
         </LinearLayout>
 
@@ -87,13 +127,14 @@
 
     <Space
             android:layout_width="match_parent"
-            android:layout_height="16dp"/>
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
 
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center_horizontal">
+            android:gravity="center">
 
         <TextView
                 android:layout_width="wrap_content"
