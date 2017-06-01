@@ -59,7 +59,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Mai
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        view = new MainViewImpl(inflater, container);
+        view = new MainViewImpl(getActivity(), inflater, container);
         return view.getRootView();
     }
 

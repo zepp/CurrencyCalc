@@ -14,6 +14,8 @@ public class Application extends android.app.Application {
         Intent intent = Service.getIntent(this);
         scheduler = Scheduler.getInstance(this);
         scheduler.schedule(intent, 24);
-        startService(intent);
+        if (!BuildConfig.DEBUG) {
+            startService(intent);
+        }
     }
 }

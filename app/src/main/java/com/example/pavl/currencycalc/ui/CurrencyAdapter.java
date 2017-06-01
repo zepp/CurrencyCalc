@@ -1,5 +1,6 @@
 package com.example.pavl.currencycalc.ui;
 
+import com.example.pavl.currencycalc.R;
 import com.example.pavl.currencycalc.model.Currency;
 
 import android.content.Context;
@@ -29,7 +30,7 @@ class CurrencyAdapter extends ArrayAdapter<Currency> {
         }
 
         public Holder(View view) {
-            this.view = (CheckedTextView)view;
+            this.view = (CheckedTextView) view;
         }
     }
 
@@ -66,6 +67,6 @@ class CurrencyAdapter extends ArrayAdapter<Currency> {
 
     public CurrencyAdapter(Context context, List<Currency> model)
     {
-        super(context, android.R.layout.simple_spinner_dropdown_item, model);
+        super(context, R.layout.spinner_item, model);
     }
 }

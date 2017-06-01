@@ -8,4 +8,33 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="FlagImage">
+        <item name="android:layout_width">44dp</item>
+        <item name="android:layout_height">30dp</item>
+        <item name="android:scaleType">centerInside</item>
+        <item name="android:padding">1dp</item>
+        <item name="android:background">@drawable/flag_background</item>
+    </style>
+
+    <style name="CurrencyEdit" parent="Base.Widget.AppCompat.EditText">
+        <item name="android:inputType">numberDecimal</item>
+        <item name="android:cursorVisible">false</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:textAppearance">@style/Base.TextAppearance.AppCompat.Large</item>
+    </style>
+
+    <style name="CurrencyItem" parent="Base.Widget.AppCompat.TextView.SpinnerItem">
+        <item name="android:textAppearance">@style/Base.TextAppearance.AppCompat.Large</item>
+        <item name="android:paddingStart">16dp</item>
+    </style>
+
+    <style name="NumPadButton" parent="Base.Widget.AppCompat.Button">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:textAppearance">@style/Base.TextAppearance.AppCompat.Large</item>
+    </style>
+
+    <style name="StatusTextView">
+        <item name="android:textAppearance">@style/Base.TextAppearance.AppCompat.Medium</item>
+    </style>
+
 </resources>

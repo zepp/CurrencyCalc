@@ -18,112 +18,173 @@
         <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingStart="32dp">
 
-            <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="start">
-
-                <ImageView
+            <ImageView
                     android:id="@+id/original_flag"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:visibility="gone"
-                    app:srcCompat="@drawable/ic_aed" />
+                    style="@style/FlagImage"
+                    />
 
-                <TextView
-                    android:id="@+id/original_title"
-                    android:layout_width="wrap_content"
+            <Space
+                    android:layout_width="32dp"
                     android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:minLines="2"
-                    android:text="@string/original_currency"
-                    android:visibility="gone" />
-
-            </LinearLayout>
+                    />
 
             <EditText
                     android:id="@+id/original_amount"
-                    android:layout_width="96dp"
-                    android:layout_height="wrap_content"
-                    android:inputType="numberDecimal"
-                    android:enabled="false"
-                    android:gravity="end"/>
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:layout_width="wrap_content"
+                    android:gravity="end"
+                    style="@style/CurrencyEdit"
+                    android:background="@drawable/edit_selector"/>
 
             <Spinner
                     android:id="@+id/original_currency"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_gravity="center_vertical"/>
+                    android:layout_gravity="end"/>
 
         </LinearLayout>
 
         <Space
                 android:layout_width="match_parent"
-                android:layout_height="16dp"/>
+                android:layout_height="32dp"/>
 
         <ImageButton
+                android:id="@+id/swap"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_swap"
-                android:id="@+id/swap"
+                android:src="@drawable/ic_swap"
+                android:background="@android:color/transparent"
                 android:layout_gravity="center"/>
 
         <Space
                 android:layout_width="match_parent"
-                android:layout_height="16dp"/>
+                android:layout_height="32dp"/>
 
         <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingStart="32dp">
 
-            <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1">
-
-                <ImageView
+            <ImageView
                     android:id="@+id/result_flag"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:visibility="gone"
-                    app:srcCompat="@drawable/ic_aed" />
+                    style="@style/FlagImage"
+                    />
 
-                <TextView
-                    android:id="@+id/result_title"
-                    android:layout_width="wrap_content"
+            <Space
+                    android:layout_width="32dp"
                     android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:minLines="2"
-                    android:text="@string/result_currency"
-                    android:visibility="gone" />
-
-            </LinearLayout>
+                    />
 
             <EditText
                     android:id="@+id/result_amount"
-                    android:layout_width="96dp"
-                    android:layout_height="wrap_content"
-                    android:inputType="numberDecimal"
-                    android:enabled="false"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:layout_width="wrap_content"
                     android:gravity="end"
-                    />
+                    style="@style/CurrencyEdit"
+                    android:background="@drawable/edit_selector"/>
 
             <Spinner
                     android:id="@+id/result_currency"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_gravity="center_vertical"
+                    android:layout_gravity="end"
                     />
 
         </LinearLayout>
 
     </LinearLayout>
+
+    <Space
+            android:layout_width="match_parent"
+            android:layout_height="64dp"/>
+
+    <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="3">
+
+        <Button
+                android:id="@+id/num_1"
+                android:layout_columnWeight="1"
+                android:layout_gravity="fill"
+                android:text="1"
+                style="@style/NumPadButton"/>
+
+        <Button
+                android:id="@+id/num_2"
+                android:layout_columnWeight="1"
+                android:layout_gravity="fill"
+                android:text="2"
+                style="@style/NumPadButton"/>
+
+        <Button
+                android:id="@+id/num_3"
+                android:layout_columnWeight="1"
+                android:layout_gravity="fill"
+                android:text="3"
+                style="@style/NumPadButton"/>
+
+
+        <Button
+                android:id="@+id/num_4"
+                android:layout_gravity="fill"
+                android:text="4"
+                style="@style/NumPadButton"/>
+
+        <Button
+                android:id="@+id/num_5"
+                android:layout_gravity="fill"
+                android:text="5"
+                style="@style/NumPadButton"/>
+
+        <Button
+                android:id="@+id/num_6"
+                android:layout_gravity="fill"
+                android:text="6"
+                style="@style/NumPadButton"/>
+
+        <Button
+                android:id="@+id/num_7"
+                android:layout_gravity="fill"
+                android:text="7"
+                style="@style/NumPadButton"/>
+
+        <Button
+                android:id="@+id/num_8"
+                android:layout_gravity="fill"
+                android:text="8"
+                style="@style/NumPadButton"/>
+
+        <Button
+                android:id="@+id/num_9"
+                android:layout_gravity="fill"
+                android:text="9"
+                style="@style/NumPadButton"/>
+
+        <Button
+                android:id="@+id/num_point"
+                android:layout_gravity="fill"
+                android:text="."
+                style="@style/NumPadButton"/>
+
+        <Button
+                android:id="@+id/num_0"
+                android:layout_gravity="fill"
+                android:text="0"
+                style="@style/NumPadButton"/>
+
+        <Button
+                android:id="@+id/del"
+                android:layout_gravity="fill"
+                android:text="⇐"
+                style="@style/NumPadButton"/>
+    </GridLayout>
 
     <Space
             android:layout_width="match_parent"
@@ -139,7 +200,8 @@
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/updated"/>
+                android:text="@string/updated"
+                style="@style/StatusTextView"/>
 
         <Space
                 android:layout_width="16dp"
@@ -149,7 +211,8 @@
                 android:id="@+id/date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:freezesText="true"/>
+                android:freezesText="true"
+                style="@style/StatusTextView"/>
     </LinearLayout>
 
 </LinearLayout>
