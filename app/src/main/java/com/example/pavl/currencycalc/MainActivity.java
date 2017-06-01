@@ -6,9 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 public class MainActivity extends AppCompatActivity {
-    private final static String file = "rates.xml";
-    private final static String url = "http://www.cbr.ru/scripts/XML_daily.asp";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         FragmentManager manager;
@@ -18,7 +15,7 @@ public class MainActivity extends AppCompatActivity {
         if (manager.findFragmentById(R.id.fragment_container) == null)
         {
             FragmentTransaction transaction = manager.beginTransaction();
-            transaction.add(R.id.fragment_container, MainFragment.newInstance(url, file), null).commit();
+            transaction.add(R.id.fragment_container, MainFragment.newInstance(), null).commit();
         }
     }
 }

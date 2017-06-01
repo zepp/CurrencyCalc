@@ -1,23 +1,38 @@
 package com.example.pavl.currencycalc;
 
+import com.example.pavl.currencycalc.background.Service;
 import com.example.pavl.currencycalc.model.Currency;
 import com.example.pavl.currencycalc.model.CurrencyList;
+import com.example.pavl.currencycalc.model.CustomMatcher;
 import com.example.pavl.currencycalc.ui.MainView;
 import com.example.pavl.currencycalc.ui.MainViewImpl;
 
+import org.simpleframework.xml.Serializer;
+import org.simpleframework.xml.core.Persister;
+
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import java.io.File;
 
-public class MainFragment extends android.support.v4.app.Fragment implements Fetcher.Listener, MainView.Listener {
-    private static final String ARG_URL = "arg-url";
-    private static final String ARG_FILE_NAME = "arg-file-name";
 
+public class MainFragment extends android.support.v4.app.Fragment implements MainView.Listener {
+    private final static String TAG = MainFragment.class.getSimpleName();
+    private final Receiver receiver = new Receiver();
+    private LocalBroadcastManager manager;
     private MainView view;
-    private Fetcher fetcher;
     private Currency original;
     private Currency result;
     private double amount = -1;
@@ -26,11 +41,9 @@ public class MainFragment extends android.support.v4.app.Fragment implements Fet
         // Required empty public constructor
     }
 
-    public static MainFragment newInstance(String url, String fileName) {
+    public static MainFragment newInstance() {
         MainFragment fragment = new MainFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_URL, url);
-        args.putString(ARG_FILE_NAME, fileName);
         fragment.setArguments(args);
         return fragment;
     }
@@ -39,42 +52,32 @@ public class MainFragment extends android.support.v4.app.Fragment implements Fet
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+        setHasOptionsMenu(true);
+        manager = LocalBroadcastManager.getInstance(getContext());
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        String url = "";
-        String fileName = "";
-
-        if (getArguments() != null) {
-            url = getArguments().getString(ARG_URL);
-            fileName = getArguments().getString(ARG_FILE_NAME);
-        }
-
         view = new MainViewImpl(inflater, container);
-        fetcher = new Fetcher(getContext(), fileName, url);
         return view.getRootView();
     }
 
     @Override
     public void onStart() {
+        IntentFilter filter = new IntentFilter();
+
         super.onStart();
         view.setListener(this);
-        // Fetcher is single shot worker
-        if (fetcher.getCurrencyList() == null) {
-            fetcher.registerListener(this);
-            fetcher.fetch();
-        } else {
-            view.bind(fetcher.getCurrencyList());
-        }
+        filter.addAction(Service.DATA_UPDATED);
+        manager.registerReceiver(receiver, filter);
+        manager.sendBroadcast(new Intent(Service.DATA_UPDATED));
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        // pointless indeed since fragment retains state and can not be collected
-        fetcher.unregisterListener(this);
+        manager.unregisterReceiver(receiver);
     }
 
     @Override
@@ -84,15 +87,18 @@ public class MainFragment extends android.support.v4.app.Fragment implements Fet
     }
 
     @Override
-    public void onFetchError(Exception e) {
-        // more complicated exception class handling should be put here
-        Toast.makeText(getContext(), "failed to fetch data: " + e.getMessage(),
-                Toast.LENGTH_LONG).show();
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.main, menu);
     }
 
     @Override
-    public void onDataFetched(CurrencyList list) {
-        view.bind(list);
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.update) {
+            getContext().startService(Service.getIntent(getContext()));
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
@@ -118,5 +124,27 @@ public class MainFragment extends android.support.v4.app.Fragment implements Fet
             return;
         }
         view.setResult(CurrencyList.convert(original, result, amount));
+    }
+
+    private class Receiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(Service.DATA_UPDATED)) {
+                try {
+                    File file = Service.getFile(getContext());
+                    if (file.exists()) {
+                        Serializer serializer = new Persister(new CustomMatcher());
+                        view.bind(serializer.read(CurrencyList.class, file));
+                        Log.d(TAG, "data updated");
+                    } else {
+                        Log.e(TAG, "file does not exist");
+                    }
+                } catch (Exception e) {
+                    String msg = "error: " + e.getMessage();
+                    Log.e(TAG, msg);
+                    Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
     }
 }
