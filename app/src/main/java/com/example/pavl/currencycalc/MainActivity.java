@@ -8,14 +8,11 @@ import android.os.Bundle;
 public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        FragmentManager manager;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_container);
-        manager = getSupportFragmentManager();
-        if (manager.findFragmentById(R.id.fragment_container) == null)
-        {
-            FragmentTransaction transaction = manager.beginTransaction();
-            transaction.add(R.id.fragment_container, MainFragment.newInstance(), null).commit();
+        FragmentManager manager = getSupportFragmentManager();
+        if (manager.findFragmentById(R.id.fragment_container) == null) {
+            manager.beginTransaction().add(R.id.fragment_container, MainFragment.newInstance(), null).commit();
         }
     }
 }

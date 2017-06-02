@@ -58,8 +58,8 @@ public class MainViewImpl implements MainView {
 
     public MainViewImpl(Activity activity, LayoutInflater inflater, ViewGroup container) {
         this.activity = activity;
-        root = inflater.inflate(R.layout.fragment_main, container, false);
-        init(root);
+
+        init(inflater.inflate(R.layout.fragment_main, container, false));
 
         currencyAdapter = new CurrencyAdapter(root.getContext(), currencies);
 
@@ -93,26 +93,27 @@ public class MainViewImpl implements MainView {
     }
 
     private void init (View root){
-        originalFlag = (ImageView) root.findViewById(R.id.original_flag);
-        originalAmount = (EditText) root.findViewById(R.id.original_amount);
-        originalCurrency = (Spinner) root.findViewById(R.id.original_currency);
-        swap = (ImageButton) root.findViewById(R.id.swap);
-        resultFlag = (ImageView) root.findViewById(R.id.result_flag);
-        resultAmount = (EditText) root.findViewById(R.id.result_amount);
-        resultCurrency = (Spinner) root.findViewById(R.id.result_currency);
-        num1 = (Button)root.findViewById(R.id.num_1);
-        num2 = (Button)root.findViewById(R.id.num_2);
-        num3 = (Button)root.findViewById(R.id.num_3);
-        num4 = (Button)root.findViewById(R.id.num_4);
-        num5 = (Button)root.findViewById(R.id.num_5);
-        num6 = (Button)root.findViewById(R.id.num_6);
-        num7 = (Button)root.findViewById(R.id.num_7);
-        num8 = (Button)root.findViewById(R.id.num_8);
-        num9 = (Button)root.findViewById(R.id.num_9);
-        num0 = (Button)root.findViewById(R.id.num_0);
-        point = (Button)root.findViewById(R.id.num_point);
-        del = (Button)root.findViewById(R.id.del);
-        dataDate = (TextView) root.findViewById(R.id.date);
+        this.root = root;
+        this.originalFlag = (ImageView) root.findViewById(R.id.original_flag);
+        this.originalAmount = (EditText) root.findViewById(R.id.original_amount);
+        this.originalCurrency = (Spinner) root.findViewById(R.id.original_currency);
+        this.swap = (ImageButton) root.findViewById(R.id.swap);
+        this.resultFlag = (ImageView) root.findViewById(R.id.result_flag);
+        this.resultAmount = (EditText) root.findViewById(R.id.result_amount);
+        this.resultCurrency = (Spinner) root.findViewById(R.id.result_currency);
+        this.num1 = (Button)root.findViewById(R.id.num_1);
+        this.num2 = (Button)root.findViewById(R.id.num_2);
+        this.num3 = (Button)root.findViewById(R.id.num_3);
+        this.num4 = (Button)root.findViewById(R.id.num_4);
+        this.num5 = (Button)root.findViewById(R.id.num_5);
+        this.num6 = (Button)root.findViewById(R.id.num_6);
+        this.num7 = (Button)root.findViewById(R.id.num_7);
+        this.num8 = (Button)root.findViewById(R.id.num_8);
+        this.num9 = (Button)root.findViewById(R.id.num_9);
+        this.num0 = (Button)root.findViewById(R.id.num_0);
+        this.point = (Button)root.findViewById(R.id.num_point);
+        this.del = (Button)root.findViewById(R.id.del);
+        this.dataDate = (TextView) root.findViewById(R.id.date);
     }
 
     private int getFlagResourceId (Currency currency) {
@@ -131,13 +132,10 @@ public class MainViewImpl implements MainView {
     }
 
     @Override
-    public void saveState(Bundle state) {
-    }
-
-    @Override
     public void bind(CurrencyList list) {
         // since ArrayAdapter does not provide a way to notify about particular item change
         // all data is just replaced by new one :-(
+        list.sort();
         currencyAdapter.clear();
         currencyAdapter.addAll(list.getCurrencies());
         dataDate.setText(list.getDate());
@@ -151,15 +149,6 @@ public class MainViewImpl implements MainView {
     }
 
     private class AmountTextWatcher implements TextWatcher {
-        private double getDouble (Editable editable) {
-            double amount = 0;
-            try {
-                amount = Double.valueOf(editable.toString());
-            } catch (Exception e) {
-            }
-            return amount;
-        }
-
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
         }
@@ -172,7 +161,11 @@ public class MainViewImpl implements MainView {
         public void afterTextChanged(Editable editable) {
             double amount = -1;
             if (editable.length() > 0) {
-                amount = getDouble(editable);
+                try {
+                    amount = Double.valueOf(editable.toString());
+                } catch (Exception e) {
+                    resultAmount.setText("");
+                }
             } else {
                 resultAmount.setText("");
             }
@@ -255,7 +248,7 @@ public class MainViewImpl implements MainView {
                 case R.id.num_8:
                     return '8';
                 case R.id.num_9:
-                    return '0';
+                    return '9';
                 case R.id.num_point:
                     return '.';
                 default:
@@ -268,17 +261,19 @@ public class MainViewImpl implements MainView {
             View focused = activity.getCurrentFocus();
             if (focused instanceof EditText) {
                 EditText edit = (EditText) focused;
+                if (!edit.isEnabled())
+                    return;
                 Editable text = edit.getText();
                 if (v.getId() == R.id.del) {
-                    if (text.length() >= 1) {
+                    if (text.length() > 0) {
                         text.delete(text.length() - 1, text.length());
                     }
-                } if (v.getId() == R.id.num_point) {
+                } else if (v.getId() == R.id.num_point) {
                     if (text.toString().indexOf('.') == -1) {
                         if (text.length() == 0) {
                             text.append('0');
                         }
-                        text.append(getChar(v));
+                        text.append('.');
                     }
                 } else {
                     text.append(getChar(v));

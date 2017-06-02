@@ -71,19 +71,16 @@ public class MainFragment extends android.support.v4.app.Fragment implements Mai
         view.setListener(this);
         filter.addAction(Service.DATA_UPDATED);
         manager.registerReceiver(receiver, filter);
-        manager.sendBroadcast(new Intent(Service.DATA_UPDATED));
+        loadCurrencies();
+        if (!BuildConfig.DEBUG) {
+            getContext().startService(Service.getIntent(getContext()));
+        }
     }
 
     @Override
     public void onStop() {
         super.onStop();
         manager.unregisterReceiver(receiver);
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        view.saveState(outState);
     }
 
     @Override
@@ -126,24 +123,28 @@ public class MainFragment extends android.support.v4.app.Fragment implements Mai
         view.setResult(CurrencyList.convert(original, result, amount));
     }
 
+    private void loadCurrencies() {
+        try {
+            File file = Service.getFile(getContext());
+            if (file.exists()) {
+                Serializer serializer = new Persister(new CustomMatcher());
+                view.bind(serializer.read(CurrencyList.class, file));
+                Log.d(TAG, "data updated");
+            } else {
+                Log.w(TAG, "file does not exist");
+            }
+        } catch (Exception e) {
+            String msg = "error: " + e.getMessage();
+            Log.e(TAG, msg);
+            Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private class Receiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(Service.DATA_UPDATED)) {
-                try {
-                    File file = Service.getFile(getContext());
-                    if (file.exists()) {
-                        Serializer serializer = new Persister(new CustomMatcher());
-                        view.bind(serializer.read(CurrencyList.class, file));
-                        Log.d(TAG, "data updated");
-                    } else {
-                        Log.e(TAG, "file does not exist");
-                    }
-                } catch (Exception e) {
-                    String msg = "error: " + e.getMessage();
-                    Log.e(TAG, msg);
-                    Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
-                }
+                loadCurrencies();
             }
         }
     }

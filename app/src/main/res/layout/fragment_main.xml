@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
               xmlns:tools="http://schemas.android.com/tools"
               android:id="@+id/activity_main"
               android:layout_width="match_parent"
@@ -23,13 +22,11 @@
 
             <ImageView
                     android:id="@+id/original_flag"
-                    style="@style/FlagImage"
-                    />
+                    style="@style/FlagImage"/>
 
             <Space
                     android:layout_width="32dp"
-                    android:layout_height="match_parent"
-                    />
+                    android:layout_height="match_parent"/>
 
             <EditText
                     android:id="@+id/original_amount"
@@ -38,7 +35,7 @@
                     android:layout_width="wrap_content"
                     android:gravity="end"
                     style="@style/CurrencyEdit"
-                    android:background="@drawable/edit_selector"/>
+                    android:enabled="false"/>
 
             <Spinner
                     android:id="@+id/original_currency"
@@ -72,13 +69,11 @@
 
             <ImageView
                     android:id="@+id/result_flag"
-                    style="@style/FlagImage"
-                    />
+                    style="@style/FlagImage"/>
 
             <Space
                     android:layout_width="32dp"
-                    android:layout_height="match_parent"
-                    />
+                    android:layout_height="match_parent"/>
 
             <EditText
                     android:id="@+id/result_amount"
@@ -87,14 +82,13 @@
                     android:layout_width="wrap_content"
                     android:gravity="end"
                     style="@style/CurrencyEdit"
-                    android:background="@drawable/edit_selector"/>
+                    android:enabled="false"/>
 
             <Spinner
                     android:id="@+id/result_currency"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_gravity="end"
-                    />
+                    android:layout_gravity="end"/>
 
         </LinearLayout>
 
@@ -198,20 +192,9 @@
             android:gravity="center">
 
         <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/updated"
-                style="@style/StatusTextView"/>
-
-        <Space
-                android:layout_width="16dp"
-                android:layout_height="match_parent"/>
-
-        <TextView
                 android:id="@+id/date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:freezesText="true"
                 style="@style/StatusTextView"/>
     </LinearLayout>
 

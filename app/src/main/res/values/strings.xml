@@ -1,6 +1,3 @@
 <resources>
     <string name="app_name">Currency calculator</string>
-    <string name="original_currency">currency</string>
-    <string name="result_currency">currency</string>
-    <string name="updated">updated</string>
 </resources>

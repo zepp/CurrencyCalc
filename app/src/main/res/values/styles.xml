@@ -21,6 +21,7 @@
         <item name="android:cursorVisible">false</item>
         <item name="android:background">@android:color/transparent</item>
         <item name="android:textAppearance">@style/Base.TextAppearance.AppCompat.Large</item>
+        <item name="background">@drawable/edit_selector</item>
     </style>
 
     <style name="CurrencyItem" parent="Base.Widget.AppCompat.TextView.SpinnerItem">
