@@ -28,7 +28,7 @@ import android.widget.Toast;
 import java.io.File;
 
 
-public class MainFragment extends android.support.v4.app.Fragment implements MainView.Listener {
+public class MainFragment extends android.support.v4.app.Fragment implements MainView.Controller {
     private final static String TAG = MainFragment.class.getSimpleName();
     private Receiver receiver;
     private LocalBroadcastManager manager;
@@ -67,7 +67,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Mai
     public void onStart() {
         super.onStart();
 
-        view.setListener(this);
+        view.setController(this);
         view.start();
 
         IntentFilter filter = new IntentFilter();

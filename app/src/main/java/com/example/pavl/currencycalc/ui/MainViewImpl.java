@@ -6,7 +6,6 @@ import com.example.pavl.currencycalc.R;
 
 import android.app.Activity;
 import android.content.res.Resources;
-import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -30,7 +29,7 @@ public class MainViewImpl implements MainView {
     private final List<Currency> currencies = new ArrayList<>();
     private final CurrencyAdapter currencyAdapter;
 
-    private Listener listener;
+    private Controller controller;
 
     private View root;
     private EditText originalAmount;
@@ -122,12 +121,12 @@ public class MainViewImpl implements MainView {
 
     @Override
     public void stop() {
-        listener = null;
+        controller = null;
     }
 
     @Override
-    public void setListener(Listener listener) {
-        this.listener = listener;
+    public void setController(Controller controller) {
+        this.controller = controller;
     }
 
     @Override
@@ -173,8 +172,8 @@ public class MainViewImpl implements MainView {
             } else {
                 resultAmount.setText("");
             }
-            if (listener != null) {
-                listener.originalAmountChanged(amount);
+            if (controller != null) {
+                controller.originalAmountChanged(amount);
             }
         }
     }
@@ -189,8 +188,8 @@ public class MainViewImpl implements MainView {
             } else {
                 resultFlag.setImageResource(id);
             }
-            if (listener != null) {
-                listener.resultCurrencyChanged(result);
+            if (controller != null) {
+                controller.resultCurrencyChanged(result);
             }
         }
 
@@ -209,8 +208,8 @@ public class MainViewImpl implements MainView {
             } else {
                 originalFlag.setImageResource(id);
             }
-            if (listener != null) {
-                listener.originalCurrencyChanged(original);
+            if (controller != null) {
+                controller.originalCurrencyChanged(original);
             }
         }
 
