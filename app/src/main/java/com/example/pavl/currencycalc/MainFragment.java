@@ -30,7 +30,7 @@ import java.io.File;
 
 public class MainFragment extends android.support.v4.app.Fragment implements MainView.Listener {
     private final static String TAG = MainFragment.class.getSimpleName();
-    private final Receiver receiver = new Receiver();
+    private Receiver receiver;
     private LocalBroadcastManager manager;
     private MainView view;
     private Currency original;
@@ -65,12 +65,16 @@ public class MainFragment extends android.support.v4.app.Fragment implements Mai
 
     @Override
     public void onStart() {
-        IntentFilter filter = new IntentFilter();
-
         super.onStart();
+
         view.setListener(this);
+        view.start();
+
+        IntentFilter filter = new IntentFilter();
         filter.addAction(Service.DATA_UPDATED);
+        receiver = new Receiver();
         manager.registerReceiver(receiver, filter);
+
         loadCurrencies();
         if (!BuildConfig.DEBUG) {
             getContext().startService(Service.getIntent(getContext()));
@@ -80,7 +84,9 @@ public class MainFragment extends android.support.v4.app.Fragment implements Mai
     @Override
     public void onStop() {
         super.onStop();
+        view.stop();
         manager.unregisterReceiver(receiver);
+        receiver = null;
     }
 
     @Override

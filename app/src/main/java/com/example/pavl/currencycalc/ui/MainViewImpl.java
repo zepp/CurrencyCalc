@@ -28,8 +28,6 @@ public class MainViewImpl implements MainView {
     private final Resources resources;
     private final String packageName;
     private final List<Currency> currencies = new ArrayList<>();
-    private final NumListener numListener = new NumListener();
-    private final AmountTextWatcher fromTextWatcher = new AmountTextWatcher();
     private final CurrencyAdapter currencyAdapter;
 
     private Listener listener;
@@ -62,34 +60,13 @@ public class MainViewImpl implements MainView {
         init(inflater.inflate(R.layout.fragment_main, container, false));
 
         currencyAdapter = new CurrencyAdapter(root.getContext(), currencies);
-
         originalCurrency.setAdapter(currencyAdapter);
-        originalCurrency.setOnItemSelectedListener(new OriginalCurrencyListener());
         resultCurrency.setAdapter(currencyAdapter);
-        resultCurrency.setOnItemSelectedListener(new ResultCurrencyListener());
-
-        originalAmount.addTextChangedListener(fromTextWatcher);
         originalAmount.setShowSoftInputOnFocus(false);
-        originalAmount.setCursorVisible(false);
         resultAmount.setShowSoftInputOnFocus(false);
-        resultAmount.setCursorVisible(false);
 
-        swap.setOnClickListener(new SwapListener());
-        num1.setOnClickListener(numListener);
-        num2.setOnClickListener(numListener);
-        num3.setOnClickListener(numListener);
-        num4.setOnClickListener(numListener);
-        num5.setOnClickListener(numListener);
-        num6.setOnClickListener(numListener);
-        num7.setOnClickListener(numListener);
-        num8.setOnClickListener(numListener);
-        num9.setOnClickListener(numListener);
-        num0.setOnClickListener(numListener);
-        point.setOnClickListener(numListener);
-        del.setOnClickListener(numListener);
-
-        resources = root.getContext().getResources();
-        packageName = root.getContext().getPackageName();
+        resources = activity.getBaseContext().getResources();
+        packageName = activity.getBaseContext().getPackageName();
     }
 
     private void init (View root){
@@ -119,6 +96,33 @@ public class MainViewImpl implements MainView {
     private int getFlagResourceId (Currency currency) {
         String name = "ic_" + currency.getCharCode().toLowerCase();
         return resources.getIdentifier(name, "drawable", packageName);
+    }
+
+    @Override
+    public void start() {
+        NumListener numListener = new NumListener();
+
+        originalCurrency.setOnItemSelectedListener(new OriginalCurrencyListener());
+        resultCurrency.setOnItemSelectedListener(new ResultCurrencyListener());
+        originalAmount.addTextChangedListener(new AmountTextWatcher());
+        swap.setOnClickListener(new SwapListener());
+        num1.setOnClickListener(numListener);
+        num2.setOnClickListener(numListener);
+        num3.setOnClickListener(numListener);
+        num4.setOnClickListener(numListener);
+        num5.setOnClickListener(numListener);
+        num6.setOnClickListener(numListener);
+        num7.setOnClickListener(numListener);
+        num8.setOnClickListener(numListener);
+        num9.setOnClickListener(numListener);
+        num0.setOnClickListener(numListener);
+        point.setOnClickListener(numListener);
+        del.setOnClickListener(numListener);
+    }
+
+    @Override
+    public void stop() {
+        listener = null;
     }
 
     @Override

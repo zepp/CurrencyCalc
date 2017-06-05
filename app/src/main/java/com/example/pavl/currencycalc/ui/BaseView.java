@@ -4,4 +4,6 @@ import android.view.View;
 
 public interface BaseView {
     View getRootView();
+    void start();
+    void stop();
 }
