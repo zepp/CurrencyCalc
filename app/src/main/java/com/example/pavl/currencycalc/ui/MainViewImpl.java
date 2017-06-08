@@ -147,6 +147,19 @@ public class MainViewImpl implements MainView {
     }
 
     @Override
+    public void setState(Currency original, Currency resulting, double amount) {
+        if (original != null) {
+            originalCurrency.setSelection(currencyAdapter.getPosition(original));
+        }
+        if (amount >= 0) {
+            originalAmount.setText(String.valueOf(amount));
+        }
+        if (resulting != null) {
+            resultCurrency.setSelection(currencyAdapter.getPosition(resulting));
+        }
+    }
+
+    @Override
     public void setResult(double amount) {
         resultAmount.setText(String.format("%.1f", amount));
     }

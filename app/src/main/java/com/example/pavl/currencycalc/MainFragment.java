@@ -1,6 +1,7 @@
 package com.example.pavl.currencycalc;
 
 import com.example.pavl.currencycalc.background.Service;
+import com.example.pavl.currencycalc.debug.LifeCycleLoggingFragment;
 import com.example.pavl.currencycalc.model.Currency;
 import com.example.pavl.currencycalc.model.CurrencyList;
 import com.example.pavl.currencycalc.model.CustomMatcher;
@@ -28,17 +29,19 @@ import android.widget.Toast;
 import java.io.File;
 
 
-public class MainFragment extends android.support.v4.app.Fragment implements MainView.Controller {
+public class MainFragment extends LifeCycleLoggingFragment implements MainView.Controller {
     private final static String TAG = MainFragment.class.getSimpleName();
     private Receiver receiver;
     private LocalBroadcastManager manager;
     private MainView view;
+    private CurrencyList list;
     private Currency original;
-    private Currency result;
+    private Currency resulting;
     private double amount = -1;
 
     public MainFragment() {
         // Required empty public constructor
+        Log.d(TAG, "MainFragment");
     }
 
     public static MainFragment newInstance() {
@@ -53,7 +56,8 @@ public class MainFragment extends android.support.v4.app.Fragment implements Mai
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         setHasOptionsMenu(true);
-        manager = LocalBroadcastManager.getInstance(getContext());
+        list = loadCurrencies();
+        receiver = new Receiver();
     }
 
     @Override
@@ -70,12 +74,16 @@ public class MainFragment extends android.support.v4.app.Fragment implements Mai
         view.setController(this);
         view.start();
 
+        if (list != null) {
+            view.bind(list);
+            view.setState(original, resulting, amount);
+        }
+
         IntentFilter filter = new IntentFilter();
         filter.addAction(Service.DATA_UPDATED);
-        receiver = new Receiver();
+        manager = LocalBroadcastManager.getInstance(getContext());
         manager.registerReceiver(receiver, filter);
 
-        loadCurrencies();
         if (!BuildConfig.DEBUG) {
             getContext().startService(Service.getIntent(getContext()));
         }
@@ -86,7 +94,6 @@ public class MainFragment extends android.support.v4.app.Fragment implements Mai
         super.onStop();
         view.stop();
         manager.unregisterReceiver(receiver);
-        receiver = null;
     }
 
     @Override
@@ -118,23 +125,24 @@ public class MainFragment extends android.support.v4.app.Fragment implements Mai
 
     @Override
     public void resultCurrencyChanged(Currency currency) {
-        this.result = currency;
+        this.resulting = currency;
         setResult();
     }
 
     private void setResult() {
-        if (original == null || result == null || amount < 0) {
+        if (original == null || resulting == null || amount < 0) {
             return;
         }
-        view.setResult(CurrencyList.convert(original, result, amount));
+        view.setResult(CurrencyList.convert(original, resulting, amount));
     }
 
-    private void loadCurrencies() {
+    private CurrencyList loadCurrencies() {
+        CurrencyList list = null;
         try {
             File file = Service.getFile(getContext());
             if (file.exists()) {
                 Serializer serializer = new Persister(new CustomMatcher());
-                view.bind(serializer.read(CurrencyList.class, file));
+                list = serializer.read(CurrencyList.class, file);
                 Log.d(TAG, "data updated");
             } else {
                 Log.w(TAG, "file does not exist");
@@ -144,13 +152,17 @@ public class MainFragment extends android.support.v4.app.Fragment implements Mai
             Log.e(TAG, msg);
             Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
         }
+        return list;
     }
 
     private class Receiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(Service.DATA_UPDATED)) {
-                loadCurrencies();
+                list = loadCurrencies();
+                if (list != null) {
+                    view.bind(list);
+                }
             }
         }
     }

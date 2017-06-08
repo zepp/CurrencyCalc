@@ -8,6 +8,8 @@ public interface MainView extends BaseView {
 
     void bind(CurrencyList list);
 
+    void setState(Currency original, Currency resulting, double amount);
+
     void setResult(double amount);
 
     interface Controller {
