@@ -36,6 +36,17 @@ public class Currency {
         return rubbles / amount;
     }
 
+    public Currency(){
+    }
+
+    public Currency(String charCode, int numCode, String name, int amount, double rubbles) {
+        this.numCode = numCode;
+        this.charCode = charCode;
+        this.amount = amount;
+        this.name = name;
+        this.rubbles = rubbles;
+    }
+
     public boolean numCodeEquals (Currency currency) {
         return numCode == currency.numCode;
     }

@@ -16,6 +16,26 @@ public class CurrencyList {
     @ElementList(inline = true)
     private List<Currency> currencies = new ArrayList<>();
 
+    public CurrencyList() {
+    }
+
+    public CurrencyList(String date) {
+        this.date = date;
+    }
+
+    public void add(Currency currency) {
+        currencies.add(currency);
+    }
+
+    public Currency get(int numCode) {
+        for(Currency c: currencies) {
+            if (c.getNumCode() == numCode) {
+                return c;
+            }
+        }
+        return null;
+    }
+
     public static double convert(Currency from, Currency to, double amount) {
         if (from.equals(to))
             return amount;
