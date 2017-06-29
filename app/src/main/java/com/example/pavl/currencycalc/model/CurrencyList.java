@@ -5,6 +5,7 @@ import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -49,7 +50,7 @@ public class CurrencyList {
 
     public void sort ()
     {
-        currencies.sort(new Comparator<Currency>() {
+        Collections.sort(currencies, new Comparator<Currency>() {
             @Override
             public int compare(Currency o1, Currency o2) {
                 return o1.getCharCode().compareTo(o2.getCharCode());
