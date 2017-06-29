@@ -81,6 +81,7 @@ public class MainFragment extends LifeCycleLoggingFragment implements MainView.C
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(Service.DATA_UPDATED);
+        filter.addAction(Service.SERVICE_ERROR);
         manager = LocalBroadcastManager.getInstance(getContext());
         manager.registerReceiver(receiver, filter);
 
@@ -163,6 +164,8 @@ public class MainFragment extends LifeCycleLoggingFragment implements MainView.C
                 if (list != null) {
                     view.bind(list);
                 }
+            } else if (intent.getAction().equals(Service.SERVICE_ERROR)) {
+                Toast.makeText(getContext(), intent.getStringExtra(Service.ERROR_MESSAGE), Toast.LENGTH_LONG).show();
             }
         }
     }

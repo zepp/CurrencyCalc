@@ -3,31 +3,33 @@ package com.example.pavl.currencycalc.background;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URL;
-import java.net.URLConnection;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class Service extends IntentService {
     public final static String DATA_UPDATED = Service.class.getCanonicalName() + ".DATA_UPDATED";
-    public final static String FILE = "rates.xml";
-    public final static String URL = "http://www.cbr.ru/scripts/XML_daily.asp";
+    public final static String SERVICE_ERROR = Service.class.getCanonicalName() + ".ERROR";
+    public final static String ERROR_MESSAGE = "error-message";
 
+    private final static String URL = "http://www.cbr.ru/scripts/XML_daily.asp";
+    private final static String FILE = "rates.xml";
     private final static String TAG = Service.class.getSimpleName();
-    private final static int bufferSize = 1024; // intermediate buffer size
     private final LocalBroadcastManager manager;
+    private final OkHttpClient client;
 
     public Service() {
         super(Service.class.getCanonicalName());
         this.manager = LocalBroadcastManager.getInstance(this);
+        this.client = new OkHttpClient();
     }
 
     public static Intent getIntent(Context context) {
@@ -41,42 +43,35 @@ public class Service extends IntentService {
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
-        InputStream input = null;
+        Request request = new Request.Builder().url(URL).build();
         OutputStream output = null;
-        byte data[] = new byte[bufferSize];
-        int count;
-        File tempFile = new File(getCacheDir(), FILE + ".new");
-        File file = new File(getCacheDir(), FILE);
+        File file = new File(getCacheDir(), FILE + ".new");
 
         try {
-            Log.d(TAG, "downloading " + URL);
-            URL url = new URL(URL);
-
-            URLConnection connection = url.openConnection();
-            connection.connect();
-
-            input = new BufferedInputStream(url.openStream(), bufferSize);
-            output = new FileOutputStream(tempFile);
-
-            while ((count = input.read(data)) != -1) {
-                // writing data to FILE
-                output.write(data, 0, count);
+            output = new FileOutputStream(file);
+            Response response = client.newCall(request).execute();
+            if (response.code() != 200) {
+                throw new RuntimeException("server error: " + response.message());
             }
-
-            tempFile.renameTo(file);
+            String contentType = response.headers().get("content-type");
+            if (!(contentType.contains("text/xml") || contentType.contains("application/xml"))) {
+                throw new RuntimeException("data type " + contentType + " is unsupported");
+            }
+            output.write(response.body().bytes());
+            output.flush();
+            output.close();
+            file.renameTo(getFile(getBaseContext()));
+            manager.sendBroadcast(new Intent(DATA_UPDATED));
         } catch (Exception e) {
-            Log.e(TAG, "failed to fetch XML: " + e.getMessage());
-            return;
+            Log.e(TAG, "failed to fetch data: " + e.getMessage());
+            Intent result = new Intent(SERVICE_ERROR);
+            result.putExtra(ERROR_MESSAGE, e.getMessage());
+            manager.sendBroadcast(result);
         } finally {
             try {
-                // flushing output
-                output.flush();
-                // closing streams
                 output.close();
-                input.close();
             } catch (Exception e) {
             }
         }
-        manager.sendBroadcast(new Intent(DATA_UPDATED));
     }
 }
