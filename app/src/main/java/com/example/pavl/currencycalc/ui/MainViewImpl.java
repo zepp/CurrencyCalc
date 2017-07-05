@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class MainViewImpl implements MainView {
     private final Activity activity;
@@ -161,7 +162,7 @@ public class MainViewImpl implements MainView {
 
     @Override
     public void setResult(double amount) {
-        resultAmount.setText(String.format("%.1f", amount));
+        resultAmount.setText(String.format(Locale.US, "%.1f", amount));
     }
 
     private class AmountTextWatcher implements TextWatcher {

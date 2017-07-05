@@ -4,7 +4,6 @@ import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.Nullable;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import java.io.File;
@@ -16,20 +15,16 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class Service extends IntentService {
-    public final static String DATA_UPDATED = Service.class.getCanonicalName() + ".DATA_UPDATED";
-    public final static String SERVICE_ERROR = Service.class.getCanonicalName() + ".ERROR";
-    public final static String ERROR_MESSAGE = "error-message";
-
     private final static String URL = "http://www.cbr.ru/scripts/XML_daily.asp";
     private final static String FILE = "rates.xml";
     private final static String TAG = Service.class.getSimpleName();
-    private final LocalBroadcastManager manager;
     private final OkHttpClient client;
+    private final EventHandler handler;
 
     public Service() {
         super(Service.class.getCanonicalName());
-        this.manager = LocalBroadcastManager.getInstance(this);
         this.client = new OkHttpClient();
+        this.handler = EventHandler.getInstance();
     }
 
     public static Intent getIntent(Context context) {
@@ -61,12 +56,10 @@ public class Service extends IntentService {
             output.flush();
             output.close();
             file.renameTo(getFile(getBaseContext()));
-            manager.sendBroadcast(new Intent(DATA_UPDATED));
+            handler.notifyDataUpdated();
         } catch (Exception e) {
             Log.e(TAG, "failed to fetch data: " + e.getMessage());
-            Intent result = new Intent(SERVICE_ERROR);
-            result.putExtra(ERROR_MESSAGE, e.getMessage());
-            manager.sendBroadcast(result);
+            handler.notifyError(e);
         } finally {
             try {
                 output.close();

@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Currency calculator</string>
+    <string name="data_updated">Data updated</string>
 </resources>

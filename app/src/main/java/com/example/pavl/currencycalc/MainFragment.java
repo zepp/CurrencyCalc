@@ -1,5 +1,6 @@
 package com.example.pavl.currencycalc;
 
+import com.example.pavl.currencycalc.background.EventHandler;
 import com.example.pavl.currencycalc.background.Service;
 import com.example.pavl.currencycalc.debug.LifeCycleLoggingFragment;
 import com.example.pavl.currencycalc.model.Currency;
@@ -11,12 +12,7 @@ import com.example.pavl.currencycalc.ui.MainViewImpl;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -31,8 +27,8 @@ import java.io.File;
 
 public class MainFragment extends LifeCycleLoggingFragment implements MainView.Controller {
     private final static String TAG = MainFragment.class.getSimpleName();
-    private Receiver receiver;
-    private LocalBroadcastManager manager;
+    private final EventHandler handler;
+    private EventListener listener;
     private MainView view;
     private CurrencyList list;
     private Currency original;
@@ -42,6 +38,7 @@ public class MainFragment extends LifeCycleLoggingFragment implements MainView.C
     public MainFragment() {
         // Required empty public constructor
         Log.d(TAG, "MainFragment");
+        handler = EventHandler.getInstance();
     }
 
     public static MainFragment newInstance() {
@@ -57,7 +54,7 @@ public class MainFragment extends LifeCycleLoggingFragment implements MainView.C
         setRetainInstance(true);
         setHasOptionsMenu(true);
         list = loadCurrencies();
-        receiver = new Receiver();
+
     }
 
     @Override
@@ -79,11 +76,8 @@ public class MainFragment extends LifeCycleLoggingFragment implements MainView.C
             view.setState(original, resulting, amount);
         }
 
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Service.DATA_UPDATED);
-        filter.addAction(Service.SERVICE_ERROR);
-        manager = LocalBroadcastManager.getInstance(getContext());
-        manager.registerReceiver(receiver, filter);
+        listener = new EventListener();
+        handler.register(listener);
 
         if (!BuildConfig.DEBUG) {
             getContext().startService(Service.getIntent(getContext()));
@@ -94,7 +88,7 @@ public class MainFragment extends LifeCycleLoggingFragment implements MainView.C
     public void onStop() {
         super.onStop();
         view.stop();
-        manager.unregisterReceiver(receiver);
+        handler.unregister(listener);
     }
 
     @Override
@@ -156,16 +150,18 @@ public class MainFragment extends LifeCycleLoggingFragment implements MainView.C
         return list;
     }
 
-    private class Receiver extends BroadcastReceiver {
+    private class EventListener implements EventHandler.Listener {
         @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(Service.DATA_UPDATED)) {
-                list = loadCurrencies();
-                if (list != null) {
-                    view.bind(list);
-                }
-            } else if (intent.getAction().equals(Service.SERVICE_ERROR)) {
-                Toast.makeText(getContext(), intent.getStringExtra(Service.ERROR_MESSAGE), Toast.LENGTH_LONG).show();
+        public void onError(final Throwable e) {
+            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+        @Override
+        public void onDataUpdated() {
+            list = loadCurrencies();
+            if (list != null) {
+                view.bind(list);
+                Toast.makeText(getContext(), R.string.data_updated, Toast.LENGTH_LONG).show();
             }
         }
     }

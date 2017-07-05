@@ -9,5 +9,6 @@ This app demonstrates:
 * How to create background service
 * How to parse well-formed XML files using [SimpleXML](http://simple.sourceforge.net/) library
 * How to design a simple and clear UI according to MVP/MVC ideology (in my case it is MVP)
+* How to fetch data using [OkHttp](http://square.github.io/okhttp/) library
 
 Currency flags are provided by [currency-flags](https://github.com/transferwise/currency-flags)
