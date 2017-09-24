@@ -25,8 +25,6 @@ import java.util.Locale;
 
 public class MainViewImpl implements MainView {
     private final Activity activity;
-    private final Resources resources;
-    private final String packageName;
     private final List<Currency> currencies = new ArrayList<>();
     private final CurrencyAdapter currencyAdapter;
 
@@ -38,8 +36,6 @@ public class MainViewImpl implements MainView {
     private EditText resultAmount;
     private Spinner resultCurrency;
     private TextView dataDate;
-    private ImageView originalFlag;
-    private ImageView resultFlag;
     private ImageButton swap;
     private Button num1;
     private Button num2;
@@ -64,18 +60,13 @@ public class MainViewImpl implements MainView {
         resultCurrency.setAdapter(currencyAdapter);
         originalAmount.setShowSoftInputOnFocus(false);
         resultAmount.setShowSoftInputOnFocus(false);
-
-        resources = activity.getBaseContext().getResources();
-        packageName = activity.getBaseContext().getPackageName();
     }
 
     private void init (View root){
         this.root = root;
-        this.originalFlag = (ImageView) root.findViewById(R.id.original_flag);
         this.originalAmount = (EditText) root.findViewById(R.id.original_amount);
         this.originalCurrency = (Spinner) root.findViewById(R.id.original_currency);
         this.swap = (ImageButton) root.findViewById(R.id.swap);
-        this.resultFlag = (ImageView) root.findViewById(R.id.result_flag);
         this.resultAmount = (EditText) root.findViewById(R.id.result_amount);
         this.resultCurrency = (Spinner) root.findViewById(R.id.result_currency);
         this.num1 = (Button)root.findViewById(R.id.num_1);
@@ -91,11 +82,6 @@ public class MainViewImpl implements MainView {
         this.point = (Button)root.findViewById(R.id.num_point);
         this.del = (Button)root.findViewById(R.id.del);
         this.dataDate = (TextView) root.findViewById(R.id.date);
-    }
-
-    private int getFlagResourceId (Currency currency) {
-        String name = "ic_" + currency.getCharCode().toLowerCase();
-        return resources.getIdentifier(name, "drawable", packageName);
     }
 
     @Override
@@ -196,12 +182,6 @@ public class MainViewImpl implements MainView {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
             Currency result = (Currency) adapterView.getItemAtPosition(i);
-            int id = getFlagResourceId(result);
-            if (id == 0) {
-                resultFlag.setImageResource(R.drawable.flag_unknown);
-            } else {
-                resultFlag.setImageResource(id);
-            }
             if (controller != null) {
                 controller.resultCurrencyChanged(result);
             }
@@ -216,12 +196,6 @@ public class MainViewImpl implements MainView {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
             Currency original = (Currency) adapterView.getItemAtPosition(i);
-            int id = getFlagResourceId(original);
-            if (id == 0) {
-                originalFlag.setImageResource(R.drawable.flag_unknown);
-            } else {
-                originalFlag.setImageResource(id);
-            }
             if (controller != null) {
                 controller.originalCurrencyChanged(original);
             }
