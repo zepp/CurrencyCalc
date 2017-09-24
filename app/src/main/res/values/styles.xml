@@ -8,6 +8,11 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="RootLayout">
+        <item name="android:padding">32dp</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
     <style name="FlagImage">
         <item name="android:layout_width">44dp</item>
         <item name="android:layout_height">30dp</item>
@@ -19,9 +24,18 @@
     <style name="CurrencyEdit" parent="Base.Widget.AppCompat.EditText">
         <item name="android:inputType">numberDecimal</item>
         <item name="android:cursorVisible">false</item>
-        <item name="android:background">@android:color/transparent</item>
         <item name="android:textAppearance">@style/Base.TextAppearance.AppCompat.Large</item>
-        <item name="background">@drawable/edit_selector</item>
+        <item name="android:background">@drawable/edit_selector</item>
+        <item name="android:maxLength">10</item>
+    </style>
+
+    <style name="SwapButton" parent="Base.Widget.AppCompat.ImageButton">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:src">@drawable/ic_swap</item>
+    </style>
+
+    <style name="CurrencySpinner" parent="Base.Widget.AppCompat.Spinner">
+        <item name="android:spinnerMode">dialog</item>
     </style>
 
     <style name="CurrencyItem" parent="Base.Widget.AppCompat.TextView.SpinnerItem">
@@ -30,12 +44,13 @@
     </style>
 
     <style name="NumPadButton" parent="Base.Widget.AppCompat.Button">
-        <item name="android:background">@android:color/transparent</item>
         <item name="android:textAppearance">@style/Base.TextAppearance.AppCompat.Large</item>
+        <item name="android:background">@drawable/background_frame</item>
     </style>
 
-    <style name="StatusTextView">
+    <style name="StatusText">
         <item name="android:textAppearance">@style/Base.TextAppearance.AppCompat.Medium</item>
+        <item name="android:gravity">center</item>
     </style>
 
 </resources>
