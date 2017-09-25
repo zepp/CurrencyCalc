@@ -53,7 +53,7 @@ public class CurrencyList {
         Collections.sort(currencies, new Comparator<Currency>() {
             @Override
             public int compare(Currency o1, Currency o2) {
-                return o1.getCharCode().compareTo(o2.getCharCode());
+                return o1.getName().compareTo(o2.getName());
             }
         });
     }
