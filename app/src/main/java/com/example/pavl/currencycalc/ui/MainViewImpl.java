@@ -5,7 +5,8 @@ import com.example.pavl.currencycalc.model.CurrencyList;
 import com.example.pavl.currencycalc.R;
 
 import android.app.Activity;
-import android.content.res.Resources;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -15,7 +16,6 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class MainViewImpl implements MainView {
+    private final Handler handler = new Handler(Looper.myLooper());
     private final Activity activity;
     private final List<Currency> currencies = new ArrayList<>();
     private final CurrencyAdapter currencyAdapter;
@@ -173,7 +174,13 @@ public class MainViewImpl implements MainView {
                 resultAmount.setText("");
             }
             if (controller != null) {
-                controller.originalAmountChanged(amount);
+                final double finalAmount = amount;
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        controller.originalAmountChanged(finalAmount);
+                    }
+                });
             }
         }
     }
@@ -181,9 +188,14 @@ public class MainViewImpl implements MainView {
     private class ResultCurrencyListener implements AdapterView.OnItemSelectedListener {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-            Currency result = (Currency) adapterView.getItemAtPosition(i);
+            final Currency result = (Currency) adapterView.getItemAtPosition(i);
             if (controller != null) {
-                controller.resultCurrencyChanged(result);
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        controller.resultCurrencyChanged(result);
+                    }
+                });
             }
         }
 
@@ -195,9 +207,14 @@ public class MainViewImpl implements MainView {
     private class OriginalCurrencyListener implements AdapterView.OnItemSelectedListener {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-            Currency original = (Currency) adapterView.getItemAtPosition(i);
+            final Currency original = (Currency) adapterView.getItemAtPosition(i);
             if (controller != null) {
-                controller.originalCurrencyChanged(original);
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        controller.originalCurrencyChanged(original);
+                    }
+                });
             }
         }
 
