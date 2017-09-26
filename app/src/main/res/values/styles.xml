@@ -48,7 +48,7 @@
 
     <style name="NumPadButton" parent="Base.Widget.AppCompat.Button">
         <item name="android:textAppearance">@style/Base.TextAppearance.AppCompat.Large</item>
-        <item name="android:background">@drawable/background_frame</item>
+        <item name="android:background">@drawable/button_selector</item>
     </style>
 
     <style name="StatusText">
