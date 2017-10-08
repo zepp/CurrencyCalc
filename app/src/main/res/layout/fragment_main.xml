@@ -18,12 +18,12 @@
             android:id="@+id/original_amount"
             style="@style/CurrencyEdit"
             android:layout_columnWeight="1"
-            android:layout_gravity="fill" />
+            android:layout_gravity="left" />
 
         <Spinner
             android:id="@+id/original_currency"
             style="@style/CurrencySpinner"
-            android:layout_gravity="center_vertical" />
+            android:layout_gravity="right" />
 
         <ImageButton
             android:id="@+id/swap"
@@ -36,14 +36,14 @@
             android:id="@+id/result_amount"
             style="@style/CurrencyEdit"
             android:layout_columnWeight="1"
-            android:layout_gravity="fill" />
+            android:layout_gravity="left" />
 
         <Spinner
             android:id="@+id/result_currency"
             style="@style/CurrencySpinner"
-            android:layout_gravity="center_vertical" />
+            android:layout_gravity="right" />
     </GridLayout>
-    
+
     <Space
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -52,79 +52,85 @@
     <GridLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:columnCount="5">
+        android:columnCount="3">
 
         <Button
             android:id="@+id/num_1"
             style="@style/NumPadButton"
+            android:layout_gravity="left"
             android:layout_marginBottom="16dp"
             android:text="1" />
-
-        <android.support.v4.widget.Space
-            android:layout_columnWeight="1"
-            android:layout_gravity="fill"
-            android:layout_rowSpan="4" />
 
         <Button
             android:id="@+id/num_2"
             style="@style/NumPadButton"
-            android:text="2" />
-
-        <android.support.v4.widget.Space
             android:layout_columnWeight="1"
-            android:layout_gravity="fill"
-            android:layout_rowSpan="4" />
+            android:layout_gravity="center_horizontal"
+            android:text="2" />
 
         <Button
             android:id="@+id/num_3"
             style="@style/NumPadButton"
+            android:layout_gravity="right"
             android:text="3" />
 
         <Button
             android:id="@+id/num_4"
             style="@style/NumPadButton"
+            android:layout_gravity="left"
             android:layout_marginBottom="16dp"
             android:text="4" />
 
         <Button
             android:id="@+id/num_5"
             style="@style/NumPadButton"
+            android:layout_columnWeight="1"
+            android:layout_gravity="center_horizontal"
             android:text="5" />
 
         <Button
             android:id="@+id/num_6"
             style="@style/NumPadButton"
+            android:layout_gravity="right"
             android:text="6" />
 
         <Button
             android:id="@+id/num_7"
             style="@style/NumPadButton"
+            android:layout_gravity="left"
             android:layout_marginBottom="16dp"
             android:text="7" />
 
         <Button
             android:id="@+id/num_8"
             style="@style/NumPadButton"
+            android:layout_columnWeight="1"
+            android:layout_gravity="center_horizontal"
             android:text="8" />
 
         <Button
             android:id="@+id/num_9"
             style="@style/NumPadButton"
+            android:layout_gravity="right"
             android:text="9" />
 
         <Button
             android:id="@+id/num_point"
             style="@style/NumPadButton"
+            android:layout_gravity="left"
             android:text="·" />
 
         <Button
             android:id="@+id/num_0"
             style="@style/NumPadButton"
+            android:layout_columnWeight="1"
+            android:layout_gravity="center_horizontal"
             android:text="0" />
 
         <Button
             android:id="@+id/del"
             style="@style/NumPadButton"
+            android:layout_gravity="right"
             android:text="⌫" />
     </GridLayout>
 
@@ -133,6 +139,6 @@
         style="@style/StatusText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"/>
+        android:layout_marginTop="16dp" />
 
 </LinearLayout>
