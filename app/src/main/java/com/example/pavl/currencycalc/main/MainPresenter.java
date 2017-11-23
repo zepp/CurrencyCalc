@@ -6,7 +6,6 @@ import android.util.Log;
 
 import com.example.pavl.currencycalc.background.EventHandler;
 import com.example.pavl.currencycalc.background.Service;
-import com.example.pavl.currencycalc.model.Currency;
 import com.example.pavl.currencycalc.model.CurrencyList;
 import com.example.pavl.currencycalc.model.CustomMatcher;
 import com.example.pavl.currencycalc.mvp.MvpPresenter;
@@ -30,6 +29,7 @@ class MainPresenter extends MvpPresenter<MainState> {
     @Override
     public void onStart() {
         handler.register(listener);
+        state.setList(loadCurrencies());
     }
 
     @Override
@@ -37,24 +37,30 @@ class MainPresenter extends MvpPresenter<MainState> {
         handler.unregister(listener);
     }
 
-    void onOriginalCurrencyChanged(Currency currency) {
-        state.setOriginalCurrency(currency);
+    void onOriginalCurrencyChanged(int position) {
+        state.setOriginalPosition(position);
         if (state.isChanged()) {
             state.updateResult();
         }
         commit();
     }
 
-    void onOriginalAmountChanged(double amount) {
-        state.setOriginalAmount(amount);
+    void onOriginalAmountChanged(String text) {
+        double amount;
+        try {
+            amount = Double.valueOf(text);
+        } catch (NumberFormatException e) {
+            amount = -1;
+        }
+        state.setOriginalAmount(amount, text);
         if (state.isChanged()) {
             state.updateResult();
         }
         commit();
     }
 
-    void onResultCurrencyChanged(Currency currency) {
-        state.setResultCurrency(currency);
+    void onResultCurrencyChanged(int position) {
+        state.setResultPosition(position);
         if (state.isChanged()) {
             state.updateResult();
         }
@@ -62,7 +68,7 @@ class MainPresenter extends MvpPresenter<MainState> {
     }
 
     void onCurrenciesSwap() {
-        state.swap();
+        state.swapCurrencies();
         commit();
     }
 
@@ -87,11 +93,13 @@ class MainPresenter extends MvpPresenter<MainState> {
         @Override
         public void onError(final Throwable e) {
             state.setMessage(e.getMessage());
+            commit();
         }
 
         @Override
         public void onDataUpdated() {
             state.setList(loadCurrencies());
+            commit();
         }
     }
 }

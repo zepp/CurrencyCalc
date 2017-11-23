@@ -9,8 +9,9 @@ import java.util.Locale;
 class MainState extends MvpState {
     CurrencyList list;
     boolean isListChanged;
-    Currency originalCurrency;
-    Currency resultCurrency;
+    int originalPosition = -1;
+    int resultPosition = -1;
+    String originalText = "";
     double originalAmount = -1;
     double resultAmount = -1;
     boolean isError;
@@ -18,36 +19,55 @@ class MainState extends MvpState {
 
     void setList(CurrencyList list) {
         setChanged(true);
+        if (originalPosition != -1) {
+            Currency currency = list.getCurrencies().get(originalPosition);
+            originalPosition = list.getPosition(currency.getNumCode());
+        }
+        if (resultPosition != -1) {
+            Currency currency = list.getCurrencies().get(resultPosition);
+            resultPosition = list.getPosition(currency.getNumCode());
+        }
         this.list = list;
         this.isListChanged = true;
     }
 
-    void setOriginalCurrency(Currency originalCurrency) {
-        setChanged(!this.originalCurrency.equals(originalCurrency));
-        this.originalCurrency = originalCurrency;
+    void setOriginalPosition(int originalPosition) {
+        setChanged(this.originalPosition != originalPosition);
+        this.originalPosition = originalPosition;
     }
 
-    void setResultCurrency(Currency resultCurrency) {
-        setChanged(!this.resultCurrency.equals(resultCurrency));
-        this.resultCurrency = resultCurrency;
+    void setResultPosition(int resultPosition) {
+        setChanged(this.resultPosition != resultPosition);
+        this.resultPosition = resultPosition;
     }
 
     String getOriginalAmount() {
-        return String.format(Locale.US, "%.1f", originalAmount);
+        return originalText;
     }
 
-    void setOriginalAmount(double originalAmount) {
-        setChanged(this.originalAmount != originalAmount);
+    void setOriginalAmount(double originalAmount, String text) {
+        setChanged(this.originalText != text);
         this.originalAmount = originalAmount;
+        this.originalText = text;
+    }
+
+    boolean isOriginalReal() {
+        return originalText.contains(".");
     }
 
     String getResultAmount() {
+        if (resultAmount == -1) {
+            return "";
+        }
         return String.format(Locale.US, "%.1f", resultAmount);
     }
 
-    void setResultAmount(double resultAmount) {
-        setChanged(this.resultAmount != resultAmount);
-        this.resultAmount = resultAmount;
+    void updateResult() {
+        if (originalPosition != -1 && resultPosition != -1 && originalAmount != -1) {
+            Currency original = list.getCurrencies().get(originalPosition);
+            Currency result = list.getCurrencies().get(resultPosition);
+            resultAmount =  CurrencyList.convert(original, result, originalAmount);
+        }
     }
 
     void setMessage(String message) {
@@ -56,30 +76,31 @@ class MainState extends MvpState {
         this.isError = true;
     }
 
-    void updateResult() {
-        if (originalCurrency != null && resultCurrency != null && originalAmount != -1) {
-            setChanged(true);
-            resultAmount = CurrencyList.convert(originalCurrency, resultCurrency, originalAmount);
+    String getDate() {
+        if (list != null) {
+            return list.getDate();
         }
+        return null;
     }
 
-    void swap() {
+    void swapCurrencies() {
         double originalAmount = this.originalAmount;
-        Currency originalCurrency = this.originalCurrency;
+        int originalPosition = this.originalPosition;
         this.originalAmount = resultAmount;
-        this.originalCurrency = resultCurrency;
+        this.originalPosition = resultPosition;
+        this.originalText = getResultAmount();
         this.resultAmount = originalAmount;
-        this.resultCurrency = originalCurrency;
+        this.resultPosition = originalPosition;
         setChanged(true);
     }
 
     @Override
     public String toString() {
         return "MainState { " +
-                ", originalCurrency: " + originalCurrency +
-                ", originalAmount: " + originalAmount +
-                ", resultCurrency: " + resultCurrency +
-                ", resultAmount: " + resultAmount +
+                "originalPosition: " + originalPosition +
+                ", originalAmount: " + getOriginalAmount() +
+                ", resultPosition: " + resultPosition +
+                ", resultAmount: " + getResultAmount() +
                 '}';
     }
 }
