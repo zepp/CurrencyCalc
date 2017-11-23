@@ -1,5 +1,7 @@
-package com.example.pavl.currencycalc;
+package com.example.pavl.currencycalc.main;
 
+import com.example.pavl.currencycalc.BuildConfig;
+import com.example.pavl.currencycalc.R;
 import com.example.pavl.currencycalc.background.EventHandler;
 import com.example.pavl.currencycalc.background.Service;
 import com.example.pavl.currencycalc.debug.LifeCycleLoggingFragment;
