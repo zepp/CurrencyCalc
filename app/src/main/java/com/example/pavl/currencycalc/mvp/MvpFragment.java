@@ -11,8 +11,6 @@ public abstract class MvpFragment<P extends MvpPresenter<S>, S extends MvpState>
     protected P presenter;
     protected S state;
     private boolean isAutoCommit = true;
-    private boolean isReadyToHandle;
-
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -30,9 +28,13 @@ public abstract class MvpFragment<P extends MvpPresenter<S>, S extends MvpState>
     @Override
     public void onStart() {
         super.onStart();
-        isReadyToHandle = true;
         presenter.setState(state);
         presenter.onStart();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         if (isAutoCommit) {
             presenter.commit();
         }
@@ -41,7 +43,6 @@ public abstract class MvpFragment<P extends MvpPresenter<S>, S extends MvpState>
     @Override
     public void onStop() {
         super.onStop();
-        isReadyToHandle = false;
         presenter.onStop();
     }
 
@@ -65,7 +66,7 @@ public abstract class MvpFragment<P extends MvpPresenter<S>, S extends MvpState>
     }
 
     public boolean isReadyToHandle() {
-        return isReadyToHandle;
+        return isResumed();
     }
 
 }
