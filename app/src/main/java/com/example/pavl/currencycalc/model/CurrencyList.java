@@ -29,12 +29,21 @@ public class CurrencyList {
     }
 
     public Currency get(int numCode) {
-        for(Currency c: currencies) {
+        for (Currency c : currencies) {
             if (c.getNumCode() == numCode) {
                 return c;
             }
         }
         return null;
+    }
+
+    public int getPosition(int numCode) {
+        for (int i = 0; i < currencies.size(); i++) {
+            if (currencies.get(i).getNumCode() == numCode) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     public static double convert(Currency from, Currency to, double amount) {
@@ -48,8 +57,7 @@ public class CurrencyList {
         return date;
     }
 
-    public void sort ()
-    {
+    public void sort() {
         Collections.sort(currencies, new Comparator<Currency>() {
             @Override
             public int compare(Currency o1, Currency o2) {
