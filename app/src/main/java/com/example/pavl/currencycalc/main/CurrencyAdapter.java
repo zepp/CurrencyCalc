@@ -16,12 +16,14 @@ import android.widget.TextView;
 import com.example.pavl.currencycalc.R;
 import com.example.pavl.currencycalc.model.Currency;
 
+import java.util.List;
+
 class CurrencyAdapter extends ArrayAdapter<Currency> {
     private Resources resources;
     private String packageName;
 
-    CurrencyAdapter(Context context) {
-        super(context, R.layout.currency_item);
+    CurrencyAdapter(Context context, List<Currency> list) {
+        super(context, R.layout.currency_item, list);
         this.resources = context.getResources();
         this.packageName = context.getPackageName();
     }

@@ -59,7 +59,7 @@ public class MainFragment extends MvpFragment<MainPresenter, MainState> {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        adapter = new CurrencyAdapter(getContext());
+        adapter = new CurrencyAdapter(getContext(), state.list);
         View root = inflater.inflate(R.layout.fragment_main, container, false);
         originalAmount = (EditText) root.findViewById(R.id.original_amount);
         originalCurrency = (Spinner) root.findViewById(R.id.original_currency);
@@ -124,8 +124,7 @@ public class MainFragment extends MvpFragment<MainPresenter, MainState> {
     public void onStateChanged(MainState state) {
         if (state.isListChanged) {
             state.isListChanged = false;
-            adapter.clear();
-            adapter.addAll(state.list.getCurrencies());
+            adapter.notifyDataSetChanged();
             Toast.makeText(getContext(), R.string.data_updated, Toast.LENGTH_LONG).show();
         }
         originalAmount.setText(state.getOriginalAmount());
@@ -136,7 +135,7 @@ public class MainFragment extends MvpFragment<MainPresenter, MainState> {
             state.isError = false;
             Toast.makeText(getContext(), state.message, Toast.LENGTH_LONG).show();
         }
-        dataDate.setText(state.getDate());
+        dataDate.setText(state.date);
     }
 
     @Override

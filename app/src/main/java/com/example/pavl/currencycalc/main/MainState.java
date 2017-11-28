@@ -4,10 +4,13 @@ import com.example.pavl.currencycalc.model.Currency;
 import com.example.pavl.currencycalc.model.CurrencyList;
 import com.example.pavl.currencycalc.mvp.MvpState;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 class MainState extends MvpState {
-    CurrencyList list;
+    List<Currency> list = new ArrayList<>();
+    String date = "";
     boolean isListChanged;
     int originalPosition = -1;
     int resultPosition = -1;
@@ -27,7 +30,9 @@ class MainState extends MvpState {
             Currency currency = list.getCurrencies().get(resultPosition);
             resultPosition = list.getPosition(currency.getNumCode());
         }
-        this.list = list;
+        this.list.clear();
+        this.list.addAll(list.getCurrencies());
+        this.date = list.getDate();
         this.isListChanged = true;
     }
 
@@ -64,8 +69,8 @@ class MainState extends MvpState {
 
     void updateResult() {
         if (originalPosition != -1 && resultPosition != -1 && originalAmount != -1) {
-            Currency original = list.getCurrencies().get(originalPosition);
-            Currency result = list.getCurrencies().get(resultPosition);
+            Currency original = list.get(originalPosition);
+            Currency result = list.get(resultPosition);
             resultAmount =  CurrencyList.convert(original, result, originalAmount);
         }
     }
@@ -74,13 +79,6 @@ class MainState extends MvpState {
         setChanged(true);
         this.message = message;
         this.isError = true;
-    }
-
-    String getDate() {
-        if (list != null) {
-            return list.getDate();
-        }
-        return null;
     }
 
     void swapCurrencies() {
