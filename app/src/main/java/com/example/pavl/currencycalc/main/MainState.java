@@ -51,7 +51,7 @@ class MainState extends MvpState {
     }
 
     void setOriginalAmount(double originalAmount, String text) {
-        setChanged(this.originalText != text);
+        setChanged(!originalText.equals(text));
         this.originalAmount = originalAmount;
         this.originalText = text;
     }
