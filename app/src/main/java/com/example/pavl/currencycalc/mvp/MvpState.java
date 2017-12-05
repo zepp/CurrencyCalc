@@ -10,7 +10,11 @@ public abstract class MvpState implements Serializable {
     }
 
     public void setChanged(boolean isChanged) {
-        this.isChanged = isChanged;
+        this.isChanged |= isChanged;
+    }
+
+    void clearChanged() {
+        this.isChanged = false;
     }
 
     @Override

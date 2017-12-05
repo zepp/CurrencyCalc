@@ -33,7 +33,7 @@ public abstract class MvpPresenter<S extends MvpState> {
 
     public void commit() {
         if (state.isChanged() || !isInitialCommitSubmitted) {
-            state.setChanged(false);
+            state.clearChanged();
             isInitialCommitSubmitted = true;
             handler.post(new Runnable() {
                 @Override
