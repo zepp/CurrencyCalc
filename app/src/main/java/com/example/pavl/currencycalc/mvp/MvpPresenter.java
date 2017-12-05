@@ -8,6 +8,7 @@ public abstract class MvpPresenter<S extends MvpState> {
     protected final Handler handler;
     protected final String tag;
     protected S state;
+    private boolean isStarted;
     private boolean isInitialCommit;
     private boolean isInitialCommitSubmitted;
 
@@ -31,9 +32,13 @@ public abstract class MvpPresenter<S extends MvpState> {
         return isInitialCommit;
     }
 
+    public boolean isStarted() {
+        return isStarted;
+    }
+
     public void commit() {
         if (state.isChanged() || !isInitialCommitSubmitted) {
-            state.setChanged(false);
+            state.clearChanged();
             isInitialCommitSubmitted = true;
             handler.post(new Runnable() {
                 @Override
@@ -50,7 +55,21 @@ public abstract class MvpPresenter<S extends MvpState> {
         }
     }
 
-    public abstract void onStart();
+    public void start() {
+        if (!isStarted) {
+            isStarted = true;
+            onStart();
+        }
+    }
 
-    public abstract void onStop();
+    public void stop() {
+        if (isStarted) {
+            isStarted = false;
+            onStop();
+        }
+    }
+
+    protected abstract void onStart();
+
+    protected abstract void onStop();
 }

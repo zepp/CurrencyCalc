@@ -29,7 +29,7 @@ public abstract class MvpFragment<P extends MvpPresenter<S>, S extends MvpState>
     public void onStart() {
         super.onStart();
         presenter.setState(state);
-        presenter.onStart();
+        presenter.start();
     }
 
     @Override
@@ -43,7 +43,7 @@ public abstract class MvpFragment<P extends MvpPresenter<S>, S extends MvpState>
     @Override
     public void onStop() {
         super.onStop();
-        presenter.onStop();
+        presenter.stop();
     }
 
     @Override
