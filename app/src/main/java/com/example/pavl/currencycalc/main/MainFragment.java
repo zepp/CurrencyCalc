@@ -55,12 +55,13 @@ public class MainFragment extends MvpFragment<MainPresenter, MainState> {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        adapter = new CurrencyAdapter(getContext(), R.layout.currency_item, R.id.currency_name);
+        adapter.setDropDownViewResource(R.layout.currency_drop_item);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        adapter = new CurrencyAdapter(getContext(), presenter.getState().list);
         View root = inflater.inflate(R.layout.fragment_main, container, false);
         originalAmount = (EditText) root.findViewById(R.id.original_amount);
         originalCurrency = (Spinner) root.findViewById(R.id.original_currency);
@@ -124,7 +125,8 @@ public class MainFragment extends MvpFragment<MainPresenter, MainState> {
     @Override
     public void onStateChanged(MainState state) {
         if (state.isListChanged) {
-            adapter.notifyDataSetChanged();
+            adapter.clear();
+            adapter.addAll(state.list);
             Toast.makeText(getContext(), R.string.data_updated, Toast.LENGTH_SHORT).show();
         }
         originalAmount.setText(state.getOriginalAmount());
