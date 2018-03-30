@@ -1,7 +1,6 @@
 package com.example.pavl.currencycalc.main;
 
-import android.os.Handler;
-import android.os.Looper;
+import android.content.Context;
 import android.util.Log;
 
 import com.example.pavl.currencycalc.background.EventHandler;
@@ -9,7 +8,6 @@ import com.example.pavl.currencycalc.background.Service;
 import com.example.pavl.currencycalc.model.CurrencyList;
 import com.example.pavl.currencycalc.model.CustomMatcher;
 import com.example.pavl.currencycalc.mvp.MvpPresenter;
-import com.example.pavl.currencycalc.mvp.MvpView;
 
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
@@ -20,8 +18,8 @@ class MainPresenter extends MvpPresenter<MainState> {
     private final EventHandler handler;
     private final EventListener listener;
 
-    MainPresenter(MvpView<MainState> view) {
-        super(view, new Handler(Looper.getMainLooper()));
+    public MainPresenter(Context applicationContext) {
+        super(applicationContext);
         handler = EventHandler.getInstance();
         listener = new EventListener();
     }
@@ -72,10 +70,17 @@ class MainPresenter extends MvpPresenter<MainState> {
         commit();
     }
 
+    @Override
+    public void commit() {
+        super.commit();
+        state.isError = false;
+        state.isListChanged = false;
+    }
+
     private CurrencyList loadCurrencies() {
         CurrencyList list = null;
         try {
-            File file = Service.getFile(view.getContext());
+            File file = Service.getFile(context);
             if (file.exists()) {
                 Serializer serializer = new Persister(new CustomMatcher());
                 list = serializer.read(CurrencyList.class, file);
