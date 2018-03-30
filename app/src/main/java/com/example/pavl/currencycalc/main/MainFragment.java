@@ -1,5 +1,6 @@
 package com.example.pavl.currencycalc.main;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.view.LayoutInflater;
@@ -59,7 +60,7 @@ public class MainFragment extends MvpFragment<MainPresenter, MainState> {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        adapter = new CurrencyAdapter(getContext(), state.list);
+        adapter = new CurrencyAdapter(getContext(), presenter.getState().list);
         View root = inflater.inflate(R.layout.fragment_main, container, false);
         originalAmount = (EditText) root.findViewById(R.id.original_amount);
         originalCurrency = (Spinner) root.findViewById(R.id.original_currency);
@@ -123,17 +124,15 @@ public class MainFragment extends MvpFragment<MainPresenter, MainState> {
     @Override
     public void onStateChanged(MainState state) {
         if (state.isListChanged) {
-            state.isListChanged = false;
             adapter.notifyDataSetChanged();
-            Toast.makeText(getContext(), R.string.data_updated, Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), R.string.data_updated, Toast.LENGTH_SHORT).show();
         }
         originalAmount.setText(state.getOriginalAmount());
         originalCurrency.setSelection(state.originalPosition);
         resultAmount.setText(state.getResultAmount());
         resultCurrency.setSelection(state.resultPosition);
         if (state.isError) {
-            state.isError = false;
-            Toast.makeText(getContext(), state.message, Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), state.message, Toast.LENGTH_SHORT).show();
         }
         dataDate.setText(state.date);
     }
@@ -144,8 +143,8 @@ public class MainFragment extends MvpFragment<MainPresenter, MainState> {
     }
 
     @Override
-    public MainPresenter onCreatePresenter() {
-        return new MainPresenter(this);
+    public MainPresenter onCreatePresenter(Context applicationContext) {
+        return new MainPresenter(applicationContext);
     }
 
     private class ResultCurrencyListener implements AdapterView.OnItemSelectedListener {
@@ -209,13 +208,13 @@ public class MainFragment extends MvpFragment<MainPresenter, MainState> {
 
         @Override
         public void onClick(View v) {
-            Editable text = new Editable.Factory().newEditable(state.originalText);
+            Editable text = new Editable.Factory().newEditable(presenter.getState().originalText);
             if (v.getId() == R.id.del) {
                 if (text.length() > 0) {
                     text.delete(text.length() - 1, text.length());
                 }
             } else if (v.getId() == R.id.num_point) {
-                if (!state.isOriginalReal()) {
+                if (!presenter.getState().isOriginalReal()) {
                     if (text.length() == 0) {
                         text.append('0');
                     }
