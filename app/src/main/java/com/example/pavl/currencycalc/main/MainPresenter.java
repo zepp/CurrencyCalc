@@ -1,18 +1,10 @@
 package com.example.pavl.currencycalc.main;
 
 import android.content.Context;
-import android.util.Log;
 
-import com.example.pavl.currencycalc.background.EventHandler;
-import com.example.pavl.currencycalc.background.Service;
-import com.example.pavl.currencycalc.model.CurrencyList;
-import com.example.pavl.currencycalc.model.CustomMatcher;
+import com.example.pavl.currencycalc.domain.Controller;
 import com.example.pavl.currencycalc.mvp.MvpPresenter;
-
-import org.simpleframework.xml.Serializer;
-import org.simpleframework.xml.core.Persister;
-
-import java.io.File;
+import com.example.pavl.currencycalc.network.EventHandler;
 
 class MainPresenter extends MvpPresenter<MainState> {
     private final EventHandler handler;
@@ -27,7 +19,7 @@ class MainPresenter extends MvpPresenter<MainState> {
     @Override
     public void onStart() {
         handler.register(listener);
-        state.setList(loadCurrencies());
+        state.setList(Controller.getInstance(context).getCurrencies());
     }
 
     @Override
@@ -77,23 +69,6 @@ class MainPresenter extends MvpPresenter<MainState> {
         state.isListChanged = false;
     }
 
-    private CurrencyList loadCurrencies() {
-        CurrencyList list = null;
-        try {
-            File file = Service.getFile(context);
-            if (file.exists()) {
-                Serializer serializer = new Persister(new CustomMatcher());
-                list = serializer.read(CurrencyList.class, file);
-                Log.d(tag, "data updated");
-            } else {
-                Log.w(tag, "file does not exist");
-            }
-        } catch (Exception e) {
-            state.setMessage("error: " + e.getMessage());
-        }
-        return list;
-    }
-
     private class EventListener implements EventHandler.Listener {
         @Override
         public void onError(final Throwable e) {
@@ -103,7 +78,7 @@ class MainPresenter extends MvpPresenter<MainState> {
 
         @Override
         public void onDataUpdated() {
-            state.setList(loadCurrencies());
+            state.setList(Controller.getInstance(context).getCurrencies());
             commit();
         }
     }

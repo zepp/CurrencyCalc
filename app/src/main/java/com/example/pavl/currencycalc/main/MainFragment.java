@@ -18,7 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.pavl.currencycalc.R;
-import com.example.pavl.currencycalc.background.Service;
+import com.example.pavl.currencycalc.domain.Controller;
 import com.example.pavl.currencycalc.mvp.MvpFragment;
 
 
@@ -115,7 +115,7 @@ public class MainFragment extends MvpFragment<MainPresenter, MainState> {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.update) {
-            getContext().startService(Service.getIntent(getContext()));
+            Controller.getInstance(getActivity().getApplicationContext()).fetch();
             return true;
         }
         return super.onOptionsItemSelected(item);

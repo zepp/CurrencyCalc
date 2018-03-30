@@ -1,12 +1,13 @@
 package com.example.pavl.currencycalc;
 
-import com.example.pavl.currencycalc.background.Scheduler;
-import com.example.pavl.currencycalc.background.Service;
+import com.example.pavl.currencycalc.domain.Controller;
+import com.example.pavl.currencycalc.domain.SystemBroadcastReceiver;
 
 public class Application extends android.app.Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Scheduler.getInstance(this).schedule(Service.getIntent(this), 24);
+        Controller.getInstance(getApplicationContext())
+                .schedule(SystemBroadcastReceiver.getFetchIntent(), 24);
     }
 }
