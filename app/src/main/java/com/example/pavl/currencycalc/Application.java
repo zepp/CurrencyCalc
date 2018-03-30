@@ -1,12 +1,11 @@
 package com.example.pavl.currencycalc;
 
-import com.example.pavl.currencycalc.background.Scheduler;
-import com.example.pavl.currencycalc.background.Service;
+import com.example.pavl.currencycalc.background.NetworkHandler;
 
 public class Application extends android.app.Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Scheduler.getInstance(this).schedule(Service.getIntent(this), 24);
+        NetworkHandler.getInstance(getApplicationContext());
     }
 }

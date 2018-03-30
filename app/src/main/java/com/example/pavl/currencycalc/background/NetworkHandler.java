@@ -1,9 +1,8 @@
 package com.example.pavl.currencycalc.background;
 
-import android.app.IntentService;
 import android.content.Context;
-import android.content.Intent;
-import android.support.annotation.Nullable;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.util.Log;
 
 import java.io.File;
@@ -14,22 +13,33 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class Service extends IntentService {
+public final class NetworkHandler extends HandlerThread {
     private final static String URL = "http://www.cbr.ru/scripts/XML_daily.asp";
     private final static String FILE = "rates.xml";
-    private final static String TAG = Service.class.getSimpleName();
+    private final static String TAG = NetworkHandler.class.getSimpleName();
+    private static volatile NetworkHandler networkHandler;
+    private final Context context;
     private final OkHttpClient client;
-    private final EventHandler handler;
+    private final EventHandler eventHandler;
+    private Handler handler;
 
-    public Service() {
-        super(Service.class.getCanonicalName());
+    private NetworkHandler(Context context) {
+        super(NetworkHandler.class.getSimpleName());
+        this.context = context;
         this.client = new OkHttpClient();
-        this.handler = EventHandler.getInstance();
+        this.eventHandler = EventHandler.getInstance();
     }
 
-    public static Intent getIntent(Context context) {
-        Intent intent = new Intent(context, Service.class);
-        return intent;
+    public static NetworkHandler getInstance(Context context) {
+        if (networkHandler == null) {
+            synchronized (NetworkHandler.class) {
+                if (networkHandler == null) {
+                    networkHandler = new NetworkHandler(context);
+                    networkHandler.start();
+                }
+            }
+        }
+        return networkHandler;
     }
 
     public static File getFile(Context context) {
@@ -37,10 +47,24 @@ public class Service extends IntentService {
     }
 
     @Override
-    protected void onHandleIntent(@Nullable Intent intent) {
+    protected void onLooperPrepared() {
+        super.onLooperPrepared();
+        handler = new Handler(getLooper());
+    }
+
+    public void fetch() {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                onFetch();
+            }
+        });
+    }
+
+    private void onFetch() {
         Request request = new Request.Builder().url(URL).build();
         OutputStream output = null;
-        File file = new File(getCacheDir(), FILE + ".new");
+        File file = new File(context.getCacheDir(), FILE + ".new");
 
         try {
             output = new FileOutputStream(file);
@@ -55,11 +79,11 @@ public class Service extends IntentService {
             output.write(response.body().bytes());
             output.flush();
             output.close();
-            file.renameTo(getFile(getBaseContext()));
-            handler.notifyDataUpdated();
+            file.renameTo(getFile(context));
+            eventHandler.notifyDataUpdated();
         } catch (Exception e) {
             Log.e(TAG, "failed to fetch data: " + e.getMessage());
-            handler.notifyError(e);
+            eventHandler.notifyError(e);
         } finally {
             try {
                 output.close();

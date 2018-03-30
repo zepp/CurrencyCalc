@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.example.pavl.currencycalc.background.EventHandler;
-import com.example.pavl.currencycalc.background.Service;
+import com.example.pavl.currencycalc.background.NetworkHandler;
 import com.example.pavl.currencycalc.model.CurrencyList;
 import com.example.pavl.currencycalc.model.CustomMatcher;
 import com.example.pavl.currencycalc.mvp.MvpPresenter;
@@ -80,7 +80,7 @@ class MainPresenter extends MvpPresenter<MainState> {
     private CurrencyList loadCurrencies() {
         CurrencyList list = null;
         try {
-            File file = Service.getFile(context);
+            File file = NetworkHandler.getFile(context);
             if (file.exists()) {
                 Serializer serializer = new Persister(new CustomMatcher());
                 list = serializer.read(CurrencyList.class, file);
