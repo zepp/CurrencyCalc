@@ -4,9 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -18,7 +15,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.pavl.currencycalc.R;
-import com.example.pavl.currencycalc.domain.Controller;
 import com.example.pavl.currencycalc.mvp.MvpFragment;
 
 
@@ -106,20 +102,6 @@ public class MainFragment extends MvpFragment<MainPresenter, MainState> {
         num0.setOnClickListener(numListener);
         point.setOnClickListener(numListener);
         del.setOnClickListener(numListener);
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.main, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.update) {
-            Controller.getInstance(getActivity().getApplicationContext()).fetch();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
