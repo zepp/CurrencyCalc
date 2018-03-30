@@ -1,11 +1,8 @@
 package com.example.pavl.currencycalc.main;
 
 import android.content.Context;
-import android.content.res.Resources;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -14,28 +11,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.pavl.currencycalc.R;
+import com.example.pavl.currencycalc.domain.Controller;
 import com.example.pavl.currencycalc.model.Currency;
 
-import java.util.List;
-
 class CurrencyAdapter extends ArrayAdapter<Currency> {
-    private Resources resources;
-    private String packageName;
+    private final Controller controller;
 
     CurrencyAdapter(@NonNull Context context, int resource, int textViewResourceId) {
         super(context, resource, textViewResourceId);
-        this.resources = context.getResources();
-        this.packageName = context.getPackageName();
-    }
-
-    @DrawableRes
-    private int getFlagResourceId(String charCode) {
-        String name = "ic_" + charCode.toLowerCase();
-        int id = resources.getIdentifier(name, "drawable", packageName);
-        if (id == 0) {
-            return R.drawable.flag_unknown;
-        }
-        return id;
+        this.controller = Controller.getInstance(context);
     }
 
     @Override
@@ -45,7 +29,7 @@ class CurrencyAdapter extends ArrayAdapter<Currency> {
         TextView currencyName = (TextView) v.findViewById(R.id.currency_name);
         ImageView currencyFlag = (ImageView) v.findViewById(R.id.currency_flag);
         currencyName.setText(currency.getName());
-        currencyFlag.setImageResource(getFlagResourceId(currency.getCharCode()));
+        currencyFlag.setImageDrawable(controller.getFlagDrawable(currency.getCharCode()));
         return v;
     }
 
