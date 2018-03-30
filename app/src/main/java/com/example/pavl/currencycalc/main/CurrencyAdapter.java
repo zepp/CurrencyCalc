@@ -22,8 +22,8 @@ class CurrencyAdapter extends ArrayAdapter<Currency> {
     private Resources resources;
     private String packageName;
 
-    CurrencyAdapter(Context context, List<Currency> list) {
-        super(context, R.layout.currency_item, list);
+    CurrencyAdapter(@NonNull Context context, int resource, int textViewResourceId) {
+        super(context, resource, textViewResourceId);
         this.resources = context.getResources();
         this.packageName = context.getPackageName();
     }
@@ -41,7 +41,7 @@ class CurrencyAdapter extends ArrayAdapter<Currency> {
     @Override
     public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         Currency currency = getItem(position);
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.currency_drop_item, parent, false);
+        View v = super.getDropDownView(position, convertView, parent);
         TextView currencyName = (TextView) v.findViewById(R.id.currency_name);
         ImageView currencyFlag = (ImageView) v.findViewById(R.id.currency_flag);
         currencyName.setText(currency.getName());
