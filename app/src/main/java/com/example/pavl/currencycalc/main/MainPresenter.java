@@ -3,8 +3,8 @@ package com.example.pavl.currencycalc.main;
 import android.content.Context;
 import android.util.Log;
 
-import com.example.pavl.currencycalc.background.EventHandler;
-import com.example.pavl.currencycalc.background.NetworkHandler;
+import com.example.pavl.currencycalc.network.EventHandler;
+import com.example.pavl.currencycalc.network.NetworkHandler;
 import com.example.pavl.currencycalc.model.CurrencyList;
 import com.example.pavl.currencycalc.model.CustomMatcher;
 import com.example.pavl.currencycalc.mvp.MvpPresenter;

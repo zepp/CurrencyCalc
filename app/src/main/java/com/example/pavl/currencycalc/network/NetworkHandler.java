@@ -1,4 +1,4 @@
-package com.example.pavl.currencycalc.background;
+package com.example.pavl.currencycalc.network;
 
 import android.content.Context;
 import android.os.Handler;

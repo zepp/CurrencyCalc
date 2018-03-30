@@ -18,7 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.pavl.currencycalc.R;
-import com.example.pavl.currencycalc.background.NetworkHandler;
+import com.example.pavl.currencycalc.network.NetworkHandler;
 import com.example.pavl.currencycalc.mvp.MvpFragment;
 
 

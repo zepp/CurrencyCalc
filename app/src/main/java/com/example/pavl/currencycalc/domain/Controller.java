@@ -7,7 +7,7 @@ import android.content.Intent;
 import android.os.SystemClock;
 import android.util.Log;
 
-import com.example.pavl.currencycalc.background.NetworkHandler;
+import com.example.pavl.currencycalc.network.NetworkHandler;
 
 public final class Controller {
     private final static int REQUEST_CODE = 0;
