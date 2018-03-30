@@ -7,7 +7,14 @@ import android.content.Intent;
 import android.os.SystemClock;
 import android.util.Log;
 
+import com.example.pavl.currencycalc.model.CurrencyList;
+import com.example.pavl.currencycalc.model.CustomMatcher;
 import com.example.pavl.currencycalc.network.NetworkHandler;
+
+import org.simpleframework.xml.Serializer;
+import org.simpleframework.xml.core.Persister;
+
+import java.io.File;
 
 public final class Controller {
     private final static int REQUEST_CODE = 0;
@@ -44,5 +51,22 @@ public final class Controller {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + mSec, mSec, pendingIntent);
         Log.d(TAG, intent.getComponent() + " is scheduled");
+    }
+
+    public CurrencyList getCurrencies() {
+        CurrencyList list = new CurrencyList();
+        try {
+            File file = NetworkHandler.getFile(context);
+            if (file.exists()) {
+                Serializer serializer = new Persister(new CustomMatcher());
+                list = serializer.read(CurrencyList.class, file);
+                Log.d(TAG, "data is loaded");
+            } else {
+                Log.w(TAG, "data has not been fetched yet");
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "error: " + e.getMessage());
+        }
+        return list;
     }
 }
