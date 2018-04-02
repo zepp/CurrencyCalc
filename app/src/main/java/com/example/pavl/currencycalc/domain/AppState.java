@@ -78,23 +78,22 @@ public final class AppState {
     private class onPreferencesChangedListener implements SharedPreferences.OnSharedPreferenceChangeListener {
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
-            if (onChangedListener == null) {
-                return;
-            }
-            switch (s) {
-                case FETCH_TIME:
+            if (s.equals(FETCH_TIME)) {
+                if (onChangedListener != null) {
                     onChangedListener.onFetchTimeChanged(getFetchTime());
-                    break;
-                case FETCH_INTERVAL:
+                }
+            } else if (s.equals(FETCH_INTERVAL)) {
+                if (onChangedListener != null) {
                     onChangedListener.onFetchIntervalChanged(getFetchInterval());
-                    break;
-                case FILE_NAME:
-                    if (fileName.exists()) {
-                        fileName.delete();
-                    }
-                    fileName = getFileName();
+                }
+            } else if (s.equals(FILE_NAME)) {
+                if (fileName.exists()) {
+                    fileName.delete();
+                }
+                fileName = getFileName();
+                if (onChangedListener != null) {
                     onChangedListener.onFileNameChanged(fileName);
-                    break;
+                }
             }
         }
     }
