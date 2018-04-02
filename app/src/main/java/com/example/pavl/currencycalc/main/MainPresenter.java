@@ -3,28 +3,25 @@ package com.example.pavl.currencycalc.main;
 import android.content.Context;
 
 import com.example.pavl.currencycalc.domain.Controller;
+import com.example.pavl.currencycalc.model.CurrencyList;
 import com.example.pavl.currencycalc.mvp.MvpPresenter;
-import com.example.pavl.currencycalc.network.EventHandler;
 
 class MainPresenter extends MvpPresenter<MainState> {
-    private final EventHandler handler;
-    private final EventListener listener;
+    private Controller controller;
 
     public MainPresenter(Context applicationContext) {
         super(applicationContext);
-        handler = EventHandler.getInstance();
-        listener = new EventListener();
+        controller = Controller.getInstance(applicationContext);
     }
 
     @Override
     public void onStart() {
-        handler.register(listener);
-        state.setList(Controller.getInstance(context).getCurrencies());
+        controller.setListener(new OnCurrencyListUpdated());
+        state.setList(controller.getCurrencies());
     }
 
     @Override
-    public void onStop() {
-        handler.unregister(listener);
+    protected void onStop() {
     }
 
     void onOriginalCurrencyChanged(int position) {
@@ -69,16 +66,10 @@ class MainPresenter extends MvpPresenter<MainState> {
         state.isListChanged = false;
     }
 
-    private class EventListener implements EventHandler.Listener {
+    private class OnCurrencyListUpdated implements Controller.CurrencyListListener {
         @Override
-        public void onError(final Throwable e) {
-            state.setMessage(e.getMessage());
-            commit();
-        }
-
-        @Override
-        public void onDataUpdated() {
-            state.setList(Controller.getInstance(context).getCurrencies());
+        public void onCurrencyListUpdated(CurrencyList list) {
+            state.setList(list);
             commit();
         }
     }
