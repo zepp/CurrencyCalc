@@ -6,9 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.os.SystemClock;
 import android.util.Log;
 
 import com.example.pavl.currencycalc.R;
@@ -32,6 +32,7 @@ public final class Controller extends HandlerThread {
     private static volatile Controller controller;
     private final Context context;
     private final AlarmManager alarmManager;
+    private final ConnectivityManager connectivityManager;
     private final NetworkHandler networkHandler;
     private final Resources resources;
     private final Map<String, Drawable> flags;
@@ -46,6 +47,7 @@ public final class Controller extends HandlerThread {
         this.flags = Collections.synchronizedMap(new HashMap<String, Drawable>());
         this.resources = context.getResources();
         this.alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        this.connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         this.networkHandler = new NetworkHandler(context);
         this.state = AppState.getInstance(context);
         this.list = new CurrencyList();
@@ -74,13 +76,14 @@ public final class Controller extends HandlerThread {
     }
 
     public void fetch() {
-        Log.d(TAG, "fetching data");
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                onFetch();
-            }
-        });
+        if (connectivityManager.isDefaultNetworkActive()) {
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    onFetch();
+                }
+            });
+        }
     }
 
     public void init() {
@@ -97,7 +100,7 @@ public final class Controller extends HandlerThread {
                     onParse();
                 }
             });
-        } else {
+        } else if (connectivityManager.isDefaultNetworkActive()) {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -113,6 +116,7 @@ public final class Controller extends HandlerThread {
 
     private void onFetch() {
         try {
+            Log.d(TAG, "fetching data");
             state.setFileName(networkHandler.fetch());
             state.setFetchTime(new Date());
             handler.post(new Runnable() {
@@ -140,6 +144,7 @@ public final class Controller extends HandlerThread {
 
     private void parseData() {
         try {
+            Log.d(TAG, "parsing data");
             File file = state.getFileName();
             if (file.exists()) {
                 Serializer serializer = new Persister(new CustomMatcher());
@@ -156,6 +161,7 @@ public final class Controller extends HandlerThread {
     }
 
     private void cacheFlags() {
+        Log.d(TAG, "caching flags");
         for (Currency currency : list.getCurrencies()) {
             getFlagDrawable(currency.getCharCode());
         }
