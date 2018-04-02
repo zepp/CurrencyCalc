@@ -72,5 +72,11 @@ class MainPresenter extends MvpPresenter<MainState> {
             state.setList(list);
             commit();
         }
+
+        @Override
+        public void onError(Throwable e) {
+            state.setMessage(e.getMessage());
+            commit();
+        }
     }
 }

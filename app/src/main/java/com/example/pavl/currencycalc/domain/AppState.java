@@ -6,6 +6,7 @@ import android.os.SystemClock;
 
 import com.example.pavl.currencycalc.R;
 
+import java.io.File;
 import java.util.Date;
 
 public final class AppState {
@@ -17,12 +18,14 @@ public final class AppState {
     private final SharedPreferences preferences;
     private final onPreferencesChangedListener listener;
     private OnChangedListener onChangedListener;
+    private File fileName;
 
     AppState(Context context) {
         this.context = context;
         this.preferences = context.getSharedPreferences(AppState.class.getSimpleName(), Context.MODE_PRIVATE);
         this.listener = new onPreferencesChangedListener();
         this.preferences.registerOnSharedPreferenceChangeListener(listener);
+        this.fileName = getFileName();
     }
 
     public static AppState getInstance(Context context) {
@@ -56,12 +59,12 @@ public final class AppState {
         preferences.edit().putLong(FETCH_INTERVAL, value).apply();
     }
 
-    public String getFileName() {
-        return preferences.getString(FILE_NAME, null);
+    public File getFileName() {
+        return new File(preferences.getString(FILE_NAME, ""));
     }
 
-    public void setFileName(String value) {
-        preferences.edit().putString(FILE_NAME, value).apply();
+    public void setFileName(File file) {
+        preferences.edit().putString(FILE_NAME, file.getAbsolutePath()).apply();
     }
 
     public interface OnChangedListener {
@@ -69,7 +72,7 @@ public final class AppState {
 
         void onFetchIntervalChanged(long value);
 
-        void onFileNameChanged(String value);
+        void onFileNameChanged(File name);
     }
 
     private class onPreferencesChangedListener implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -86,7 +89,11 @@ public final class AppState {
                     onChangedListener.onFetchIntervalChanged(getFetchInterval());
                     break;
                 case FILE_NAME:
-                    onChangedListener.onFileNameChanged(getFileName());
+                    if (fileName.exists()) {
+                        fileName.delete();
+                    }
+                    fileName = getFileName();
+                    onChangedListener.onFileNameChanged(fileName);
                     break;
             }
         }

@@ -83,44 +83,75 @@ public final class Controller extends HandlerThread {
         });
     }
 
-    private void onFetch() {
-        try {
-            networkHandler.fetch();
-            state.setFetchTime(new Date());
-            parseData();
-            cacheFlags();
-            if (listener != null) {
-                listener.onCurrencyListUpdated(list);
-            }
-        } catch (Throwable e) {
-        }
-    }
-
-    public void schedule() {
+    public void init() {
         Intent intent = SystemBroadcastReceiver.getFetchIntent();
         alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
                 state.getFetchTime().getTime() + state.getFetchInterval(),
                 state.getFetchInterval(),
                 PendingIntent.getBroadcast(context, REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT));
         Log.d(TAG, intent.getComponent() + " is scheduled");
+        if (state.getFileName().exists()) {
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    onParse();
+                }
+            });
+        } else {
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    onFetch();
+                }
+            });
+        }
     }
 
     public CurrencyList getCurrencies() {
         return list;
     }
 
+    private void onFetch() {
+        try {
+            state.setFileName(networkHandler.fetch());
+            state.setFetchTime(new Date());
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    onParse();
+                }
+            });
+        } catch (Throwable e) {
+            Log.e(TAG, "error: " + e.getMessage());
+            if (listener != null) {
+                listener.onError(e);
+            }
+        }
+    }
+
+    private void onParse() {
+        parseData();
+        cacheFlags();
+        Log.d(TAG, "data is loaded");
+        if (listener != null) {
+            listener.onCurrencyListUpdated(list);
+        }
+    }
+
     private void parseData() {
         try {
-            File file = NetworkHandler.getFile(context);
+            File file = state.getFileName();
             if (file.exists()) {
                 Serializer serializer = new Persister(new CustomMatcher());
                 list = serializer.read(CurrencyList.class, file);
-                Log.d(TAG, "data is loaded");
             } else {
                 Log.w(TAG, "data has not been fetched yet");
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             Log.e(TAG, "error: " + e.getMessage());
+            if (listener != null) {
+                listener.onError(e);
+            }
         }
     }
 
@@ -147,5 +178,7 @@ public final class Controller extends HandlerThread {
 
     public interface CurrencyListListener {
         void onCurrencyListUpdated(CurrencyList list);
+
+        void onError(Throwable e);
     }
 }
