@@ -22,6 +22,7 @@ import org.simpleframework.xml.core.Persister;
 
 import java.io.File;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,6 +35,7 @@ public final class Controller extends HandlerThread {
     private final NetworkHandler networkHandler;
     private final Resources resources;
     private final Map<String, Drawable> flags;
+    private final AppState state;
     private CurrencyList list;
     private Handler handler;
     private CurrencyListListener listener;
@@ -45,6 +47,7 @@ public final class Controller extends HandlerThread {
         this.resources = context.getResources();
         this.alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         this.networkHandler = new NetworkHandler(context);
+        this.state = AppState.getInstance(context);
         this.list = new CurrencyList();
     }
 
@@ -75,20 +78,30 @@ public final class Controller extends HandlerThread {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                networkHandler.fetch();
-                parseData();
-                cacheFlags();
-                if (listener != null) {
-                    listener.onCurrencyListUpdated(list);
-                }
+                onFetch();
             }
         });
     }
 
-    public void schedule(Intent intent, int hours) {
-        long mSec = hours * 60 * 60 * 1000;
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + mSec, mSec, pendingIntent);
+    private void onFetch() {
+        try {
+            networkHandler.fetch();
+            state.setFetchTime(new Date());
+            parseData();
+            cacheFlags();
+            if (listener != null) {
+                listener.onCurrencyListUpdated(list);
+            }
+        } catch (Throwable e) {
+        }
+    }
+
+    public void schedule() {
+        Intent intent = SystemBroadcastReceiver.getFetchIntent();
+        alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
+                state.getFetchTime().getTime() + state.getFetchInterval(),
+                state.getFetchInterval(),
+                PendingIntent.getBroadcast(context, REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT));
         Log.d(TAG, intent.getComponent() + " is scheduled");
     }
 

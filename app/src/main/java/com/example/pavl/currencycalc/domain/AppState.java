@@ -2,6 +2,7 @@ package com.example.pavl.currencycalc.domain;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.SystemClock;
 
 import com.example.pavl.currencycalc.R;
 
@@ -40,7 +41,7 @@ public final class AppState {
     }
 
     public Date getFetchTime() {
-        return new Date(preferences.getLong(FETCH_TIME, 0));
+        return new Date(preferences.getLong(FETCH_TIME, SystemClock.elapsedRealtime()));
     }
 
     public void setFetchTime(Date date) {
