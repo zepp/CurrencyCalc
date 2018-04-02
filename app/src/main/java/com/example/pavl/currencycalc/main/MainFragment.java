@@ -109,14 +109,16 @@ public class MainFragment extends MvpFragment<MainPresenter, MainState> {
         if (state.isListChanged) {
             adapter.clear();
             adapter.addAll(state.list);
-            Toast.makeText(getContext(), R.string.data_updated, Toast.LENGTH_SHORT).show();
+            if (!state.isInitial()) {
+                Toast.makeText(getContext(), R.string.data_updated, Toast.LENGTH_SHORT).show();
+            }
         }
         originalAmount.setText(state.getOriginalAmount());
         originalCurrency.setSelection(state.originalPosition);
         resultAmount.setText(state.getResultAmount());
         resultCurrency.setSelection(state.resultPosition);
         if (state.isError) {
-            Toast.makeText(getContext(), state.message, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), state.message, Toast.LENGTH_LONG).show();
         }
         dataDate.setText(state.date);
     }
