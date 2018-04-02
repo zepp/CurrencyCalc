@@ -134,36 +134,27 @@ public final class Controller extends HandlerThread {
     }
 
     private void onParse() {
-        parseData();
-        cacheFlags();
-        Log.d(TAG, "data is loaded");
-        if (listener != null) {
-            listener.onCurrencyListUpdated(list);
-        }
-    }
-
-    private void parseData() {
         try {
-            Log.d(TAG, "parsing data");
             File file = state.getFileName();
-            if (file.exists()) {
-                Serializer serializer = new Persister(new CustomMatcher());
-                list = serializer.read(CurrencyList.class, file);
-            } else {
+            if (!file.exists()) {
                 Log.w(TAG, "data has not been fetched yet");
+                return;
+            }
+            Log.d(TAG, "parsing data");
+            Serializer serializer = new Persister(new CustomMatcher());
+            list = serializer.read(CurrencyList.class, file);
+            Log.d(TAG, "caching flags");
+            for (Currency currency : list.getCurrencies()) {
+                getFlagDrawable(currency.getCharCode());
+            }
+            if (listener != null) {
+                listener.onCurrencyListUpdated(list);
             }
         } catch (Throwable e) {
             Log.e(TAG, "error: " + e.getMessage());
             if (listener != null) {
                 listener.onError(e);
             }
-        }
-    }
-
-    private void cacheFlags() {
-        Log.d(TAG, "caching flags");
-        for (Currency currency : list.getCurrencies()) {
-            getFlagDrawable(currency.getCharCode());
         }
     }
 
