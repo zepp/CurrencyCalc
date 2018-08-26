@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
     style="@style/RootLayout"
@@ -7,42 +8,66 @@
     android:layout_height="match_parent"
     tools:context="com.example.pavl.currencycalc.MainActivity">
 
-    <GridLayout
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/background_frame"
-        android:columnCount="2"
         android:padding="16dp">
 
         <EditText
             android:id="@+id/original_amount"
             style="@style/CurrencyEdit"
-            android:layout_columnWeight="1"
-            android:layout_gravity="left" />
-
-        <Spinner
-            android:id="@+id/original_currency"
-            style="@style/CurrencySpinner"
-            android:layout_gravity="right" />
-
-        <ImageButton
-            android:id="@+id/swap"
-            style="@style/SwapButton"
-            android:layout_columnSpan="2"
-            android:layout_gravity="center"
-            android:layout_margin="8dp" />
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/swap"
+            app:layout_constraintEnd_toStartOf="@+id/swap"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
             android:id="@+id/result_amount"
             style="@style/CurrencyEdit"
-            android:layout_columnWeight="1"
-            android:layout_gravity="left" />
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/swap"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/swap" />
+
+        <ImageButton
+            android:id="@+id/swap"
+            style="@style/SwapButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Spinner
+            android:id="@+id/original_currency"
+            style="@style/CurrencySpinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@+id/original_amount"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/original_amount" />
 
         <Spinner
             android:id="@+id/result_currency"
             style="@style/CurrencySpinner"
-            android:layout_gravity="right" />
-    </GridLayout>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/result_amount"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/result_amount" />
+    </android.support.constraint.ConstraintLayout>
 
     <Space
         android:layout_width="match_parent"
