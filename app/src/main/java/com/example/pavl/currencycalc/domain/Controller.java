@@ -30,7 +30,6 @@ public final class Controller {
     private final AlarmManager alarmManager;
     private final ConnectivityManager connectivityManager;
     private final NetworkHandler networkHandler;
-
     private final AppState state;
 
     private Controller(Context context) {
@@ -93,12 +92,10 @@ public final class Controller {
     }
 
     private CurrencyList onParse() throws Exception {
-        CurrencyList list;
         Log.d(TAG, "parsing data");
         File file = state.getFileName();
         Serializer serializer = new Persister(new CustomMatcher());
-        list = serializer.read(CurrencyList.class, file);
-        return list;
+        return serializer.read(CurrencyList.class, file);
     }
 
     public interface Consumer<T> {
