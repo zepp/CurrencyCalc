@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -51,7 +52,7 @@ public class MainFragment extends MvpFragment<MainPresenter, MainState> {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        adapter = new CurrencyAdapter(getContext(), R.layout.currency_item, R.id.currency_name);
+        adapter = new CurrencyAdapter(presenter, getContext(), R.layout.currency_item, R.id.currency_name);
         adapter.setDropDownViewResource(R.layout.currency_drop_item);
     }
 
@@ -102,6 +103,15 @@ public class MainFragment extends MvpFragment<MainPresenter, MainState> {
         num0.setOnClickListener(numListener);
         point.setOnClickListener(numListener);
         del.setOnClickListener(numListener);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.update) {
+            presenter.onUpdate();
+            return true;
+        }
+        return false;
     }
 
     @Override

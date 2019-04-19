@@ -31,13 +31,4 @@ public class MainActivity extends AppCompatActivity {
         inflater.inflate(R.menu.main, menu);
         return true;
     }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.update) {
-            Controller.getInstance(getApplicationContext()).fetch();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 }

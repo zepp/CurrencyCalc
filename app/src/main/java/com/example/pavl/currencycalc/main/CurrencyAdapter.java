@@ -15,11 +15,11 @@ import com.example.pavl.currencycalc.domain.Controller;
 import com.example.pavl.currencycalc.model.Currency;
 
 class CurrencyAdapter extends ArrayAdapter<Currency> {
-    private final Controller controller;
+    private final MainPresenter presenter;
 
-    CurrencyAdapter(@NonNull Context context, int resource, int textViewResourceId) {
+    CurrencyAdapter(MainPresenter presenter, @NonNull Context context, int resource, int textViewResourceId) {
         super(context, resource, textViewResourceId);
-        this.controller = Controller.getInstance(context);
+        this.presenter = presenter;
     }
 
     @Override
@@ -29,7 +29,7 @@ class CurrencyAdapter extends ArrayAdapter<Currency> {
         TextView currencyName = (TextView) v.findViewById(R.id.currency_name);
         ImageView currencyFlag = (ImageView) v.findViewById(R.id.currency_flag);
         currencyName.setText(currency.getName());
-        currencyFlag.setImageDrawable(controller.getFlagDrawable(currency.getCharCode()));
+        currencyFlag.setImageDrawable(presenter.getFlagDrawable(currency.getCharCode()));
         return v;
     }
 

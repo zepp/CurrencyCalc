@@ -25,26 +25,20 @@ public final class NetworkHandler {
 
     public File fetch() throws IOException {
         Request request = new Request.Builder().url(URL).build();
-        OutputStream output = null;
-        File file = new File(context.getCacheDir(), UUID.randomUUID().toString());
+        File file = new File(context.getCacheDir(), UUID.randomUUID().toString() + ".xml");
 
-        try {
-            output = new FileOutputStream(file);
+        try (OutputStream output = new FileOutputStream(file)){
             Response response = client.newCall(request).execute();
-            if (response.code() != 200) {
+            if (response.isSuccessful()) {
+                String contentType = response.headers().get("content-type");
+                if (contentType.contains("text/xml") || contentType.contains("application/xml")) {
+                    output.write(response.body().bytes());
+                    output.flush();
+                } else {
+                    throw new RuntimeException("data type " + contentType + " is unsupported");
+                }
+            } else {
                 throw new RuntimeException("server error: " + response.message());
-            }
-            String contentType = response.headers().get("content-type");
-            if (!(contentType.contains("text/xml") || contentType.contains("application/xml"))) {
-                throw new RuntimeException("data type " + contentType + " is unsupported");
-            }
-            output.write(response.body().bytes());
-            output.flush();
-            output.close();
-        } finally {
-            try {
-                output.close();
-            } catch (Exception e) {
             }
         }
 

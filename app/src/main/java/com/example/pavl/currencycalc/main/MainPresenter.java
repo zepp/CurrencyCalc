@@ -1,27 +1,51 @@
 package com.example.pavl.currencycalc.main;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 
+import com.example.pavl.currencycalc.R;
 import com.example.pavl.currencycalc.domain.Controller;
+import com.example.pavl.currencycalc.model.Currency;
 import com.example.pavl.currencycalc.model.CurrencyList;
 import com.example.pavl.currencycalc.mvp.MvpPresenter;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 class MainPresenter extends MvpPresenter<MainState> {
-    private Controller controller;
+    private final Controller controller;
+    private final Resources resources;
+    private final Map<String, Drawable> flags;
 
     public MainPresenter(Context applicationContext) {
         super(applicationContext);
         controller = Controller.getInstance(applicationContext);
+        flags = Collections.synchronizedMap(new HashMap<>());
+        resources = context.getResources();
     }
 
     @Override
     public void onStart() {
-        controller.setListener(new OnCurrencyListUpdated());
-        state.setList(controller.getCurrencies());
+        onUpdate();
     }
 
     @Override
     protected void onStop() {
+    }
+
+    void onUpdate() {
+        controller.fetch(currencyList -> {
+            state.setList(currencyList);
+            for (Currency currency : currencyList.getCurrencies()) {
+                getFlagDrawable(currency.getCharCode());
+            }
+            commit();
+        }, throwable -> {
+            state.setMessage(throwable.getMessage());
+            commit();
+        });
     }
 
     void onOriginalCurrencyChanged(int position) {
@@ -59,24 +83,25 @@ class MainPresenter extends MvpPresenter<MainState> {
         commit();
     }
 
+    Drawable getFlagDrawable(String charCode) {
+        String name = "ic_" + charCode.toLowerCase();
+        Drawable flag = flags.get(name);
+        if (flag == null) {
+            int id = resources.getIdentifier(name, "drawable", context.getPackageName());
+            if (id == 0) {
+                flag = resources.getDrawable(R.drawable.flag_unknown, null);
+            } else {
+                flag = resources.getDrawable(id, null);
+            }
+            flags.put(name, flag);
+        }
+        return flag;
+    }
+
     @Override
     public void commit() {
         super.commit();
         state.isError = false;
         state.isListChanged = false;
-    }
-
-    private class OnCurrencyListUpdated implements Controller.CurrencyListListener {
-        @Override
-        public void onCurrencyListUpdated(CurrencyList list) {
-            state.setList(list);
-            commit();
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            state.setMessage(e.getMessage());
-            commit();
-        }
     }
 }
