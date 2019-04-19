@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 
 import com.example.pavl.currencycalc.model.CurrencyList;
@@ -53,7 +54,8 @@ public final class Controller {
     }
 
     public void fetch(Consumer<CurrencyList> onDataReady, Consumer<Throwable> onError) {
-        if (connectivityManager.isDefaultNetworkActive()) {
+        NetworkInfo info = connectivityManager.getActiveNetworkInfo();
+        if (info != null) {
             executor.submit(() -> {
                 try {
                     onFetch();
