@@ -16,12 +16,21 @@ class MainPresenter extends MvpPresenter<MainState> {
 
     @Override
     public void onStart() {
-        controller.setListener(new OnCurrencyListUpdated());
-        state.setList(controller.getCurrencies());
+        onUpdate();
     }
 
     @Override
     protected void onStop() {
+    }
+
+    void onUpdate() {
+        controller.fetch(currencyList -> {
+            state.setList(currencyList);
+            commit();
+        }, throwable -> {
+            state.setMessage(throwable.getMessage());
+            commit();
+        });
     }
 
     void onOriginalCurrencyChanged(int position) {
@@ -64,19 +73,5 @@ class MainPresenter extends MvpPresenter<MainState> {
         super.commit();
         state.isError = false;
         state.isListChanged = false;
-    }
-
-    private class OnCurrencyListUpdated implements Controller.CurrencyListListener {
-        @Override
-        public void onCurrencyListUpdated(CurrencyList list) {
-            state.setList(list);
-            commit();
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            state.setMessage(e.getMessage());
-            commit();
-        }
     }
 }
