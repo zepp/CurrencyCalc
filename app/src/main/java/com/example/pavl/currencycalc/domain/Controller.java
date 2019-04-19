@@ -4,13 +4,9 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.util.Log;
 
-import com.example.pavl.currencycalc.R;
-import com.example.pavl.currencycalc.model.Currency;
 import com.example.pavl.currencycalc.model.CurrencyList;
 import com.example.pavl.currencycalc.model.CustomMatcher;
 import com.example.pavl.currencycalc.network.NetworkHandler;
@@ -20,10 +16,7 @@ import org.simpleframework.xml.core.Persister;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -36,15 +29,12 @@ public final class Controller {
     private final AlarmManager alarmManager;
     private final ConnectivityManager connectivityManager;
     private final NetworkHandler networkHandler;
-    private final Resources resources;
-    private final Map<String, Drawable> flags;
+
     private final AppState state;
 
     private Controller(Context context) {
         this.context = context;
         this.executor = Executors.newSingleThreadExecutor();
-        this.flags = Collections.synchronizedMap(new HashMap<>());
-        this.resources = context.getResources();
         this.alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         this.connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         this.networkHandler = new NetworkHandler(context);
@@ -106,26 +96,7 @@ public final class Controller {
         File file = state.getFileName();
         Serializer serializer = new Persister(new CustomMatcher());
         list = serializer.read(CurrencyList.class, file);
-        Log.d(TAG, "caching flags");
-        for (Currency currency : list.getCurrencies()) {
-            getFlagDrawable(currency.getCharCode());
-        }
         return list;
-    }
-
-    public Drawable getFlagDrawable(String charCode) {
-        String name = "ic_" + charCode.toLowerCase();
-        Drawable flag = flags.get(name);
-        if (flag == null) {
-            int id = resources.getIdentifier(name, "drawable", context.getPackageName());
-            if (id == 0) {
-                flag = resources.getDrawable(R.drawable.flag_unknown, null);
-            } else {
-                flag = resources.getDrawable(id, null);
-            }
-            flags.put(name, flag);
-        }
-        return flag;
     }
 
     public interface Consumer<T> {
