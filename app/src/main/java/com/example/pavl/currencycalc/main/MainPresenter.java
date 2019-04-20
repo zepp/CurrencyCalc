@@ -36,16 +36,16 @@ class MainPresenter extends MvpPresenter<MainState> {
     }
 
     void onUpdate() {
-        controller.fetch(currencyList -> {
+        controller.fetch(currencyList -> handler.post(() -> {
             state.setList(currencyList);
             for (Currency currency : currencyList.getCurrencies()) {
                 getFlagDrawable(currency.getCharCode());
             }
             commit();
-        }, throwable -> {
+        }), throwable -> handler.post(() -> {
             state.setMessage(throwable.getMessage());
             commit();
-        });
+        }));
     }
 
     void onOriginalCurrencyChanged(int position) {
