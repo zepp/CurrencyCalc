@@ -1,6 +1,5 @@
 package com.example.pavl.currencycalc.main;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.view.LayoutInflater;
@@ -17,6 +16,7 @@ import android.widget.Toast;
 
 import com.example.pavl.currencycalc.R;
 import com.example.pavl.currencycalc.mvp.MvpFragment;
+import com.example.pavl.currencycalc.mvp.MvpPresenterManager;
 
 
 public class MainFragment extends MvpFragment<MainPresenter, MainState> {
@@ -134,13 +134,8 @@ public class MainFragment extends MvpFragment<MainPresenter, MainState> {
     }
 
     @Override
-    public MainState onCreateState() {
-        return new MainState();
-    }
-
-    @Override
-    public MainPresenter onCreatePresenter(Context applicationContext) {
-        return new MainPresenter(applicationContext);
+    public MainPresenter onInitPresenter(MvpPresenterManager manager) {
+        return manager.newPresenterInstance(MainPresenter.class, MainState.class);
     }
 
     private class ResultCurrencyListener implements AdapterView.OnItemSelectedListener {

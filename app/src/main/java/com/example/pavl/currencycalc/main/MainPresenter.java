@@ -7,32 +7,28 @@ import android.graphics.drawable.Drawable;
 import com.example.pavl.currencycalc.R;
 import com.example.pavl.currencycalc.domain.Controller;
 import com.example.pavl.currencycalc.model.Currency;
-import com.example.pavl.currencycalc.model.CurrencyList;
-import com.example.pavl.currencycalc.mvp.MvpPresenter;
+import com.example.pavl.currencycalc.mvp.MvpBasePresenter;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-class MainPresenter extends MvpPresenter<MainState> {
+public class MainPresenter extends MvpBasePresenter<MainState> {
     private final Controller controller;
     private final Resources resources;
     private final Map<String, Drawable> flags;
 
-    public MainPresenter(Context applicationContext) {
-        super(applicationContext);
-        controller = Controller.getInstance(applicationContext);
+    public MainPresenter(Context context, MainState state) {
+        super(context, state);
+        controller = Controller.getInstance(context);
         flags = Collections.synchronizedMap(new HashMap<>());
         resources = context.getResources();
     }
 
     @Override
     public void onStart() {
+        super.onStart();
         onUpdate();
-    }
-
-    @Override
-    protected void onStop() {
     }
 
     void onUpdate() {

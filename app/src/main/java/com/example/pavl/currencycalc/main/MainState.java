@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-class MainState extends MvpState {
+public class MainState extends MvpState {
     List<Currency> list = new ArrayList<>();
     String date = "";
     boolean isListChanged;
@@ -90,6 +90,13 @@ class MainState extends MvpState {
         this.resultAmount = originalAmount;
         this.resultPosition = originalPosition;
         setChanged(true);
+    }
+
+    @Override
+    protected MainState clone() throws CloneNotSupportedException {
+        MainState state = (MainState) super.clone();;
+        state.list = new ArrayList<>(list);
+        return state;
     }
 
     @Override
