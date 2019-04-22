@@ -12,7 +12,7 @@ public abstract class MvpFragment<P extends MvpPresenter<S>, S extends MvpState>
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        presenter = MvpPresenterManager.getInstance(getActivity().getApplicationContext()).getMyPresenter(this);
+        presenter = MvpPresenterManager.getInstance(getContext()).getMyPresenter(this);
         presenter.attach(this);
     }
 

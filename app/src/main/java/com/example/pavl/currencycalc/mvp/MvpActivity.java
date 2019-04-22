@@ -13,7 +13,7 @@ public abstract class MvpActivity<P extends MvpPresenter<S>, S extends MvpState>
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenter = MvpPresenterManager.getInstance(getApplicationContext()).getMyPresenter(this);
+        presenter = MvpPresenterManager.getInstance(this).getMyPresenter(this);
         presenter.attach(this);
     }
 

@@ -18,11 +18,11 @@ public final class MvpPresenterManager {
         this.map = new HashMap<>();
     }
 
-    public static MvpPresenterManager getInstance(Context applicationContext) {
+    public static MvpPresenterManager getInstance(Context context) {
         if (manager == null) {
             synchronized (MvpPresenterManager.class) {
                 if (manager == null) {
-                    manager = new MvpPresenterManager(applicationContext);
+                    manager = new MvpPresenterManager(context.getApplicationContext());
                 }
             }
         }
