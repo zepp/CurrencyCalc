@@ -36,21 +36,24 @@ public final class MvpPresenterManager {
     // создаёт или возвращает ссылку на представителя
     public <P extends MvpPresenter<S>, S extends MvpState> P newPresenterInstance(Class<P> pClass,
                                                                                   Class<S> sClass) {
-        P presenter = newPresenter(pClass);
         S state = newState(sClass);
-        presenter.setState(state);
+        P presenter = newPresenter(pClass, sClass, state);
         map.put(presenter.hashCode(), presenter);
+        Log.d(tag, "new presenter: " + presenter);
         return presenter;
     }
 
     // удаляет ссылку на представителя, делая его таким образом доступным для GC
     public <P extends MvpPresenter<S>, S extends MvpState> void releasePresenter(P presenter) {
-        map.remove(presenter.hashCode());
+        if (presenter.isDetached()) {
+            Log.d(tag, "release presenter: " + presenter);
+            map.remove(presenter.hashCode());
+        }
     }
 
-    private <P extends MvpPresenter<S>, S extends MvpState> P newPresenter(Class<P> clazz) {
+    private <P extends MvpPresenter<S>, S extends MvpState> P newPresenter(Class<P> pClass, Class<S> sClass, S state) {
         try {
-            return clazz.getConstructor(Context.class).newInstance(context);
+            return pClass.getConstructor(Context.class, sClass).newInstance(context, state);
         } catch (NoSuchMethodException|IllegalAccessException|InstantiationException| InvocationTargetException e) {
             Log.e(tag, e.getLocalizedMessage());
             return null;

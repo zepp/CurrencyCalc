@@ -93,6 +93,13 @@ public class MainState extends MvpState {
     }
 
     @Override
+    protected MainState clone() throws CloneNotSupportedException {
+        MainState state = (MainState) super.clone();;
+        state.list = new ArrayList<>(list);
+        return state;
+    }
+
+    @Override
     public String toString() {
         return "MainState { " +
                 "originalPosition: " + originalPosition +
