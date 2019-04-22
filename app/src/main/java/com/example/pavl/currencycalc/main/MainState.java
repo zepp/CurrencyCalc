@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-class MainState extends MvpState {
+public class MainState extends MvpState {
     List<Currency> list = new ArrayList<>();
     String date = "";
     boolean isListChanged;

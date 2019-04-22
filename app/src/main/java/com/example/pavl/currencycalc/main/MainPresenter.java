@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-class MainPresenter extends MvpPresenter<MainState> {
+public class MainPresenter extends MvpPresenter<MainState> {
     private final Controller controller;
     private final Resources resources;
     private final Map<String, Drawable> flags;

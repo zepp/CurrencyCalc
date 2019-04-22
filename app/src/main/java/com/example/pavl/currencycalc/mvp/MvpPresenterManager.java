@@ -2,7 +2,10 @@ package com.example.pavl.currencycalc.mvp;
 
 
 import android.content.Context;
+import android.util.Log;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,12 +13,13 @@ import java.util.Map;
 * соответствующего представителя */
 public final class MvpPresenterManager {
     private static volatile MvpPresenterManager manager;
+    private final String tag = getClass().getSimpleName();
     private final Context context;
-    private final Map<String, MvpPresenter> map;
+    private final Map<Integer, MvpPresenter> map;
 
     private MvpPresenterManager(Context context) {
         this.context = context;
-        this.map = new HashMap<>();
+        this.map = Collections.synchronizedMap(new HashMap<>());
     }
 
     public static MvpPresenterManager getInstance(Context context) {
@@ -29,27 +33,36 @@ public final class MvpPresenterManager {
         return manager;
     }
 
-    // удобная обертка для получения представителя внутри активности или фрагмента
-    public <P extends MvpPresenter<S>, S extends MvpState> P getMyPresenter(MvpView<P, S> view) {
-        return (P) getPresenterInstance(view);
-    }
-
     // создаёт или возвращает ссылку на представителя
-    public synchronized MvpPresenter getPresenterInstance(MvpView view) {
-        String name = view.getClass().getName();
-        MvpPresenter presenter = map.get(name);
-        if (presenter == null) {
-            presenter = view.onCreatePresenter(context);
-            map.put(name, presenter);
-        }
-        if (presenter.getState() == null) {
-            presenter.setState(view.onCreateState());
-        }
+    public <P extends MvpPresenter<S>, S extends MvpState> P newPresenterInstance(Class<P> pClass,
+                                                                                  Class<S> sClass) {
+        P presenter = newPresenter(pClass);
+        S state = newState(sClass);
+        presenter.setState(state);
+        map.put(presenter.hashCode(), presenter);
         return presenter;
     }
 
     // удаляет ссылку на представителя, делая его таким образом доступным для GC
-    public synchronized void releasePresenter(MvpView view) {
-        map.remove(view.getClass().getName());
+    public <P extends MvpPresenter<S>, S extends MvpState> void releasePresenter(P presenter) {
+        map.remove(presenter.hashCode());
+    }
+
+    private <P extends MvpPresenter<S>, S extends MvpState> P newPresenter(Class<P> clazz) {
+        try {
+            return clazz.getConstructor(Context.class).newInstance(context);
+        } catch (NoSuchMethodException|IllegalAccessException|InstantiationException| InvocationTargetException e) {
+            Log.e(tag, e.getLocalizedMessage());
+            return null;
+        }
+    }
+
+    private <S extends MvpState> S newState(Class<S> clazz) {
+        try {
+            return clazz.getConstructor().newInstance();
+        } catch (NoSuchMethodException|IllegalAccessException|InstantiationException| InvocationTargetException e) {
+            Log.e(tag, e.getLocalizedMessage());
+            return null;
+        }
     }
 }

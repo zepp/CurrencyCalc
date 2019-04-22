@@ -6,13 +6,14 @@ import android.support.v4.app.Fragment;
 
 /* Базовый класс для всех фрагментов, которые реализуют паттерн MVP */
 public abstract class MvpFragment<P extends MvpPresenter<S>, S extends MvpState> extends Fragment implements MvpView<P, S> {
-    // представитель
+    protected MvpPresenterManager manager;
     protected P presenter;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        presenter = MvpPresenterManager.getInstance(getContext()).getMyPresenter(this);
+        manager = MvpPresenterManager.getInstance(getContext());
+        presenter = onInitPresenter(manager);
         presenter.attach(this);
     }
 
@@ -20,6 +21,7 @@ public abstract class MvpFragment<P extends MvpPresenter<S>, S extends MvpState>
     public void onDetach() {
         super.onDetach();
         presenter.detach(this);
+        manager.releasePresenter(presenter);
     }
 
     @Override
