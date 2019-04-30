@@ -13,4 +13,5 @@ public interface MvpPresenter<S extends MvpState> {
     void onActivityResult(int requestCode, int resultCode, Intent data);
     void onViewClicked(@IdRes int viewId);
     void onItemSelected(@IdRes int viewId, int position, long id);
+    void onOptionsItemSelected(@IdRes int itemId);
 }

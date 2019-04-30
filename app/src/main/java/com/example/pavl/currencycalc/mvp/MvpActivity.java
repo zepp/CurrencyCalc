@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 
@@ -36,6 +37,13 @@ public abstract class MvpActivity<P extends MvpBasePresenter<S>, S extends MvpSt
     @Override
     public void handleNewState(S state) {
         stateHandler.post(state);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        presenter.execute(() -> presenter.onOptionsItemSelected(item.getItemId()));
+        return true;
     }
 
     @Override

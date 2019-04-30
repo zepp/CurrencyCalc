@@ -90,6 +90,13 @@ public class MainPresenter extends MvpBasePresenter<MainState> {
         commit();
     }
 
+    @Override
+    public void onOptionsItemSelected(int itemId) {
+        super.onOptionsItemSelected(itemId);
+        if (itemId == R.id.update) {
+            onUpdate();
+        }
+    }
 
     void onOriginalCurrencyChanged(Currency currency) {
         state.setOriginalCurrency(currency);

@@ -105,15 +105,6 @@ public class MainFragment extends MvpFragment<MainPresenter, MainState> {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.update) {
-            presenter.onUpdate();
-            return true;
-        }
-        return false;
-    }
-
-    @Override
     public void onStateChanged(MainState state) {
         if (state.isListChanged) {
             adapter.clear();

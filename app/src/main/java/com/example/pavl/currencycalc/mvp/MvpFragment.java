@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 
@@ -40,6 +41,12 @@ public abstract class MvpFragment<P extends MvpBasePresenter<S>, S extends MvpSt
     @Override
     public void finish() {
         getActivity().getSupportFragmentManager().popBackStack();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        presenter.execute(() -> presenter.onOptionsItemSelected(item.getItemId()));
+        return true;
     }
 
     @Override
