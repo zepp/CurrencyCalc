@@ -18,15 +18,14 @@ public class MainState extends MvpState {
     String originalText = "";
     double originalAmount = -1;
     double resultAmount = -1;
-    boolean isError;
     String message;
 
     void setList(CurrencyList list) {
         setChanged(true);
         this.list = list.getCurrencies();
         date = list.getDate();
-        originalCurrency = originalCurrency.getNumCode() == 0 ?  list.getCurrencies().get(0) : list.get(originalCurrency.getNumCode());
-        resultCurrency = resultCurrency.getNumCode() == 0 ? list.getCurrencies().get(0) : list.get(resultCurrency.getNumCode());
+        originalCurrency = originalCurrency.getNumCode() == 0 ?  this.list.get(0) : list.get(originalCurrency.getNumCode());
+        resultCurrency = resultCurrency.getNumCode() == 0 ? this.list.get(0) : list.get(resultCurrency.getNumCode());
         this.isListChanged = true;
     }
 
@@ -61,10 +60,6 @@ public class MainState extends MvpState {
         return String.format(Locale.US, "%.1f", resultAmount);
     }
 
-    public void setResultAmount(double resultAmount) {
-        this.resultAmount = resultAmount;
-    }
-
     void updateResult() {
         setChanged(true);
         if (originalText.isEmpty()) {
@@ -77,7 +72,6 @@ public class MainState extends MvpState {
     void setMessage(String message) {
         setChanged(true);
         this.message = message;
-        this.isError = true;
     }
 
     void swapCurrencies() {

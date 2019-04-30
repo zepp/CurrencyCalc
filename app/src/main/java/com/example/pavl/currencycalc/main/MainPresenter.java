@@ -147,7 +147,7 @@ public class MainPresenter extends MvpBasePresenter<MainState> {
     @Override
     public void commit() {
         super.commit();
-        state.isError = false;
+        state.message = null;
         state.isListChanged = false;
     }
 }

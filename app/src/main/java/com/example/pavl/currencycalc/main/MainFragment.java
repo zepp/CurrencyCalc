@@ -116,10 +116,10 @@ public class MainFragment extends MvpFragment<MainPresenter, MainState> {
         originalCurrency.setSelection(state.list.indexOf(state.originalCurrency));
         resultAmount.setText(state.getResultAmount());
         resultCurrency.setSelection(state.list.indexOf(state.resultCurrency));
-        if (state.isError) {
+        dataDate.setText(state.date);
+        if (state.message != null) {
             Toast.makeText(getContext(), state.message, Toast.LENGTH_LONG).show();
         }
-        dataDate.setText(state.date);
     }
 
     @Override
