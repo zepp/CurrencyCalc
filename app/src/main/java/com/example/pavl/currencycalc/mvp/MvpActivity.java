@@ -48,17 +48,17 @@ public abstract class MvpActivity<P extends MvpBasePresenter<S>, S extends MvpSt
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        executor.submit(() -> presenter.onOptionsItemSelected(item.getItemId()));
+        executor.execute(() -> presenter.onOptionsItemSelected(item.getItemId()));
         return true;
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        executor.submit(() -> presenter.onActivityResult(requestCode, resultCode, data));
+        executor.execute(() -> presenter.onActivityResult(requestCode, resultCode, data));
     }
 
     @Override
     public void onClick(View v) {
-        executor.submit(() -> presenter.onViewClicked(v.getId()));
+        executor.execute(() -> presenter.onViewClicked(v.getId()));
     }
 }
