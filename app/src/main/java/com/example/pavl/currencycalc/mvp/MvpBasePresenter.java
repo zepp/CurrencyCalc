@@ -32,11 +32,6 @@ public abstract class MvpBasePresenter<S extends MvpState> implements LifecycleO
         this.resources = context.getResources();
     }
 
-    @Override
-    public void execute(Runnable method) {
-        executor.execute(method);
-    }
-
     // добавляет представление в список клиентов текущего представителя
     public void attach(MvpView view) {
         synchronized (views) {

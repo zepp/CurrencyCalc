@@ -120,23 +120,19 @@ public class MainPresenter extends MvpBasePresenter<MainState> {
     }
 
     void onOriginalCurrencyChanged(Currency currency) {
-        executor.submit(() -> {
-            state.setOriginalCurrency(currency);
-            if (state.isChanged()) {
-                state.updateResult();
-                commit();
-            }
-        });
+        state.setOriginalCurrency(currency);
+        if (state.isChanged()) {
+            state.updateResult();
+            commit();
+        }
     }
 
     void onResultCurrencyChanged(Currency currency) {
-        executor.submit(() -> {
-            state.setResultCurrency(currency);
-            if (state.isChanged()) {
-                state.updateResult();
-                commit();
-            }
-        });
+        state.setResultCurrency(currency);
+        if (state.isChanged()) {
+            state.updateResult();
+            commit();
+        }
     }
 
     Drawable getFlagDrawable(Currency currency) {

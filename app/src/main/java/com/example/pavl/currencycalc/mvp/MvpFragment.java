@@ -8,9 +8,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 
+import com.example.pavl.currencycalc.domain.Controller;
+
+import java.util.concurrent.ExecutorService;
+
 /* Базовый класс для всех фрагментов, которые реализуют паттерн MVP */
 public abstract class MvpFragment<P extends MvpBasePresenter<S>, S extends MvpState> extends Fragment
         implements MvpView<P, S>, View.OnClickListener, AdapterView.OnItemSelectedListener {
+    protected ExecutorService executor;
     protected MvpStateHandler<P, S> stateHandler;
     protected MvpPresenterManager manager;
     protected P presenter;
@@ -18,6 +23,7 @@ public abstract class MvpFragment<P extends MvpBasePresenter<S>, S extends MvpSt
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        executor = Controller.getInstance(getContext()).getExecutor();
         stateHandler = new MvpStateHandler<>(this);
         getLifecycle().addObserver(stateHandler);
         manager = MvpPresenterManager.getInstance(getContext());
@@ -45,23 +51,23 @@ public abstract class MvpFragment<P extends MvpBasePresenter<S>, S extends MvpSt
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        presenter.execute(() -> presenter.onOptionsItemSelected(item.getItemId()));
+        executor.submit(() -> presenter.onOptionsItemSelected(item.getItemId()));
         return true;
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        presenter.execute(() -> presenter.onActivityResult(requestCode, resultCode, data));
+        executor.submit(() -> presenter.onActivityResult(requestCode, resultCode, data));
     }
 
     @Override
     public void onClick(View v) {
-        presenter.execute(() -> presenter.onViewClicked(v.getId()));
+        executor.submit(() -> presenter.onViewClicked(v.getId()));
     }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        presenter.execute(() -> presenter.onItemSelected(view.getId(), position, id));
+        executor.submit(() -> presenter.onItemSelected(view.getId(), position, id));
     }
 
     @Override
