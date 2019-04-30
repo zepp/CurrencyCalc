@@ -19,9 +19,9 @@ import com.example.pavl.currencycalc.mvp.MvpPresenterManager;
 
 
 public class MainFragment extends MvpFragment<MainPresenter, MainState> {
-    private EditText originalAmount;
+    private TextView originalAmount;
     private Spinner originalCurrency;
-    private EditText resultAmount;
+    private TextView resultAmount;
     private Spinner resultCurrency;
     private TextView dataDate;
     private ImageButton swap;

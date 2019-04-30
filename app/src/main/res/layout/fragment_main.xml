@@ -14,9 +14,9 @@
         android:background="@drawable/background_frame"
         android:padding="16dp">
 
-        <EditText
+        <TextView
             android:id="@+id/original_amount"
-            style="@style/CurrencyEdit"
+            style="@style/CurrencyAmount"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
@@ -26,9 +26,9 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <EditText
+        <TextView
             android:id="@+id/result_amount"
-            style="@style/CurrencyEdit"
+            style="@style/CurrencyAmount"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"

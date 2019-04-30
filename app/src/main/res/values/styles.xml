@@ -29,11 +29,8 @@
         <item name="android:background">@drawable/flag_background</item>
     </style>
 
-    <style name="CurrencyEdit" parent="Base.Widget.AppCompat.EditText">
-        <item name="android:inputType">numberDecimal</item>
-        <item name="android:cursorVisible">false</item>
+    <style name="CurrencyAmount">
         <item name="android:textAppearance">@style/Base.TextAppearance.AppCompat.Large</item>
-        <item name="android:background">@drawable/edit_selector</item>
         <item name="android:maxLength">10</item>
     </style>
 
