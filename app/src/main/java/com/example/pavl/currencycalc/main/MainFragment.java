@@ -131,9 +131,9 @@ public class MainFragment extends MvpFragment<MainPresenter, MainState> {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
             if (adapterView.getId() == R.id.original_currency) {
-                presenter.execute(() -> presenter.onOriginalCurrencyChanged((Currency) adapterView.getItemAtPosition(i)));
+                presenter.onOriginalCurrencyChanged((Currency) adapterView.getItemAtPosition(i));
             } else {
-                presenter.execute(() -> presenter.onResultCurrencyChanged((Currency) adapterView.getItemAtPosition(i)));
+                presenter.onResultCurrencyChanged((Currency) adapterView.getItemAtPosition(i));
             }
         }
 

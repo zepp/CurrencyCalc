@@ -16,14 +16,12 @@ import java.util.Map;
 
 public class MainPresenter extends MvpBasePresenter<MainState> {
     private final Controller controller;
-    private final Resources resources;
     private final Map<Integer, Drawable> flags;
 
     public MainPresenter(Context context, MainState state) {
         super(context, state);
         controller = Controller.getInstance(context);
-        flags = Collections.synchronizedMap(new HashMap<>());
-        resources = context.getResources();
+        flags = new HashMap<>();
     }
 
     private static char getChar(int viewId) {
@@ -112,19 +110,23 @@ public class MainPresenter extends MvpBasePresenter<MainState> {
     }
 
     void onOriginalCurrencyChanged(Currency currency) {
-        state.setOriginalCurrency(currency);
-        if (state.isChanged()) {
-            state.updateResult();
-            commit();
-        }
+        executor.submit(() -> {
+            state.setOriginalCurrency(currency);
+            if (state.isChanged()) {
+                state.updateResult();
+                commit();
+            }
+        });
     }
 
     void onResultCurrencyChanged(Currency currency) {
-        state.setResultCurrency(currency);
-        if (state.isChanged()) {
-            state.updateResult();
-            commit();
-        }
+        executor.submit(() -> {
+            state.setResultCurrency(currency);
+            if (state.isChanged()) {
+                state.updateResult();
+                commit();
+            }
+        });
     }
 
     Drawable getFlagDrawable(Currency currency) {
