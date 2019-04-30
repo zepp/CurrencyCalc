@@ -1,9 +1,7 @@
 package com.example.pavl.currencycalc.main;
 
 import android.os.Bundle;
-import android.text.Editable;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -87,8 +85,9 @@ public class MainFragment extends MvpFragment<MainPresenter, MainState> {
     @Override
     public void onStart() {
         super.onStart();
-        originalCurrency.setOnItemSelectedListener(new OriginalCurrencyListener());
-        resultCurrency.setOnItemSelectedListener(new ResultCurrencyListener());
+        CurrencyListener listener = new CurrencyListener();
+        originalCurrency.setOnItemSelectedListener(listener);
+        resultCurrency.setOnItemSelectedListener(listener);
         swap.setOnClickListener(this);
         num1.setOnClickListener(this);
         num2.setOnClickListener(this);
@@ -128,21 +127,14 @@ public class MainFragment extends MvpFragment<MainPresenter, MainState> {
         return manager.newPresenterInstance(MainPresenter.class, MainState.class);
     }
 
-    private class ResultCurrencyListener implements AdapterView.OnItemSelectedListener {
+    private class CurrencyListener implements AdapterView.OnItemSelectedListener {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-            presenter.execute(() -> presenter.onResultCurrencyChanged((Currency) adapterView.getItemAtPosition(i)));
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> adapterView) {
-        }
-    }
-
-    private class OriginalCurrencyListener implements AdapterView.OnItemSelectedListener {
-        @Override
-        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-            presenter.execute(() -> presenter.onOriginalCurrencyChanged((Currency) adapterView.getItemAtPosition(i)));
+            if (adapterView.getId() == R.id.original_currency) {
+                presenter.execute(() -> presenter.onOriginalCurrencyChanged((Currency) adapterView.getItemAtPosition(i)));
+            } else {
+                presenter.execute(() -> presenter.onResultCurrencyChanged((Currency) adapterView.getItemAtPosition(i)));
+            }
         }
 
         @Override
