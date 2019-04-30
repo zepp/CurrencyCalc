@@ -17,7 +17,7 @@ import java.util.Map;
 public class MainPresenter extends MvpBasePresenter<MainState> {
     private final Controller controller;
     private final Resources resources;
-    private final Map<String, Drawable> flags;
+    private final Map<Integer, Drawable> flags;
 
     public MainPresenter(Context context, MainState state) {
         super(context, state);
@@ -65,7 +65,7 @@ public class MainPresenter extends MvpBasePresenter<MainState> {
         controller.fetch(currencyList -> {
             state.setList(currencyList);
             for (Currency currency : currencyList.getCurrencies()) {
-                getFlagDrawable(currency.getCharCode());
+                getFlagDrawable(currency);
             }
             commit();
         }, throwable -> {
@@ -98,14 +98,6 @@ public class MainPresenter extends MvpBasePresenter<MainState> {
         }
     }
 
-    void onOriginalCurrencyChanged(Currency currency) {
-        state.setOriginalCurrency(currency);
-        if (state.isChanged()) {
-            state.updateResult();
-            commit();
-        }
-    }
-
     private void setOriginalAmount(String text) {
         double amount;
         try {
@@ -119,6 +111,14 @@ public class MainPresenter extends MvpBasePresenter<MainState> {
         }
     }
 
+    void onOriginalCurrencyChanged(Currency currency) {
+        state.setOriginalCurrency(currency);
+        if (state.isChanged()) {
+            state.updateResult();
+            commit();
+        }
+    }
+
     void onResultCurrencyChanged(Currency currency) {
         state.setResultCurrency(currency);
         if (state.isChanged()) {
@@ -127,18 +127,18 @@ public class MainPresenter extends MvpBasePresenter<MainState> {
         }
     }
 
-    Drawable getFlagDrawable(String charCode) {
-        String name = "ic_" + charCode.toLowerCase();
+    Drawable getFlagDrawable(Currency currency) {
         synchronized (flags) {
-            Drawable flag = flags.get(name);
+            Drawable flag = flags.get(currency.getNumCode());
             if (flag == null) {
+                String name = "ic_" + currency.getCharCode().toLowerCase();
                 int id = resources.getIdentifier(name, "drawable", context.getPackageName());
                 if (id == 0) {
                     flag = resources.getDrawable(R.drawable.flag_unknown, null);
                 } else {
                     flag = resources.getDrawable(id, null);
                 }
-                flags.put(name, flag);
+                flags.put(currency.getNumCode(), flag);
             }
             return flag;
         }
