@@ -114,9 +114,9 @@ public class MainFragment extends MvpFragment<MainPresenter, MainState> {
             }
         }
         originalAmount.setText(state.getOriginalAmount());
-        originalCurrency.setSelection(state.list.indexOf(originalCurrency));
+        originalCurrency.setSelection(state.list.indexOf(state.originalCurrency));
         resultAmount.setText(state.getResultAmount());
-        resultCurrency.setSelection(state.list.indexOf(resultCurrency));
+        resultCurrency.setSelection(state.list.indexOf(state.resultCurrency));
         if (state.isError) {
             Toast.makeText(getContext(), state.message, Toast.LENGTH_LONG).show();
         }

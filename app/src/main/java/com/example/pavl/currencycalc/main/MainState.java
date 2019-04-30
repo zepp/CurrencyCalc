@@ -67,7 +67,11 @@ public class MainState extends MvpState {
 
     void updateResult() {
         setChanged(true);
-        resultAmount =  CurrencyList.convert(originalCurrency, resultCurrency, originalAmount);
+        if (originalText.isEmpty()) {
+            resultAmount = 0.0;
+        } else {
+            resultAmount = CurrencyList.convert(originalCurrency, resultCurrency, originalAmount);
+        }
     }
 
     void setMessage(String message) {
