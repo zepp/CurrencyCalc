@@ -14,7 +14,7 @@ import java.util.concurrent.ExecutorService;
 
 /* Базовый класс для всех фрагментов, которые реализуют паттерн MVP */
 public abstract class MvpFragment<P extends MvpBasePresenter<S>, S extends MvpState> extends Fragment
-        implements MvpView<P, S>, View.OnClickListener, AdapterView.OnItemSelectedListener {
+        implements MvpView<P, S>, View.OnClickListener {
     protected ExecutorService executor;
     protected MvpStateHandler<P, S> stateHandler;
     protected MvpPresenterManager manager;
@@ -63,15 +63,5 @@ public abstract class MvpFragment<P extends MvpBasePresenter<S>, S extends MvpSt
     @Override
     public void onClick(View v) {
         executor.submit(() -> presenter.onViewClicked(v.getId()));
-    }
-
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        executor.submit(() -> presenter.onItemSelected(view.getId(), position, id));
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
     }
 }

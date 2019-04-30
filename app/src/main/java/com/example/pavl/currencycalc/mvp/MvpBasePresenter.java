@@ -101,12 +101,6 @@ public abstract class MvpBasePresenter<S extends MvpState> implements LifecycleO
     }
 
     @CallSuper
-    @Override
-    public void onItemSelected(int viewId, int position, long id) {
-        Log.d(tag, "onItemSelected(" + resources.getResourceName(viewId) + ", " + position + ", " + id +")");
-    }
-
-    @CallSuper
     protected void onStart() {
         Log.d(tag, "onStart");
     }
