@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.view.View;
 
 import com.example.pavl.currencycalc.R;
+import com.example.pavl.currencycalc.domain.AppState;
 import com.example.pavl.currencycalc.domain.Controller;
 import com.example.pavl.currencycalc.model.Currency;
 import com.example.pavl.currencycalc.mvp.MvpBasePresenter;
@@ -56,7 +57,12 @@ public class MainPresenter extends MvpBasePresenter<MainState> {
     @Override
     public void onStart() {
         super.onStart();
-        onUpdate();
+        try {
+            state.setList(controller.load());
+        } catch (Throwable e) {
+            state.setMessage(e.getMessage());
+        }
+        commit();
     }
 
     void onUpdate() {

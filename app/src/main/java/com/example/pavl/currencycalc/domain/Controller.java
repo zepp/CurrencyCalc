@@ -58,25 +58,35 @@ public final class Controller {
 
     public void fetch(Consumer<CurrencyList> onDataReady, Consumer<Throwable> onError) {
         NetworkInfo info = connectivityManager.getActiveNetworkInfo();
+        File file = state.getFileName();
         if (info != null) {
             executor.submit(() -> {
                 try {
                     onFetch();
-                    onDataReady.accept(onParse());
+                    onDataReady.accept(onParse(file));
                 } catch (Throwable e) {
                     onError.accept(e);
                 }
             });
-        } else if (state.getFileName().exists()) {
+        } else if (file.exists()) {
             executor.submit(() -> {
                 try {
-                    onDataReady.accept(onParse());
+                    onDataReady.accept(onParse(file));
                 } catch (Throwable e) {
                     onError.accept(e);
                 }
             });
         } else {
             onError.accept(new RuntimeException("cached data is not available"));
+        }
+    }
+
+    public CurrencyList load() throws Exception {
+        File file = state.getFileName();
+        if (file.exists()) {
+            return onParse(file);
+        } else {
+            throw new Exception("cached data is not available");
         }
     }
 
@@ -95,9 +105,8 @@ public final class Controller {
         state.setFetchTime(new Date());
     }
 
-    private CurrencyList onParse() throws Exception {
+    private CurrencyList onParse(File file) throws Exception {
         Log.d(TAG, "parsing data");
-        File file = state.getFileName();
         Serializer serializer = new Persister(new CustomMatcher());
         return serializer.read(CurrencyList.class, file);
     }
