@@ -3,6 +3,7 @@ package com.example.pavl.currencycalc.mvp;
 import android.arch.lifecycle.LifecycleObserver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.CallSuper;
@@ -20,6 +21,7 @@ public abstract class MvpBasePresenter<S extends MvpState> implements LifecycleO
     protected final ExecutorService executor;
     protected final List<MvpView> views = new CopyOnWriteArrayList<>();
     protected final Handler handler;
+    protected final Resources resources;
     protected final S state;
 
     public MvpBasePresenter(Context context, S state) {
@@ -27,6 +29,12 @@ public abstract class MvpBasePresenter<S extends MvpState> implements LifecycleO
         this.executor = Controller.getInstance(context).getExecutor();
         this.state = state;
         this.handler = new Handler(Looper.getMainLooper());
+        this.resources = context.getResources();
+    }
+
+    @Override
+    public void execute(Runnable method) {
+        executor.execute(method);
     }
 
     // добавляет представление в список клиентов текущего представителя
@@ -79,10 +87,22 @@ public abstract class MvpBasePresenter<S extends MvpState> implements LifecycleO
         }
     }
 
+    @CallSuper
     @Override
-    public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d(tag,"onActivityResult("+requestCode+ ", " + resultCode + ", " + data + ")");
-        return true;
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d(tag,"onActivityResult(" + requestCode + ", " + resultCode + ", " + data + ")");
+    }
+
+    @CallSuper
+    @Override
+    public void onViewClicked(int viewId) {
+        Log.d(tag, "onViewClicked(" + resources.getResourceName(viewId) + ")");
+    }
+
+    @CallSuper
+    @Override
+    public void onItemSelected(int viewId, int position, long id) {
+        Log.d(tag, "onItemSelected(" + resources.getResourceName(viewId) + ", " + position + ", " + id +")");
     }
 
     @CallSuper
