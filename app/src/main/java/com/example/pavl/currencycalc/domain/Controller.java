@@ -52,6 +52,10 @@ public final class Controller {
         return controller;
     }
 
+    public ExecutorService getExecutor() {
+        return Executors.unconfigurableExecutorService(executor);
+    }
+
     public void fetch(Consumer<CurrencyList> onDataReady, Consumer<Throwable> onError) {
         NetworkInfo info = connectivityManager.getActiveNetworkInfo();
         if (info != null) {
