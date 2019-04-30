@@ -31,6 +31,7 @@
 
     <style name="CurrencyAmount">
         <item name="android:textAppearance">@style/Base.TextAppearance.AppCompat.Large</item>
+        <item name="android:maxLines">1</item>
         <item name="android:maxLength">10</item>
     </style>
 

@@ -75,15 +75,19 @@ public class MainPresenter extends MvpBasePresenter<MainState> {
     @Override
     public void onViewClicked(int viewId) {
         super.onViewClicked(viewId);
+        String text = state.originalText;
         if (viewId == R.id.swap) {
             state.swapCurrencies();
         } else if (viewId == R.id.del) {
-            String text = state.originalText;
-            setOriginalAmount(text.substring(0, text.length() - 1));
-        } else if (viewId == R.id.num_point && !state.isOriginalReal()) {
-            setOriginalAmount(state.originalText + '.');
+            if (!text.isEmpty()) {
+                setOriginalAmount(text.substring(0, text.length() - 1));
+            }
+        } else if (viewId == R.id.num_point) {
+            if (!state.isOriginalReal()) {
+                setOriginalAmount(text + '.');
+            }
         } else {
-            setOriginalAmount(state.originalText + getChar(viewId));
+            setOriginalAmount(text + getChar(viewId));
         }
         commit();
     }
