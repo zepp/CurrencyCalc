@@ -15,8 +15,7 @@ public class SystemBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction().equals(ACTION_FETCH)) {
-            Controller.getInstance(context).fetch(currencyList -> {},
-                    throwable -> Toast.makeText(context, throwable.getMessage(), Toast.LENGTH_LONG).show());
+            Controller.getInstance(context).asyncFetch();
         } else if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
             // do nothing
         }

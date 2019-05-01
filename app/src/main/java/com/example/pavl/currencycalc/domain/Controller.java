@@ -16,10 +16,10 @@ import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public final class Controller {
     private final static int REQUEST_CODE = 0;
@@ -56,62 +56,52 @@ public final class Controller {
         return Executors.unconfigurableExecutorService(executor);
     }
 
-    public void fetch(Consumer<CurrencyList> onDataReady, Consumer<Throwable> onError) {
+    public CurrencyList fetch() throws Exception {
         NetworkInfo info = connectivityManager.getActiveNetworkInfo();
         File file = state.getFileName();
         if (info != null) {
-            executor.submit(() -> {
-                try {
-                    onFetch();
-                    onDataReady.accept(onParse(file));
-                } catch (Throwable e) {
-                    onError.accept(e);
-                }
-            });
+            file = networkHandler.fetch();
+            state.setFileName(file);
+            state.setFetchTime(new Date());
+            schedule();
+            return parse(file);
         } else if (file.exists()) {
-            executor.submit(() -> {
-                try {
-                    onDataReady.accept(onParse(file));
-                } catch (Throwable e) {
-                    onError.accept(e);
-                }
-            });
+            return parse(file);
         } else {
-            onError.accept(new RuntimeException("cached data is not available"));
+            throw new Exception("cached data is not available");
         }
+    }
+
+    public Future<CurrencyList> asyncFetch() {
+        return executor.submit(this::fetch);
     }
 
     public CurrencyList load() throws Exception {
         File file = state.getFileName();
         if (file.exists()) {
-            return onParse(file);
+            return parse(file);
         } else {
             throw new Exception("cached data is not available");
         }
     }
 
     public void init() {
+        schedule();
+    }
+
+    private void schedule() {
         Intent intent = SystemBroadcastReceiver.getFetchIntent();
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, REQUEST_CODE,
+                intent, PendingIntent.FLAG_UPDATE_CURRENT);
         alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
                 state.getFetchTime().getTime() + state.getFetchInterval(),
-                state.getFetchInterval(),
-                PendingIntent.getBroadcast(context, REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT));
-        Log.d(TAG, intent.getComponent() + " is scheduled");
+                state.getFetchInterval(), pendingIntent);
+        Log.d(TAG, intent + " is scheduled");
     }
 
-    private void onFetch() throws IOException {
-        Log.d(TAG, "fetching data");
-        state.setFileName(networkHandler.fetch());
-        state.setFetchTime(new Date());
-    }
-
-    private CurrencyList onParse(File file) throws Exception {
+    private CurrencyList parse(File file) throws Exception {
         Log.d(TAG, "parsing data");
         Serializer serializer = new Persister(new CustomMatcher());
         return serializer.read(CurrencyList.class, file);
-    }
-
-    public interface Consumer<T> {
-        void accept(T t);
     }
 }

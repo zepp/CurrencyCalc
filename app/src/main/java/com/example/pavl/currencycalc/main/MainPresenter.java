@@ -66,16 +66,11 @@ public class MainPresenter extends MvpBasePresenter<MainState> {
     }
 
     void onUpdate() {
-        controller.fetch(currencyList -> {
-            state.setList(currencyList);
-            for (Currency currency : currencyList.getCurrencies()) {
-                getFlagDrawable(currency);
-            }
-            commit();
-        }, throwable -> {
-            state.setMessage(throwable.getMessage());
-            commit();
-        });
+        try {
+            state.setList(controller.fetch());
+        } catch (Throwable e) {
+            state.setMessage(e.getMessage());
+        }
     }
 
     @Override
