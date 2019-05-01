@@ -29,7 +29,7 @@ class CurrencyAdapter extends ArrayAdapter<Currency> {
         TextView currencyName = (TextView) v.findViewById(R.id.currency_name);
         ImageView currencyFlag = (ImageView) v.findViewById(R.id.currency_flag);
         currencyName.setText(currency.getName());
-        currencyFlag.setImageDrawable(presenter.getFlagDrawable(currency.getCharCode()));
+        currencyFlag.setImageDrawable(presenter.getFlagDrawable(currency));
         return v;
     }
 

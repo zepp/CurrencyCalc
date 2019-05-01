@@ -1,9 +1,7 @@
 package com.example.pavl.currencycalc.main;
 
 import android.os.Bundle;
-import android.text.Editable;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -15,14 +13,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.pavl.currencycalc.R;
+import com.example.pavl.currencycalc.model.Currency;
 import com.example.pavl.currencycalc.mvp.MvpFragment;
 import com.example.pavl.currencycalc.mvp.MvpPresenterManager;
 
 
-public class MainFragment extends MvpFragment<MainPresenter, MainState> {
-    private EditText originalAmount;
+public class MainFragment extends MvpFragment<MainPresenter, MainState> implements AdapterView.OnItemSelectedListener{
+    private TextView originalAmount;
     private Spinner originalCurrency;
-    private EditText resultAmount;
+    private TextView resultAmount;
     private Spinner resultCurrency;
     private TextView dataDate;
     private ImageButton swap;
@@ -60,58 +59,47 @@ public class MainFragment extends MvpFragment<MainPresenter, MainState> {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_main, container, false);
-        originalAmount = (EditText) root.findViewById(R.id.original_amount);
-        originalCurrency = (Spinner) root.findViewById(R.id.original_currency);
+        originalAmount = root.findViewById(R.id.original_amount);
+        originalCurrency = root.findViewById(R.id.original_currency);
         originalCurrency.setAdapter(adapter);
-        swap = (ImageButton) root.findViewById(R.id.swap);
-        resultAmount = (EditText) root.findViewById(R.id.result_amount);
-        resultCurrency = (Spinner) root.findViewById(R.id.result_currency);
+        swap = root.findViewById(R.id.swap);
+        resultAmount = root.findViewById(R.id.result_amount);
+        resultCurrency = root.findViewById(R.id.result_currency);
         resultCurrency.setAdapter(adapter);
-        num1 = (Button) root.findViewById(R.id.num_1);
-        num2 = (Button) root.findViewById(R.id.num_2);
-        num3 = (Button) root.findViewById(R.id.num_3);
-        num4 = (Button) root.findViewById(R.id.num_4);
-        num5 = (Button) root.findViewById(R.id.num_5);
-        num6 = (Button) root.findViewById(R.id.num_6);
-        num7 = (Button) root.findViewById(R.id.num_7);
-        num8 = (Button) root.findViewById(R.id.num_8);
-        num9 = (Button) root.findViewById(R.id.num_9);
-        num0 = (Button) root.findViewById(R.id.num_0);
-        point = (Button) root.findViewById(R.id.num_point);
-        del = (Button) root.findViewById(R.id.del);
-        dataDate = (TextView) root.findViewById(R.id.date);
+        num1 = root.findViewById(R.id.num_1);
+        num2 = root.findViewById(R.id.num_2);
+        num3 = root.findViewById(R.id.num_3);
+        num4 = root.findViewById(R.id.num_4);
+        num5 = root.findViewById(R.id.num_5);
+        num6 = root.findViewById(R.id.num_6);
+        num7 = root.findViewById(R.id.num_7);
+        num8 = root.findViewById(R.id.num_8);
+        num9 = root.findViewById(R.id.num_9);
+        num0 = root.findViewById(R.id.num_0);
+        point = root.findViewById(R.id.num_point);
+        del = root.findViewById(R.id.del);
+        dataDate = root.findViewById(R.id.date);
         return root;
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        NumListener numListener = new NumListener();
-
-        originalCurrency.setOnItemSelectedListener(new OriginalCurrencyListener());
-        resultCurrency.setOnItemSelectedListener(new ResultCurrencyListener());
-        swap.setOnClickListener(new SwapListener());
-        num1.setOnClickListener(numListener);
-        num2.setOnClickListener(numListener);
-        num3.setOnClickListener(numListener);
-        num4.setOnClickListener(numListener);
-        num5.setOnClickListener(numListener);
-        num6.setOnClickListener(numListener);
-        num7.setOnClickListener(numListener);
-        num8.setOnClickListener(numListener);
-        num9.setOnClickListener(numListener);
-        num0.setOnClickListener(numListener);
-        point.setOnClickListener(numListener);
-        del.setOnClickListener(numListener);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.update) {
-            presenter.onUpdate();
-            return true;
-        }
-        return false;
+        originalCurrency.setOnItemSelectedListener(this);
+        resultCurrency.setOnItemSelectedListener(this);
+        swap.setOnClickListener(this);
+        num1.setOnClickListener(this);
+        num2.setOnClickListener(this);
+        num3.setOnClickListener(this);
+        num4.setOnClickListener(this);
+        num5.setOnClickListener(this);
+        num6.setOnClickListener(this);
+        num7.setOnClickListener(this);
+        num8.setOnClickListener(this);
+        num9.setOnClickListener(this);
+        num0.setOnClickListener(this);
+        point.setOnClickListener(this);
+        del.setOnClickListener(this);
     }
 
     @Override
@@ -124,13 +112,13 @@ public class MainFragment extends MvpFragment<MainPresenter, MainState> {
             }
         }
         originalAmount.setText(state.getOriginalAmount());
-        originalCurrency.setSelection(state.originalPosition);
+        originalCurrency.setSelection(state.list.indexOf(state.originalCurrency));
         resultAmount.setText(state.getResultAmount());
-        resultCurrency.setSelection(state.resultPosition);
-        if (state.isError) {
+        resultCurrency.setSelection(state.list.indexOf(state.resultCurrency));
+        dataDate.setText(state.date);
+        if (state.message != null) {
             Toast.makeText(getContext(), state.message, Toast.LENGTH_LONG).show();
         }
-        dataDate.setText(state.date);
     }
 
     @Override
@@ -138,83 +126,16 @@ public class MainFragment extends MvpFragment<MainPresenter, MainState> {
         return manager.newPresenterInstance(MainPresenter.class, MainState.class);
     }
 
-    private class ResultCurrencyListener implements AdapterView.OnItemSelectedListener {
-        @Override
-        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-            presenter.onResultCurrencyChanged(i);
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> adapterView) {
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        if (adapterView.getId() == R.id.original_currency) {
+            executor.execute(() -> presenter.onOriginalCurrencyChanged((Currency) adapterView.getItemAtPosition(i)));
+        } else {
+            executor.execute(() -> presenter.onResultCurrencyChanged((Currency) adapterView.getItemAtPosition(i)));
         }
     }
 
-    private class OriginalCurrencyListener implements AdapterView.OnItemSelectedListener {
-        @Override
-        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-            presenter.onOriginalCurrencyChanged(i);
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> adapterView) {
-        }
-    }
-
-    private class SwapListener implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
-            presenter.onCurrenciesSwap();
-        }
-    }
-
-    private class NumListener implements View.OnClickListener {
-        char getChar(View v) {
-            switch (v.getId()) {
-                case R.id.num_0:
-                    return '0';
-                case R.id.num_1:
-                    return '1';
-                case R.id.num_2:
-                    return '2';
-                case R.id.num_3:
-                    return '3';
-                case R.id.num_4:
-                    return '4';
-                case R.id.num_5:
-                    return '5';
-                case R.id.num_6:
-                    return '6';
-                case R.id.num_7:
-                    return '7';
-                case R.id.num_8:
-                    return '8';
-                case R.id.num_9:
-                    return '9';
-                case R.id.num_point:
-                    return '.';
-                default:
-                    return ' ';
-            }
-        }
-
-        @Override
-        public void onClick(View v) {
-            Editable text = new Editable.Factory().newEditable(presenter.getState().originalText);
-            if (v.getId() == R.id.del) {
-                if (text.length() > 0) {
-                    text.delete(text.length() - 1, text.length());
-                }
-            } else if (v.getId() == R.id.num_point) {
-                if (!presenter.getState().isOriginalReal()) {
-                    if (text.length() == 0) {
-                        text.append('0');
-                    }
-                    text.append('.');
-                }
-            } else {
-                text.append(getChar(v));
-            }
-            presenter.onOriginalAmountChanged(text.toString());
-        }
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
     }
 }

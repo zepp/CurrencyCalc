@@ -5,45 +5,38 @@ import com.example.pavl.currencycalc.model.CurrencyList;
 import com.example.pavl.currencycalc.mvp.MvpState;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
 public class MainState extends MvpState {
-    List<Currency> list = new ArrayList<>();
+    List<Currency> list = Collections.emptyList();
     String date = "";
     boolean isListChanged;
-    int originalPosition = -1;
-    int resultPosition = -1;
+    Currency originalCurrency = new Currency();
+    Currency resultCurrency = new Currency();
     String originalText = "";
     double originalAmount = -1;
     double resultAmount = -1;
-    boolean isError;
     String message;
 
     void setList(CurrencyList list) {
         setChanged(true);
-        if (originalPosition != -1) {
-            Currency currency = list.getCurrencies().get(originalPosition);
-            originalPosition = list.getPosition(currency.getNumCode());
-        }
-        if (resultPosition != -1) {
-            Currency currency = list.getCurrencies().get(resultPosition);
-            resultPosition = list.getPosition(currency.getNumCode());
-        }
-        this.list.clear();
-        this.list.addAll(list.getCurrencies());
-        this.date = list.getDate();
+        this.list = list.getCurrencies();
+        date = list.getDate();
+        originalCurrency = originalCurrency.getNumCode() == 0 ?  this.list.get(0) : list.get(originalCurrency.getNumCode());
+        resultCurrency = resultCurrency.getNumCode() == 0 ? this.list.get(0) : list.get(resultCurrency.getNumCode());
         this.isListChanged = true;
     }
 
-    void setOriginalPosition(int originalPosition) {
-        setChanged(this.originalPosition != originalPosition);
-        this.originalPosition = originalPosition;
+    public void setOriginalCurrency(Currency currency) {
+        setChanged(originalCurrency.getNumCode() != currency.getNumCode());
+        originalCurrency = currency;
     }
 
-    void setResultPosition(int resultPosition) {
-        setChanged(this.resultPosition != resultPosition);
-        this.resultPosition = resultPosition;
+    public void setResultCurrency(Currency currency) {
+        setChanged(resultCurrency.getNumCode() != currency.getNumCode());
+        this.resultCurrency = currency;
     }
 
     String getOriginalAmount() {
@@ -68,27 +61,27 @@ public class MainState extends MvpState {
     }
 
     void updateResult() {
-        if (originalPosition != -1 && resultPosition != -1 && originalAmount != -1) {
-            Currency original = list.get(originalPosition);
-            Currency result = list.get(resultPosition);
-            resultAmount =  CurrencyList.convert(original, result, originalAmount);
+        setChanged(true);
+        if (originalText.isEmpty()) {
+            resultAmount = 0.0;
+        } else {
+            resultAmount = CurrencyList.convert(originalCurrency, resultCurrency, originalAmount);
         }
     }
 
     void setMessage(String message) {
         setChanged(true);
         this.message = message;
-        this.isError = true;
     }
 
     void swapCurrencies() {
         double originalAmount = this.originalAmount;
-        int originalPosition = this.originalPosition;
+        Currency originalCurrency = this.originalCurrency;
         this.originalAmount = resultAmount;
-        this.originalPosition = resultPosition;
         this.originalText = getResultAmount();
         this.resultAmount = originalAmount;
-        this.resultPosition = originalPosition;
+        this.originalCurrency = resultCurrency;
+        this.resultCurrency = originalCurrency;
         setChanged(true);
     }
 
@@ -101,11 +94,12 @@ public class MainState extends MvpState {
 
     @Override
     public String toString() {
-        return "MainState { " +
-                "originalPosition: " + originalPosition +
-                ", originalAmount: " + getOriginalAmount() +
-                ", resultPosition: " + resultPosition +
-                ", resultAmount: " + getResultAmount() +
-                '}';
+        return "MainState{" +
+                "originalCurrency=" + originalCurrency +
+                ", resultCurrency=" + resultCurrency +
+                ", originalText='" + originalText + '\'' +
+                ", originalAmount=" + originalAmount +
+                ", resultAmount=" + resultAmount +
+                "} " + super.toString();
     }
 }

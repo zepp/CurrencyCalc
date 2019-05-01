@@ -3,25 +3,33 @@ package com.example.pavl.currencycalc.mvp;
 import android.arch.lifecycle.LifecycleObserver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.CallSuper;
 import android.util.Log;
 
+import com.example.pavl.currencycalc.domain.Controller;
+
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutorService;
 
 public abstract class MvpBasePresenter<S extends MvpState> implements LifecycleObserver, MvpPresenter<S>{
     protected final String tag = getClass().getSimpleName();
     protected final Context context;
+    protected final ExecutorService executor;
     protected final List<MvpView> views = new CopyOnWriteArrayList<>();
     protected final Handler handler;
+    protected final Resources resources;
     protected final S state;
 
     public MvpBasePresenter(Context context, S state) {
         this.context = context;
+        this.executor = Controller.getInstance(context).getExecutor();
         this.state = state;
         this.handler = new Handler(Looper.getMainLooper());
+        this.resources = context.getResources();
     }
 
     // добавляет представление в список клиентов текущего представителя
@@ -29,7 +37,7 @@ public abstract class MvpBasePresenter<S extends MvpState> implements LifecycleO
         synchronized (views) {
             views.add(view);
             if (views.size() == 1) {
-                handler.post(() -> onStart());
+                executor.submit(this::onStart);
             }
         }
         handler.post(() -> view.handleNewState(getStateSnapshot()));
@@ -40,7 +48,7 @@ public abstract class MvpBasePresenter<S extends MvpState> implements LifecycleO
         synchronized (views) {
             views.remove(view);
             if (views.size() == 0) {
-                handler.post(() -> onStop());
+                executor.submit(this::onStop);
             }
         }
     }
@@ -74,10 +82,22 @@ public abstract class MvpBasePresenter<S extends MvpState> implements LifecycleO
         }
     }
 
+    @CallSuper
     @Override
-    public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d(tag,"onActivityResult("+requestCode+ ", " + resultCode + ", " + data + ")");
-        return true;
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d(tag,"onActivityResult(" + requestCode + ", " + resultCode + ", " + data + ")");
+    }
+
+    @CallSuper
+    @Override
+    public void onViewClicked(int viewId) {
+        Log.d(tag, "onViewClicked(" + resources.getResourceName(viewId) + ")");
+    }
+
+    @CallSuper
+    @Override
+    public void onOptionsItemSelected(int itemId) {
+        Log.d(tag, "onOptionsItemSelected(" + resources.getResourceName(itemId) + ")");
     }
 
     @CallSuper
