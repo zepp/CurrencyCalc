@@ -6,6 +6,6 @@ public class Application extends android.app.Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Controller.getInstance(getApplicationContext()).init();
+        Controller.getInstance(getApplicationContext()).initialize();
     }
 }

@@ -31,6 +31,7 @@ public final class Controller {
     private final ConnectivityManager connectivityManager;
     private final NetworkHandler networkHandler;
     private final AppState state;
+    private File fileName;
 
     private Controller(Context context) {
         this.context = context;
@@ -85,8 +86,29 @@ public final class Controller {
         }
     }
 
-    public void init() {
+    public void initialize() {
         schedule();
+        fileName = state.getFileName();
+        state.setOnChangedListener(new AppState.OnChangedListener() {
+            @Override
+            public void onFetchTimeChanged(Date time) {
+            }
+
+            @Override
+            public void onFetchIntervalChanged(long value) {
+                schedule();
+            }
+
+            @Override
+            public void onFileNameChanged(File name) {
+                executor.execute(() -> {
+                    if (fileName.exists()) {
+                        fileName.delete();
+                    }
+                    fileName = name;
+                });
+            }
+        });
     }
 
     private void schedule() {
