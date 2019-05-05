@@ -98,6 +98,20 @@ public class MainPresenter extends MvpBasePresenter<MainState> {
         }
     }
 
+    @Override
+    public void onItemSelected(int viewId, Object item) {
+        super.onItemSelected(viewId, item);
+        if (viewId == R.id.original_currency) {
+            state.setOriginalCurrency((Currency) item);
+        } else {
+            state.setResultCurrency((Currency) item);
+        }
+        if (state.isChanged()) {
+            state.updateResult();
+            commit();
+        }
+    }
+
     private void setOriginalAmount(String text) {
         double amount;
         try {
@@ -108,22 +122,6 @@ public class MainPresenter extends MvpBasePresenter<MainState> {
         state.setOriginalAmount(amount, text);
         if (state.isChanged()) {
             state.updateResult();
-        }
-    }
-
-    void onOriginalCurrencyChanged(Currency currency) {
-        state.setOriginalCurrency(currency);
-        if (state.isChanged()) {
-            state.updateResult();
-            commit();
-        }
-    }
-
-    void onResultCurrencyChanged(Currency currency) {
-        state.setResultCurrency(currency);
-        if (state.isChanged()) {
-            state.updateResult();
-            commit();
         }
     }
 

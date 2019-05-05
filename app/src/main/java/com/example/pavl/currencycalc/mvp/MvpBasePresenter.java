@@ -100,6 +100,11 @@ public abstract class MvpBasePresenter<S extends MvpState> implements LifecycleO
         Log.d(tag, "onOptionsItemSelected(" + resources.getResourceName(itemId) + ")");
     }
 
+    @Override
+    public void onItemSelected(int viewId, Object item) {
+        Log.d(tag, "onItemSelected(" + resources.getResourceName(viewId) + ", " + item + ")");
+    }
+
     @CallSuper
     protected void onStart() {
         Log.d(tag, "onStart");

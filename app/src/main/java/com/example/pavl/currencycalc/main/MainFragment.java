@@ -18,7 +18,7 @@ import com.example.pavl.currencycalc.mvp.MvpFragment;
 import com.example.pavl.currencycalc.mvp.MvpPresenterManager;
 
 
-public class MainFragment extends MvpFragment<MainPresenter, MainState> implements AdapterView.OnItemSelectedListener{
+public class MainFragment extends MvpFragment<MainPresenter, MainState> {
     private TextView originalAmount;
     private Spinner originalCurrency;
     private TextView resultAmount;
@@ -124,18 +124,5 @@ public class MainFragment extends MvpFragment<MainPresenter, MainState> implemen
     @Override
     public MainPresenter onInitPresenter(MvpPresenterManager manager) {
         return manager.newPresenterInstance(MainPresenter.class, MainState.class);
-    }
-
-    @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        if (adapterView.getId() == R.id.original_currency) {
-            executor.execute(() -> presenter.onOriginalCurrencyChanged((Currency) adapterView.getItemAtPosition(i)));
-        } else {
-            executor.execute(() -> presenter.onResultCurrencyChanged((Currency) adapterView.getItemAtPosition(i)));
-        }
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
     }
 }
