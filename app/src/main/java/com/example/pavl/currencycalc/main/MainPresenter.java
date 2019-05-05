@@ -1,17 +1,14 @@
 package com.example.pavl.currencycalc.main;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
-import android.view.View;
 
 import com.example.pavl.currencycalc.R;
-import com.example.pavl.currencycalc.domain.AppState;
 import com.example.pavl.currencycalc.domain.Controller;
 import com.example.pavl.currencycalc.model.Currency;
+import com.example.pavl.currencycalc.model.CurrencyList;
 import com.example.pavl.currencycalc.mvp.MvpBasePresenter;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -58,19 +55,13 @@ public class MainPresenter extends MvpBasePresenter<MainState> {
     public void onStart() {
         super.onStart();
         try {
-            state.setList(controller.load());
+            CurrencyList list = controller.load();
+            state.setList(list);
+            loadFlagDrawables(list);
         } catch (Throwable e) {
             state.setMessage(e.getMessage());
         }
         commit();
-    }
-
-    void onUpdate() {
-        try {
-            state.setList(controller.fetch());
-        } catch (Throwable e) {
-            state.setMessage(e.getMessage());
-        }
     }
 
     @Override
@@ -97,7 +88,13 @@ public class MainPresenter extends MvpBasePresenter<MainState> {
     public void onOptionsItemSelected(int itemId) {
         super.onOptionsItemSelected(itemId);
         if (itemId == R.id.update) {
-            onUpdate();
+            try {
+                CurrencyList list = controller.fetch();
+                state.setList(list);
+                loadFlagDrawables(list);
+            } catch (Throwable e) {
+                state.setMessage(e.getMessage());
+            }
         }
     }
 
@@ -144,6 +141,12 @@ public class MainPresenter extends MvpBasePresenter<MainState> {
                 flags.put(currency.getNumCode(), flag);
             }
             return flag;
+        }
+    }
+
+    private void loadFlagDrawables(CurrencyList list) {
+        for (Currency currency : list.getCurrencies()) {
+            getFlagDrawable(currency);
         }
     }
 
