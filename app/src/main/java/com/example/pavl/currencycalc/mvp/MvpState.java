@@ -23,8 +23,8 @@ public abstract class MvpState implements Cloneable {
         return isInitial;
     }
 
-    void setInitial(boolean initial) {
-        isInitial = initial;
+    void clearInitial() {
+        isInitial = false;
     }
 
     @Override

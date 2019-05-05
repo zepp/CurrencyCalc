@@ -68,6 +68,7 @@ public abstract class MvpBasePresenter<S extends MvpState> implements LifecycleO
         if (state.isChanged() || state.isInitial()) {
             MvpState snapshot = getStateSnapshot();
             state.clearChanged();
+            state.clearInitial();
             for (MvpView view : views) {
                 handler.post(() -> view.handleNewState(snapshot));
             }

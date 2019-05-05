@@ -95,6 +95,7 @@ public class MainPresenter extends MvpBasePresenter<MainState> {
             } catch (Throwable e) {
                 state.setMessage(e.getMessage());
             }
+            commit();
         }
     }
 
