@@ -6,46 +6,90 @@ import android.util.Log;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+import javax.net.ssl.HttpsURLConnection;
+
 
 public final class NetworkHandler {
-    private final static String URL = "http://www.cbr.ru/scripts/XML_daily.asp";
-    private final OkHttpClient client;
+    private final static String TAG = NetworkHandler.class.getSimpleName();
+    private final static int TIMEOUT = 5000;
+    private final static String FETCH_URL = "http://www.cbr.ru/scripts/XML_daily.asp";
     private final File cacheDir;
 
     public NetworkHandler(Context context) {
-        OkHttpClient.Builder builder = new OkHttpClient.Builder();
         cacheDir = context.getCacheDir();
-        builder.connectTimeout(5, TimeUnit.SECONDS);
-        builder.readTimeout(5, TimeUnit.SECONDS);
-        client = builder.build();
     }
 
     public File fetch() throws IOException {
-        Request request = new Request.Builder().url(URL).build();
+        URL url = new URL(FETCH_URL);
+        HttpURLConnection connection = null;
         File file = new File(cacheDir, UUID.randomUUID().toString() + ".xml");
+        char[] buffer = new char[1024];
 
-        try (OutputStream output = new FileOutputStream(file)){
-            Response response = client.newCall(request).execute();
-            if (response.isSuccessful()) {
-                String contentType = response.headers().get("content-type");
-                if (contentType.contains("text/xml") || contentType.contains("application/xml")) {
-                    output.write(response.body().bytes());
-                    output.flush();
-                } else {
-                    throw new RuntimeException("data type " + contentType + " is unsupported");
-                }
-            } else {
-                throw new RuntimeException("server error: " + response.message());
+        try {
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestProperty("Accept-Charset", "utf-8");
+            connection.setConnectTimeout(TIMEOUT);
+            connection.setReadTimeout(TIMEOUT);
+            int responseCode = connection.getResponseCode();
+
+            if (responseCode != HttpsURLConnection.HTTP_OK) {
+                throw new RuntimeException("HTTP error: " + connection.getResponseMessage());
+            }
+            ContentType content =  ContentType.newContentType(connection.getHeaderField("content-type"));
+            Log.d(TAG, content.toString());
+            if (!content.isType("application/xml")) {
+                throw new RuntimeException("HTTP content unsupported: " + content.type);
+            }
+            try (OutputStream outputStream = new FileOutputStream(file);
+                 InputStreamReader reader = new InputStreamReader(connection.getInputStream(), content.charset);
+                 OutputStreamWriter writer = new OutputStreamWriter(outputStream, content.charset)) {
+                do {
+                    int bytes = reader.read(buffer);
+                    writer.write(buffer, 0, bytes);
+                } while (reader.ready());
+                writer.flush();
+            }
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
             }
         }
-
         return file;
+    }
+
+    private static class ContentType{
+        final String type;
+        final String charset;
+
+        static ContentType newContentType(String value) {
+            String[] content = value.split(";", 2);
+            String type = content[0].trim();
+            String charset = content[1].split("=", 2)[1].trim();
+            return new ContentType(type, charset);
+        }
+
+        ContentType(String type, String charset) {
+            this.type = type;
+            this.charset = charset;
+        }
+
+        boolean isType(String value) {
+            return type.equals(value);
+        }
+
+        @Override
+        public String toString() {
+            return "ContentType{" +
+                    "type='" + type + '\'' +
+                    ", charset='" + charset + '\'' +
+                    '}';
+        }
     }
 }
