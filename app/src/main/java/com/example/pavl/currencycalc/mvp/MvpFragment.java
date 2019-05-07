@@ -32,8 +32,8 @@ public abstract class MvpFragment<P extends MvpBasePresenter<S>, S extends MvpSt
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
+    public void onDestroy() {
+        super.onDestroy();
         presenter.detach(this);
         manager.releasePresenter(presenter);
         getLifecycle().removeObserver(stateHandler);
@@ -74,10 +74,5 @@ public abstract class MvpFragment<P extends MvpBasePresenter<S>, S extends MvpSt
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
 
-    }
-
-    @Override
-    public P onInitPresenter(MvpPresenterManager manager) {
-        return null;
     }
 }
