@@ -1,5 +1,6 @@
 package com.example.pavl.currencycalc.domain;
 
+import android.app.AlarmManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.SystemClock;
@@ -14,13 +15,11 @@ public final class AppState {
     private final static String FETCH_INTERVAL = "fetch-interval";
     private final static String FILE_NAME = "file-name";
     private volatile static AppState instance;
-    private final Context context;
     private final SharedPreferences preferences;
     private final onPreferencesChangedListener listener;
     private volatile OnChangedListener onChangedListener;
 
     AppState(Context context) {
-        this.context = context;
         this.preferences = context.getSharedPreferences(AppState.class.getSimpleName(), Context.MODE_PRIVATE);
         this.listener = new onPreferencesChangedListener();
         this.preferences.registerOnSharedPreferenceChangeListener(listener);
@@ -41,16 +40,16 @@ public final class AppState {
         this.onChangedListener = onChangedListener;
     }
 
-    public Date getFetchTime() {
-        return new Date(preferences.getLong(FETCH_TIME, SystemClock.elapsedRealtime()));
+    public long getFetchTime() {
+        return preferences.getLong(FETCH_TIME, System.currentTimeMillis() - getFetchInterval());
     }
 
-    public void setFetchTime(Date date) {
-        preferences.edit().putLong(FETCH_TIME, date.getTime()).apply();
+    public void setFetchTime(long value) {
+        preferences.edit().putLong(FETCH_TIME, value).apply();
     }
 
     public long getFetchInterval() {
-        return preferences.getLong(FETCH_INTERVAL, context.getResources().getInteger(R.integer.fetch_interval));
+        return preferences.getLong(FETCH_INTERVAL, AlarmManager.INTERVAL_DAY);
     }
 
     public void setFetchInterval(long value) {
@@ -66,7 +65,7 @@ public final class AppState {
     }
 
     public interface OnChangedListener {
-        void onFetchTimeChanged(Date time);
+        void onFetchTimeChanged(long value);
 
         void onFetchIntervalChanged(long value);
 

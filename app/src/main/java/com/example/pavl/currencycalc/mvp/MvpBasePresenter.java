@@ -40,7 +40,7 @@ public abstract class MvpBasePresenter<S extends MvpState> implements LifecycleO
                 executor.submit(this::onStart);
             }
         }
-        handler.post(() -> view.handleNewState(getStateSnapshot()));
+        handler.post(() -> view.post(getStateSnapshot()));
     }
 
     // удаляет представление из списка клиентов текущего представления
@@ -70,7 +70,7 @@ public abstract class MvpBasePresenter<S extends MvpState> implements LifecycleO
             state.clearChanged();
             state.clearInitial();
             for (MvpView view : views) {
-                handler.post(() -> view.handleNewState(snapshot));
+                handler.post(() -> view.post(snapshot));
             }
         }
     }

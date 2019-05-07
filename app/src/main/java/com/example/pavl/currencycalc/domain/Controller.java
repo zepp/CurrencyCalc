@@ -16,7 +16,6 @@ import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
 import java.io.File;
-import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -24,7 +23,7 @@ import java.util.concurrent.Future;
 public final class Controller {
     private final static int REQUEST_CODE = 0;
     private final static String TAG = Controller.class.getSimpleName();
-    private static volatile Controller controller;
+    private static volatile Controller instance;
     private final ExecutorService executor;
     private final Context context;
     private final AlarmManager alarmManager;
@@ -43,14 +42,14 @@ public final class Controller {
     }
 
     public static Controller getInstance(Context context) {
-        if (controller == null) {
+        if (instance == null) {
             synchronized (Controller.class) {
-                if (controller == null) {
-                    controller = new Controller(context.getApplicationContext());
+                if (instance == null) {
+                    instance = new Controller(context.getApplicationContext());
                 }
             }
         }
-        return controller;
+        return instance;
     }
 
     public ExecutorService getExecutor() {
@@ -63,8 +62,7 @@ public final class Controller {
         if (info != null) {
             file = networkHandler.fetch();
             state.setFileName(file);
-            state.setFetchTime(new Date());
-            schedule();
+            state.setFetchTime(System.currentTimeMillis());
             return parse(file);
         } else if (file.exists()) {
             return parse(file);
@@ -91,7 +89,7 @@ public final class Controller {
         fileName = state.getFileName();
         state.setOnChangedListener(new AppState.OnChangedListener() {
             @Override
-            public void onFetchTimeChanged(Date time) {
+            public void onFetchTimeChanged(long value) {
             }
 
             @Override
@@ -115,8 +113,8 @@ public final class Controller {
         Intent intent = SystemBroadcastReceiver.getFetchIntent();
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, REQUEST_CODE,
                 intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
-                state.getFetchTime().getTime() + state.getFetchInterval(),
+        alarmManager.setInexactRepeating(AlarmManager.RTC,
+                state.getFetchTime() + state.getFetchInterval(),
                 state.getFetchInterval(), pendingIntent);
         Log.d(TAG, intent + " is scheduled");
     }
