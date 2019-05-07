@@ -24,6 +24,21 @@ public class CurrencyList {
         this.date = date;
     }
 
+    public static double convert(Currency from, Currency to, double amount) {
+        if (from.equals(to))
+            return amount;
+        else
+            return amount * (from.getRubbles() / to.getRubbles());
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public List<Currency> getCurrencies() {
+        return currencies;
+    }
+
     public void add(Currency currency) {
         currencies.add(currency);
     }
@@ -37,36 +52,7 @@ public class CurrencyList {
         return null;
     }
 
-    public int getPosition(int numCode) {
-        for (int i = 0; i < currencies.size(); i++) {
-            if (currencies.get(i).getNumCode() == numCode) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    public static double convert(Currency from, Currency to, double amount) {
-        if (from.equals(to))
-            return amount;
-        else
-            return amount * (from.getRubbles() / to.getRubbles());
-    }
-
-    public String getDate() {
-        return date;
-    }
-
     public void sort() {
-        Collections.sort(currencies, new Comparator<Currency>() {
-            @Override
-            public int compare(Currency o1, Currency o2) {
-                return o1.getName().compareTo(o2.getName());
-            }
-        });
-    }
-
-    public List<Currency> getCurrencies() {
-        return currencies;
+        Collections.sort(currencies, (o1, o2) -> o1.getName().compareTo(o2.getName()));
     }
 }

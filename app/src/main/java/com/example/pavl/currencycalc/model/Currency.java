@@ -79,6 +79,12 @@ public class Currency {
 
     @Override
     public String toString() {
-        return charCode + " ( " + name + " )";
+        return "Currency{" +
+                "numCode=" + numCode +
+                ", charCode='" + charCode + '\'' +
+                ", amount=" + amount +
+                ", name='" + name + '\'' +
+                ", rubbles=" + rubbles +
+                '}';
     }
 }
