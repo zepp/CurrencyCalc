@@ -40,7 +40,7 @@ public abstract class MvpFragment<P extends MvpBasePresenter<S>, S extends MvpSt
     }
 
     @Override
-    public void handleNewState(S state) {
+    public void post(S state) {
         stateHandler.post(state);
     }
 

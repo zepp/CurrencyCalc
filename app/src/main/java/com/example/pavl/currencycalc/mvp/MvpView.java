@@ -8,7 +8,7 @@ public interface MvpView<P extends MvpPresenter<S>, S extends MvpState> {
     void onStateChanged(S state);
 
     // вызывается презентером, когда есть новое состояние
-    void handleNewState(S state);
+    void post(S state);
 
     // вызывается при необходимости создать представителя
     P onInitPresenter(MvpPresenterManager manager);

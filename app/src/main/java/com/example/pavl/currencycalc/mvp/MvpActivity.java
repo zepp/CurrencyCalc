@@ -41,7 +41,7 @@ public abstract class MvpActivity<P extends MvpBasePresenter<S>, S extends MvpSt
     }
 
     @Override
-    public void handleNewState(S state) {
+    public void post(S state) {
         stateHandler.post(state);
     }
 
