@@ -50,10 +50,9 @@ public final class NetworkHandler {
             try (OutputStream outputStream = new FileOutputStream(file);
                  InputStreamReader reader = new InputStreamReader(connection.getInputStream(), content.charset);
                  OutputStreamWriter writer = new OutputStreamWriter(outputStream, content.charset)) {
-                do {
-                    int bytes = reader.read(buffer);
+                for (int bytes = reader.read(buffer); bytes > 0; bytes = reader.read(buffer)) {
                     writer.write(buffer, 0, bytes);
-                } while (reader.ready());
+                }
                 writer.flush();
             }
         } finally {
