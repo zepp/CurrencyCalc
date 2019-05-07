@@ -4,16 +4,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.pavl.currencycalc.R;
-import com.example.pavl.currencycalc.model.Currency;
 import com.example.pavl.currencycalc.mvp.MvpFragment;
 import com.example.pavl.currencycalc.mvp.MvpPresenterManager;
 
@@ -37,7 +34,8 @@ public class MainFragment extends MvpFragment<MainPresenter, MainState> {
     private Button num0;
     private Button point;
     private Button del;
-    private CurrencyAdapter adapter;
+    private CurrencyAdapter originalAdapter;
+    private CurrencyAdapter resultAdapter;
 
     public MainFragment() {
         // Required empty public constructor
@@ -51,8 +49,10 @@ public class MainFragment extends MvpFragment<MainPresenter, MainState> {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        adapter = new CurrencyAdapter(presenter, getContext(), R.layout.currency_item, R.id.currency_name);
-        adapter.setDropDownViewResource(R.layout.currency_drop_item);
+        originalAdapter = new CurrencyAdapter(presenter, getContext(), R.layout.currency_item, R.id.currency_name);
+        originalAdapter.setDropDownViewResource(R.layout.currency_drop_item);
+        resultAdapter = new CurrencyAdapter(presenter, getContext(), R.layout.currency_item, R.id.currency_name);
+        resultAdapter.setDropDownViewResource(R.layout.currency_drop_item);
     }
 
     @Override
@@ -61,11 +61,11 @@ public class MainFragment extends MvpFragment<MainPresenter, MainState> {
         View root = inflater.inflate(R.layout.fragment_main, container, false);
         originalAmount = root.findViewById(R.id.original_amount);
         originalCurrency = root.findViewById(R.id.original_currency);
-        originalCurrency.setAdapter(adapter);
+        originalCurrency.setAdapter(originalAdapter);
         swap = root.findViewById(R.id.swap);
         resultAmount = root.findViewById(R.id.result_amount);
         resultCurrency = root.findViewById(R.id.result_currency);
-        resultCurrency.setAdapter(adapter);
+        resultCurrency.setAdapter(resultAdapter);
         num1 = root.findViewById(R.id.num_1);
         num2 = root.findViewById(R.id.num_2);
         num3 = root.findViewById(R.id.num_3);
@@ -105,16 +105,18 @@ public class MainFragment extends MvpFragment<MainPresenter, MainState> {
     @Override
     public void onStateChanged(MainState state) {
         if (state.isListChanged) {
-            adapter.clear();
-            adapter.addAll(state.list);
+            originalAdapter.replace(state.list);
+            resultAdapter.replace(state.list);
             if (!state.isInitial()) {
                 Toast.makeText(getContext(), R.string.data_updated, Toast.LENGTH_SHORT).show();
             }
         }
         originalAmount.setText(state.getOriginalAmount());
         originalCurrency.setSelection(state.list.indexOf(state.originalCurrency));
+        originalAdapter.setNumCode(state.originalCurrency.getNumCode());
         resultAmount.setText(state.getResultAmount());
         resultCurrency.setSelection(state.list.indexOf(state.resultCurrency));
+        resultAdapter.setNumCode(state.resultCurrency.getNumCode());
         dataDate.setText(state.date);
         if (state.message != null) {
             Toast.makeText(getContext(), state.message, Toast.LENGTH_LONG).show();

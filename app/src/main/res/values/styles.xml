@@ -49,7 +49,8 @@
         <item name="android:paddingStart">16dp</item>
     </style>
 
-    <style name="CurrencyName" parent="Base.TextAppearance.AppCompat.Light.Widget.PopupMenu.Small">
+    <style name="CurrencyName" parent="TextAppearance.AppCompat.Small">
+        <item name="android:maxLines">1</item>
     </style>
 
     <style name="NumPadButton" parent="Base.Widget.AppCompat.Button">
