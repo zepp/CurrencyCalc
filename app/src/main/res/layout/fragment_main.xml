@@ -16,11 +16,11 @@
 
         <TextView
             android:id="@+id/original_amount"
-            style="@style/CurrencyAmount"
+            style="@style/CurrencyText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toTopOf="@+id/swap"
             app:layout_constraintEnd_toStartOf="@+id/swap"
             app:layout_constraintStart_toStartOf="parent"
@@ -28,11 +28,11 @@
 
         <TextView
             android:id="@+id/result_amount"
-            style="@style/CurrencyAmount"
+            style="@style/CurrencyText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/swap"
             app:layout_constraintStart_toStartOf="parent"
@@ -40,30 +40,33 @@
 
         <ImageButton
             android:id="@+id/swap"
-            style="@style/SwapButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_swap"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <Spinner
+        <TextView
             android:id="@+id/original_currency"
-            style="@style/CurrencySpinner"
+            style="@style/CurrencyText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:drawableEnd="@drawable/ic_drop_down"
             app:layout_constraintBottom_toBottomOf="@+id/original_amount"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/original_amount" />
 
-        <Spinner
+        <TextView
             android:id="@+id/result_currency"
-            style="@style/CurrencySpinner"
+            style="@style/CurrencyText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
+            android:drawableEnd="@drawable/ic_drop_down"
             app:layout_constraintBottom_toBottomOf="@+id/result_amount"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/result_amount" />

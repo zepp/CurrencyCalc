@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,9 +16,9 @@ import com.example.pavl.currencycalc.mvp.MvpPresenterManager;
 
 public class MainFragment extends MvpFragment<MainPresenter, MainState> {
     private TextView originalAmount;
-    private Spinner originalCurrency;
+    private TextView originalCurrency;
     private TextView resultAmount;
-    private Spinner resultCurrency;
+    private TextView resultCurrency;
     private TextView dataDate;
     private ImageButton swap;
     private Button num1;
@@ -77,8 +76,12 @@ public class MainFragment extends MvpFragment<MainPresenter, MainState> {
     @Override
     public void onStart() {
         super.onStart();
-        originalCurrency.setOnItemSelectedListener(this);
-        resultCurrency.setOnItemSelectedListener(this);
+        originalCurrency.setOnClickListener(v ->
+                CurrencyDialog.newInstance(presenter.getState().originalCurrency.getNumCode())
+                        .show(getFragmentManager(), "original"));
+        resultCurrency.setOnClickListener(v ->
+                CurrencyDialog.newInstance(presenter.getState().resultCurrency.getNumCode())
+                        .show(getFragmentManager(), "result"));
         swap.setOnClickListener(this);
         num1.setOnClickListener(this);
         num2.setOnClickListener(this);
@@ -97,9 +100,9 @@ public class MainFragment extends MvpFragment<MainPresenter, MainState> {
     @Override
     public void onStateChanged(MainState state) {
         originalAmount.setText(state.getOriginalAmount());
-        originalCurrency.setSelection(state.list.indexOf(state.originalCurrency));
+        originalCurrency.setText(state.originalCurrency.getCharCode());
         resultAmount.setText(state.getResultAmount());
-        resultCurrency.setSelection(state.list.indexOf(state.resultCurrency));
+        resultCurrency.setText(state.resultCurrency.getCharCode());
         dataDate.setText(state.date);
         if (state.message != null) {
             Toast.makeText(getContext(), state.message, Toast.LENGTH_LONG).show();

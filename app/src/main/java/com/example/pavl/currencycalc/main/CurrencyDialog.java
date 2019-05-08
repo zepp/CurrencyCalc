@@ -22,7 +22,7 @@ public class CurrencyDialog extends MvpDialogFragment<MainPresenter, MainState> 
     public CurrencyDialog() {
     }
 
-    public CurrencyDialog newInstance(int numCode) {
+    public static CurrencyDialog newInstance(int numCode) {
         CurrencyDialog dialog = new CurrencyDialog();
         Bundle args = new Bundle();
         args.putInt(NUM_CODE, numCode);
