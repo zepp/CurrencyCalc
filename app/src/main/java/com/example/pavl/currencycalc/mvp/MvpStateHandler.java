@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2019 Pavel A. Sokolov
+ */
+
 package com.example.pavl.currencycalc.mvp;
 
 import android.arch.lifecycle.Lifecycle;
