@@ -12,7 +12,6 @@ import java.util.Locale;
 public class MainState extends MvpState {
     List<Currency> list = Collections.emptyList();
     String date = "";
-    boolean isListChanged;
     Currency originalCurrency = new Currency();
     Currency resultCurrency = new Currency();
     String originalText = "";
@@ -26,15 +25,14 @@ public class MainState extends MvpState {
         date = list.getDate();
         originalCurrency = originalCurrency.getNumCode() == 0 ?  this.list.get(0) : list.get(originalCurrency.getNumCode());
         resultCurrency = resultCurrency.getNumCode() == 0 ? this.list.get(0) : list.get(resultCurrency.getNumCode());
-        this.isListChanged = true;
     }
 
-    public void setOriginalCurrency(Currency currency) {
+    void setOriginalCurrency(Currency currency) {
         setChanged(originalCurrency.getNumCode() != currency.getNumCode());
         originalCurrency = currency;
     }
 
-    public void setResultCurrency(Currency currency) {
+    void setResultCurrency(Currency currency) {
         setChanged(resultCurrency.getNumCode() != currency.getNumCode());
         this.resultCurrency = currency;
     }

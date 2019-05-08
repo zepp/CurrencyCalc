@@ -91,6 +91,7 @@ public class MainPresenter extends MvpBasePresenter<MainState> {
             try {
                 CurrencyList list = controller.fetch();
                 state.setList(list);
+                state.setMessage(context.getString(R.string.data_updated));
                 loadFlagDrawables(list);
             } catch (Throwable e) {
                 state.setMessage(e.getMessage());
@@ -153,6 +154,5 @@ public class MainPresenter extends MvpBasePresenter<MainState> {
     public void commit() {
         super.commit();
         state.message = null;
-        state.isListChanged = false;
     }
 }
