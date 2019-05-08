@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 
 import com.example.pavl.currencycalc.domain.Controller;
 
@@ -35,7 +34,9 @@ public abstract class MvpActivity<P extends MvpBasePresenter<S>, S extends MvpSt
     protected void onDestroy() {
         super.onDestroy();
         presenter.detach(this);
-        manager.releasePresenter(presenter);
+        if (isFinishing()) {
+            manager.releasePresenter(presenter);
+        }
         getLifecycle().removeObserver(stateHandler);
 
     }
