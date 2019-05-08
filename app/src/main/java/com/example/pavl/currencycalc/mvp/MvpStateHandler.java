@@ -7,8 +7,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -27,9 +25,7 @@ final class MvpStateHandler<P extends MvpPresenter<S>, S extends MvpState> imple
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     public void onResumed() {
         isResumed = true;
-        if (isResumed) {
-            flushQueue();
-        }
+        flushQueue();
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
