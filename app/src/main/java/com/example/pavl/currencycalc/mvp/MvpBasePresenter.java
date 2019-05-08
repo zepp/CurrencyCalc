@@ -76,10 +76,8 @@ public abstract class MvpBasePresenter<S extends MvpState> implements LifecycleO
     }
 
     public void finish() {
-        synchronized (views) {
-            for (MvpView view : views) {
-                handler.post(view::finish);
-            }
+        for (MvpView view : views) {
+            handler.post(view::finish);
         }
     }
 

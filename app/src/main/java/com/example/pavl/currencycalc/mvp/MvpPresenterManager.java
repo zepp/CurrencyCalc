@@ -15,11 +15,11 @@ public final class MvpPresenterManager {
     private static volatile MvpPresenterManager manager;
     private final String tag = getClass().getSimpleName();
     private final Context context;
-    private final Map<Integer, MvpPresenter> map;
+    private final Map<Class<? extends MvpPresenter>, MvpPresenter> map;
 
     private MvpPresenterManager(Context context) {
         this.context = context;
-        this.map = Collections.synchronizedMap(new HashMap<>());
+        this.map = new HashMap<>();
     }
 
     public static MvpPresenterManager getInstance(Context context) {
@@ -34,20 +34,27 @@ public final class MvpPresenterManager {
     }
 
     // создаёт или возвращает ссылку на представителя
-    public <P extends MvpPresenter<S>, S extends MvpState> P newPresenterInstance(Class<P> pClass,
+    public <P extends MvpPresenter<S>, S extends MvpState> P gewPresenterInstance(Class<P> pClass,
                                                                                   Class<S> sClass) {
-        S state = newState(sClass);
-        P presenter = newPresenter(pClass, sClass, state);
-        map.put(presenter.hashCode(), presenter);
-        Log.d(tag, "new presenter: " + presenter);
-        return presenter;
+        synchronized (map) {
+            P presenter = (P) map.get(pClass);
+            if (presenter == null) {
+                S state = newState(sClass);
+                presenter = newPresenter(pClass, sClass, state);
+                map.put(pClass, presenter);
+                Log.d(tag, "new presenter: " + presenter);
+            }
+            return presenter;
+        }
     }
 
     // удаляет ссылку на представителя, делая его таким образом доступным для GC
     public <P extends MvpPresenter<S>, S extends MvpState> void releasePresenter(P presenter) {
         if (presenter.isDetached()) {
             Log.d(tag, "release presenter: " + presenter);
-            map.remove(presenter.hashCode());
+            synchronized (map) {
+                map.remove(presenter.getClass());
+            }
         }
     }
 

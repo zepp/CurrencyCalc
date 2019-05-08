@@ -6,7 +6,7 @@
     style="@style/RootLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.pavl.currencycalc.MainActivity">
+    tools:context="com.example.pavl.currencycalc.main.MainActivity">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -16,11 +16,11 @@
 
         <TextView
             android:id="@+id/original_amount"
-            style="@style/CurrencyAmount"
+            style="@style/CurrencyText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toTopOf="@+id/swap"
             app:layout_constraintEnd_toStartOf="@+id/swap"
             app:layout_constraintStart_toStartOf="parent"
@@ -28,11 +28,11 @@
 
         <TextView
             android:id="@+id/result_amount"
-            style="@style/CurrencyAmount"
+            style="@style/CurrencyText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/swap"
             app:layout_constraintStart_toStartOf="parent"
@@ -40,30 +40,33 @@
 
         <ImageButton
             android:id="@+id/swap"
-            style="@style/SwapButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_swap"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <Spinner
+        <TextView
             android:id="@+id/original_currency"
-            style="@style/CurrencySpinner"
+            style="@style/CurrencyText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:drawableEnd="@drawable/ic_drop_down"
             app:layout_constraintBottom_toBottomOf="@+id/original_amount"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/original_amount" />
 
-        <Spinner
+        <TextView
             android:id="@+id/result_currency"
-            style="@style/CurrencySpinner"
+            style="@style/CurrencyText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
+            android:drawableEnd="@drawable/ic_drop_down"
             app:layout_constraintBottom_toBottomOf="@+id/result_amount"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/result_amount" />
@@ -81,89 +84,90 @@
 
         <Button
             android:id="@+id/num_1"
-            style="@style/NumPadButton"
+            style="@style/Button"
             android:layout_gravity="left"
             android:layout_marginBottom="16dp"
             android:text="1" />
 
         <Button
             android:id="@+id/num_2"
-            style="@style/NumPadButton"
+            style="@style/Button"
             android:layout_columnWeight="1"
             android:layout_gravity="center_horizontal"
             android:text="2" />
 
         <Button
             android:id="@+id/num_3"
-            style="@style/NumPadButton"
+            style="@style/Button"
             android:layout_gravity="right"
             android:text="3" />
 
         <Button
             android:id="@+id/num_4"
-            style="@style/NumPadButton"
+            style="@style/Button"
             android:layout_gravity="left"
             android:layout_marginBottom="16dp"
             android:text="4" />
 
         <Button
             android:id="@+id/num_5"
-            style="@style/NumPadButton"
+            style="@style/Button"
             android:layout_columnWeight="1"
             android:layout_gravity="center_horizontal"
             android:text="5" />
 
         <Button
             android:id="@+id/num_6"
-            style="@style/NumPadButton"
+            style="@style/Button"
             android:layout_gravity="right"
             android:text="6" />
 
         <Button
             android:id="@+id/num_7"
-            style="@style/NumPadButton"
+            style="@style/Button"
             android:layout_gravity="left"
             android:layout_marginBottom="16dp"
             android:text="7" />
 
         <Button
             android:id="@+id/num_8"
-            style="@style/NumPadButton"
+            style="@style/Button"
             android:layout_columnWeight="1"
             android:layout_gravity="center_horizontal"
             android:text="8" />
 
         <Button
             android:id="@+id/num_9"
-            style="@style/NumPadButton"
+            style="@style/Button"
             android:layout_gravity="right"
             android:text="9" />
 
         <Button
             android:id="@+id/num_point"
-            style="@style/NumPadButton"
+            style="@style/Button"
             android:layout_gravity="left"
             android:text="·" />
 
         <Button
             android:id="@+id/num_0"
-            style="@style/NumPadButton"
+            style="@style/Button"
             android:layout_columnWeight="1"
             android:layout_gravity="center_horizontal"
             android:text="0" />
 
         <Button
             android:id="@+id/del"
-            style="@style/NumPadButton"
+            style="@style/Button"
             android:layout_gravity="right"
             android:text="⌫" />
     </GridLayout>
 
     <TextView
         android:id="@+id/date"
-        style="@style/StatusText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
 </LinearLayout>

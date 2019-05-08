@@ -1,9 +1,12 @@
 package com.example.pavl.currencycalc.mvp;
 
-import android.arch.lifecycle.Lifecycle;
+import android.support.annotation.LayoutRes;
 
 // интерфейс описывающий представление
 public interface MvpView<P extends MvpPresenter<S>, S extends MvpState> {
+    @LayoutRes
+    int getLayoutId();
+
     // вызывается при изменение состояния
     void onStateChanged(S state);
 

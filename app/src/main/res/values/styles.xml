@@ -29,38 +29,14 @@
         <item name="android:background">@drawable/flag_background</item>
     </style>
 
-    <style name="CurrencyAmount">
+    <style name="CurrencyText">
         <item name="android:textAppearance">@style/Base.TextAppearance.AppCompat.Large</item>
         <item name="android:maxLines">1</item>
         <item name="android:maxLength">10</item>
     </style>
 
-    <style name="SwapButton" parent="Base.Widget.AppCompat.ImageButton">
-        <item name="android:background">@android:color/transparent</item>
-        <item name="android:src">@drawable/ic_swap</item>
-    </style>
-
-    <style name="CurrencySpinner" parent="Base.Widget.AppCompat.Spinner">
-        <item name="android:spinnerMode">dialog</item>
-    </style>
-
-    <style name="CurrencyItem" parent="Base.Widget.AppCompat.TextView.SpinnerItem">
+    <style name="Button" parent="Base.Widget.AppCompat.Button">
         <item name="android:textAppearance">@style/Base.TextAppearance.AppCompat.Large</item>
-        <item name="android:paddingStart">16dp</item>
+        <item name="android:background">@drawable/selector_frame</item>
     </style>
-
-    <style name="CurrencyName" parent="TextAppearance.AppCompat.Small">
-        <item name="android:maxLines">1</item>
-    </style>
-
-    <style name="NumPadButton" parent="Base.Widget.AppCompat.Button">
-        <item name="android:textAppearance">@style/Base.TextAppearance.AppCompat.Large</item>
-        <item name="android:background">@drawable/button_selector</item>
-    </style>
-
-    <style name="StatusText">
-        <item name="android:textAppearance">@style/Base.TextAppearance.AppCompat.Medium</item>
-        <item name="android:gravity">center</item>
-    </style>
-
 </resources>
