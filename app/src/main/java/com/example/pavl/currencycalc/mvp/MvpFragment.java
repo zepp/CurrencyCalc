@@ -46,7 +46,7 @@ public abstract class MvpFragment<P extends MvpBasePresenter<S>, S extends MvpSt
 
     @Override
     public void finish() {
-        getActivity().getSupportFragmentManager().popBackStack();
+        getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
     }
 
     @Override
