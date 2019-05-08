@@ -11,11 +11,16 @@ import com.example.pavl.currencycalc.mvp.MvpActivity;
 import com.example.pavl.currencycalc.mvp.MvpPresenterManager;
 
 public class MainActivity extends MvpActivity<MainPresenter, MainState> {
+
+    @Override
+    public int getLayoutId() {
+        return R.layout.activity_main;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FragmentManager manager = getSupportFragmentManager();
-        setContentView(R.layout.activity_main);
         setSupportActionBar(findViewById(R.id.toolbar));
         if (manager.getBackStackEntryCount() == 0) {
             Fragment fragment = MainFragment.newInstance();

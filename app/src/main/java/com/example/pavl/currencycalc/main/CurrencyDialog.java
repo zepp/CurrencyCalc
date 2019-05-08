@@ -4,9 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.example.pavl.currencycalc.R;
@@ -23,6 +21,11 @@ public class CurrencyDialog extends MvpDialogFragment<MainPresenter, MainState> 
     private int numCode;
 
     public CurrencyDialog() {
+    }
+
+    @Override
+    public int getLayoutId() {
+        return R.layout.dialog_currency;
     }
 
     public static CurrencyDialog newInstance(@IdRes int viewId, int numCode) {
@@ -42,14 +45,12 @@ public class CurrencyDialog extends MvpDialogFragment<MainPresenter, MainState> 
         adapter.setNumCode(numCode);
     }
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.dialog_currency, container, false);
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         list = view.findViewById(R.id.currency_list);
         list.setAdapter(adapter);
         cancel = view.findViewById(R.id.currency_cancel);
-        return view;
     }
 
     @Override

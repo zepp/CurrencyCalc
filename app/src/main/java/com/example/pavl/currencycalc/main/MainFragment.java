@@ -1,9 +1,8 @@
 package com.example.pavl.currencycalc.main;
 
 import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.support.annotation.Nullable;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -43,34 +42,31 @@ public class MainFragment extends MvpFragment<MainPresenter, MainState> {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
+    public int getLayoutId() {
+        return R.layout.fragment_main;
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_main, container, false);
-        originalAmount = root.findViewById(R.id.original_amount);
-        originalCurrency = root.findViewById(R.id.original_currency);
-        swap = root.findViewById(R.id.swap);
-        resultAmount = root.findViewById(R.id.result_amount);
-        resultCurrency = root.findViewById(R.id.result_currency);
-        num1 = root.findViewById(R.id.num_1);
-        num2 = root.findViewById(R.id.num_2);
-        num3 = root.findViewById(R.id.num_3);
-        num4 = root.findViewById(R.id.num_4);
-        num5 = root.findViewById(R.id.num_5);
-        num6 = root.findViewById(R.id.num_6);
-        num7 = root.findViewById(R.id.num_7);
-        num8 = root.findViewById(R.id.num_8);
-        num9 = root.findViewById(R.id.num_9);
-        num0 = root.findViewById(R.id.num_0);
-        point = root.findViewById(R.id.num_point);
-        del = root.findViewById(R.id.del);
-        dataDate = root.findViewById(R.id.date);
-        return root;
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        originalAmount = view.findViewById(R.id.original_amount);
+        originalCurrency = view.findViewById(R.id.original_currency);
+        swap = view.findViewById(R.id.swap);
+        resultAmount = view.findViewById(R.id.result_amount);
+        resultCurrency = view.findViewById(R.id.result_currency);
+        num1 = view.findViewById(R.id.num_1);
+        num2 = view.findViewById(R.id.num_2);
+        num3 = view.findViewById(R.id.num_3);
+        num4 = view.findViewById(R.id.num_4);
+        num5 = view.findViewById(R.id.num_5);
+        num6 = view.findViewById(R.id.num_6);
+        num7 = view.findViewById(R.id.num_7);
+        num8 = view.findViewById(R.id.num_8);
+        num9 = view.findViewById(R.id.num_9);
+        num0 = view.findViewById(R.id.num_0);
+        point = view.findViewById(R.id.num_point);
+        del = view.findViewById(R.id.del);
+        dataDate = view.findViewById(R.id.date);
     }
 
     @Override

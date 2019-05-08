@@ -22,6 +22,7 @@ public abstract class MvpActivity<P extends MvpBasePresenter<S>, S extends MvpSt
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(getLayoutId());
         executor = Controller.getInstance(this).getExecutor();
         stateHandler = new MvpStateHandler<>(this);
         getLifecycle().addObserver(stateHandler);

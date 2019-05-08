@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 
 import com.example.pavl.currencycalc.domain.Controller;
@@ -29,6 +31,12 @@ public abstract class MvpFragment<P extends MvpBasePresenter<S>, S extends MvpSt
         manager = MvpPresenterManager.getInstance(getContext());
         presenter = onInitPresenter(manager);
         presenter.attach(this);
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(getLayoutId(), container, false);
     }
 
     @Override
