@@ -85,6 +85,15 @@ public class MainState extends MvpState {
         setChanged(true);
     }
 
+    int getCurrencyPosition(int numCode) {
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).getNumCode() == numCode) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     @Override
     protected MainState clone() throws CloneNotSupportedException {
         MainState state = (MainState) super.clone();;

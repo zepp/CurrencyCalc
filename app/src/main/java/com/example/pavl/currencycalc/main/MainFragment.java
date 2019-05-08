@@ -77,10 +77,10 @@ public class MainFragment extends MvpFragment<MainPresenter, MainState> {
     public void onStart() {
         super.onStart();
         originalCurrency.setOnClickListener(v ->
-                CurrencyDialog.newInstance(presenter.getState().originalCurrency.getNumCode())
+                CurrencyDialog.newInstance(v.getId(), presenter.getState().originalCurrency.getNumCode())
                         .show(getFragmentManager(), "original"));
         resultCurrency.setOnClickListener(v ->
-                CurrencyDialog.newInstance(presenter.getState().resultCurrency.getNumCode())
+                CurrencyDialog.newInstance(v.getId(), presenter.getState().resultCurrency.getNumCode())
                         .show(getFragmentManager(), "result"));
         swap.setOnClickListener(this);
         num1.setOnClickListener(this);

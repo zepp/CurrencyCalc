@@ -1,5 +1,6 @@
 package com.example.pavl.currencycalc.main;
 
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,7 +38,7 @@ class CurrencyAdapter extends RecyclerView.Adapter<CurrencyAdapter.CurrencyHolde
     @Override
     public CurrencyHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        return new CurrencyHolder(inflater.inflate(R.layout.currency_drop_item, parent, false));
+        return new CurrencyHolder(inflater.inflate(R.layout.currency_item, parent, false));
     }
 
     @Override
@@ -59,9 +60,10 @@ class CurrencyAdapter extends RecyclerView.Adapter<CurrencyAdapter.CurrencyHolde
         void onItemSelected(Currency currency);
     }
 
-    public class CurrencyHolder extends RecyclerView.ViewHolder {
+    public class CurrencyHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         final TextView name;
         final ImageView flag;
+        Currency currency;
 
         CurrencyHolder(View itemView) {
             super(itemView);
@@ -70,8 +72,16 @@ class CurrencyAdapter extends RecyclerView.Adapter<CurrencyAdapter.CurrencyHolde
         }
 
         void bind(Currency currency) {
+            this.currency = currency;
+            itemView.setOnClickListener(this);
+            itemView.setBackgroundColor(currency.getNumCode() == numCode ? Color.LTGRAY : Color.TRANSPARENT);
             name.setText(currency.getName());
             flag.setImageDrawable(presenter.getFlagDrawable(currency));
+        }
+
+        @Override
+        public void onClick(View v) {
+            listener.onItemSelected(currency);
         }
     }
 }
