@@ -125,6 +125,6 @@ public class MainFragment extends MvpFragment<MainPresenter, MainState> {
 
     @Override
     public MainPresenter onInitPresenter(MvpPresenterManager manager) {
-        return manager.newPresenterInstance(MainPresenter.class, MainState.class);
+        return manager.gewPresenterInstance(MainPresenter.class, MainState.class);
     }
 }
