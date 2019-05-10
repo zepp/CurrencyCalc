@@ -42,7 +42,7 @@ public final class Controller {
         this.alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         this.connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         this.networkHandler = new NetworkHandler(context);
-        this.state = AppState.getInstance(context);
+        this.state = new AppState(context);
     }
 
     public static Controller getInstance(Context context) {
