@@ -98,12 +98,10 @@ public final class Controller {
 
             @Override
             public void onFileNameChanged(File name) {
-                executor.execute(() -> {
-                    if (fileName.exists()) {
-                        fileName.delete();
-                    }
-                    fileName = name;
-                });
+                if (fileName.exists()) {
+                    fileName.delete();
+                }
+                fileName = name;
             }
         });
     }

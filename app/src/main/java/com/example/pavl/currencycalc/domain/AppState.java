@@ -7,12 +7,9 @@ package com.example.pavl.currencycalc.domain;
 import android.app.AlarmManager;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.SystemClock;
-
-import com.example.pavl.currencycalc.R;
 
 import java.io.File;
-import java.util.Date;
+import java.util.concurrent.ExecutorService;
 
 public final class AppState {
     private final static String FETCH_TIME = "fetch-time";
@@ -20,11 +17,13 @@ public final class AppState {
     private final static String FILE_NAME = "file-name";
     private final SharedPreferences preferences;
     private final onPreferencesChangedListener listener;
+    private final ExecutorService executor;
     private volatile OnChangedListener onChangedListener;
 
     AppState(Context context) {
         this.preferences = context.getSharedPreferences(AppState.class.getSimpleName(), Context.MODE_PRIVATE);
         this.listener = new onPreferencesChangedListener();
+        this.executor = Executor.getExecutor();
         this.preferences.registerOnSharedPreferenceChangeListener(listener);
     }
 
@@ -37,7 +36,7 @@ public final class AppState {
     }
 
     public void setFetchTime(long value) {
-        preferences.edit().putLong(FETCH_TIME, value).apply();
+        preferences.edit().putLong(FETCH_TIME, value).commit();
     }
 
     public long getFetchInterval() {
@@ -45,7 +44,7 @@ public final class AppState {
     }
 
     public void setFetchInterval(long value) {
-        preferences.edit().putLong(FETCH_INTERVAL, value).apply();
+        preferences.edit().putLong(FETCH_INTERVAL, value).commit();
     }
 
     public File getFileName() {
@@ -53,7 +52,7 @@ public final class AppState {
     }
 
     public void setFileName(File file) {
-        preferences.edit().putString(FILE_NAME, file.getAbsolutePath()).apply();
+        preferences.edit().putString(FILE_NAME, file.getAbsolutePath()).commit();
     }
 
     public interface OnChangedListener {
@@ -69,11 +68,11 @@ public final class AppState {
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
             if (onChangedListener != null) {
                 if (s.equals(FETCH_TIME)) {
-                    onChangedListener.onFetchTimeChanged(getFetchTime());
+                    executor.execute(() -> onChangedListener.onFetchTimeChanged(getFetchTime()));
                 } else if (s.equals(FETCH_INTERVAL)) {
-                    onChangedListener.onFetchIntervalChanged(getFetchInterval());
+                    executor.execute(() -> onChangedListener.onFetchIntervalChanged(getFetchInterval()));
                 } else if (s.equals(FILE_NAME)) {
-                    onChangedListener.onFileNameChanged(getFileName());
+                    executor.execute(() -> onChangedListener.onFileNameChanged(getFileName()));
                 }
             }
         }
