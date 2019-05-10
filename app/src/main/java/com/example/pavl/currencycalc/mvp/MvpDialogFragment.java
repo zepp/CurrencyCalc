@@ -11,7 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.pavl.currencycalc.domain.Controller;
+import com.example.pavl.currencycalc.domain.Executor;
 
 import java.util.concurrent.ExecutorService;
 
@@ -24,7 +24,7 @@ public abstract class MvpDialogFragment<P extends MvpPresenter<S>, S extends Mvp
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        executor = Controller.getInstance(getContext()).getExecutor();
+        executor = Executor.getExecutor();
         stateHandler = new MvpStateHandler<>(this);
         getLifecycle().addObserver(stateHandler);
         manager = MvpPresenterManager.getInstance(getContext());

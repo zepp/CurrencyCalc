@@ -13,7 +13,7 @@ import android.os.Looper;
 import android.support.annotation.CallSuper;
 import android.util.Log;
 
-import com.example.pavl.currencycalc.domain.Controller;
+import com.example.pavl.currencycalc.domain.Executor;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -30,7 +30,7 @@ public abstract class MvpBasePresenter<S extends MvpState> implements LifecycleO
 
     public MvpBasePresenter(Context context, S state) {
         this.context = context;
-        this.executor = Controller.getInstance(context).getExecutor();
+        this.executor = Executor.getExecutor();
         this.state = state;
         this.handler = new Handler(Looper.getMainLooper());
         this.resources = context.getResources();

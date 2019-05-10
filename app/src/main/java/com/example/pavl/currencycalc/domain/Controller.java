@@ -21,7 +21,6 @@ import org.simpleframework.xml.core.Persister;
 
 import java.io.File;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 public final class Controller {
@@ -38,7 +37,7 @@ public final class Controller {
 
     private Controller(Context context) {
         this.context = context;
-        this.executor = Executors.newSingleThreadExecutor();
+        this.executor = Executor.getExecutor();
         this.alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         this.connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         this.networkHandler = new NetworkHandler(context);
@@ -54,10 +53,6 @@ public final class Controller {
             }
         }
         return instance;
-    }
-
-    public ExecutorService getExecutor() {
-        return Executors.unconfigurableExecutorService(executor);
     }
 
     public CurrencyList fetch() throws Exception {

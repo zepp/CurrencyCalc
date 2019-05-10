@@ -11,7 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.example.pavl.currencycalc.domain.Controller;
+import com.example.pavl.currencycalc.domain.Executor;
 
 import java.util.concurrent.ExecutorService;
 
@@ -27,7 +27,7 @@ public abstract class MvpActivity<P extends MvpBasePresenter<S>, S extends MvpSt
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutId());
-        executor = Controller.getInstance(this).getExecutor();
+        executor = Executor.getExecutor();
         stateHandler = new MvpStateHandler<>(this);
         getLifecycle().addObserver(stateHandler);
         manager = MvpPresenterManager.getInstance(this);
