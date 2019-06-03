@@ -13,7 +13,7 @@ import static org.junit.Assert.*;
 import java.io.ByteArrayInputStream;
 
 public class ParserTests {
-    private final static String xml = "<?xml version=\"1.0\" encoding=\"utf8\" ?>\n" +
+    private final static String xml = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n" +
             "<ValCurs Date=\"14.06.2017\" name=\"Foreign Currency Market\">\n" +
             "<Valute ID=\"R01010\">\n" +
             "\t<NumCode>036</NumCode>\n" +

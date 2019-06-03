@@ -37,14 +37,14 @@ public class ModelTests {
         CurrencyList list = new CurrencyList(formatter.format(Calendar.getInstance().getTime()));
         Currency amd = new Currency("AMD", numCodeAMD, nameAMD, 100, 11.8139);
         Currency usd = new Currency("USD", numCodeUSD, nameUSD, 1, 57.0020);
-        Currency gbp = new Currency("GBP", numCodeGBP, ",", 1, 72.5464);
+        Currency gbp = new Currency("GBP", numCodeGBP, "", 1, 72.5464);
         assertEquals(CurrencyList.convert(usd, amd, 1), 482.499, 0.001);
         list.add(usd);
         list.add(amd);
         list.add(gbp);
         list.sort();
-        assertEquals(list.getCurrencies().get(0), amd);
-        assertEquals(list.getCurrencies().get(1), gbp);
+        assertEquals(list.getCurrencies().get(0), gbp);
+        assertEquals(list.getCurrencies().get(1), amd);
         assertEquals(list.getCurrencies().get(2), usd);
         assertEquals(list.get(numCodeUSD), usd);
         assertEquals(list.get(numCodeAMD), amd);
