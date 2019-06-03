@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.pavl.currencycalc">
+    package="com.currencycalc">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
@@ -32,7 +32,7 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
             <intent-filter>
-                <action android:name="com.example.pavl.currencycalc.ACTION_FETCH" />
+                <action android:name="com.currencycalc.ACTION_FETCH" />
             </intent-filter>
         </receiver>
     </application>
