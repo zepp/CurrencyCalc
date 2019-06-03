@@ -27,11 +27,6 @@ public class CurrencyDialog extends MvpDialogFragment<MainPresenter, MainState> 
     public CurrencyDialog() {
     }
 
-    @Override
-    public int getLayoutId() {
-        return R.layout.dialog_currency;
-    }
-
     public static CurrencyDialog newInstance(@IdRes int viewId, int numCode) {
         CurrencyDialog dialog = new CurrencyDialog();
         Bundle args = new Bundle();
@@ -39,6 +34,11 @@ public class CurrencyDialog extends MvpDialogFragment<MainPresenter, MainState> 
         args.putInt(VIEW_ID, viewId);
         dialog.setArguments(args);
         return dialog;
+    }
+
+    @Override
+    public int getLayoutId() {
+        return R.layout.dialog_currency;
     }
 
     @Override
