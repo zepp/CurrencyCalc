@@ -7,6 +7,9 @@ package com.currencycalc.network;
 import android.content.Context;
 import android.util.Log;
 
+import com.currencycalc.common.AsyncConsumer;
+import com.currencycalc.common.AsyncOperation;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -16,6 +19,8 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -25,9 +30,15 @@ public final class NetworkHandler {
     private final static int TIMEOUT = 5000;
     private final static String FETCH_URL = "http://www.cbr.ru/scripts/XML_daily.asp";
     private final File cacheDir;
+    private final ExecutorService executor;
 
     public NetworkHandler(Context context) {
         cacheDir = context.getCacheDir();
+        executor = Executors.newCachedThreadPool();
+    }
+
+    public void asyncFetch(AsyncConsumer<File> consumer) {
+        executor.execute(new AsyncOperation<>(this::fetch, consumer));
     }
 
     public File fetch() throws IOException {
