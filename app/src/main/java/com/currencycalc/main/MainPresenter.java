@@ -92,15 +92,16 @@ public class MainPresenter extends MvpBasePresenter<MainState> {
     public void onOptionsItemSelected(int itemId) {
         super.onOptionsItemSelected(itemId);
         if (itemId == R.id.update) {
-            try {
-                CurrencyList list = controller.fetch();
-                state.setList(list);
-                state.setMessage(context.getString(R.string.data_updated));
-                loadFlagDrawables(list);
-            } catch (Throwable e) {
-                state.setMessage(e.getMessage());
-            }
-            commit();
+            controller.asyncFetch((list, e) -> {
+                if (e == null) {
+                    state.setList(list);
+                    state.setMessage(context.getString(R.string.data_updated));
+                    loadFlagDrawables(list);
+                } else {
+                    state.setMessage(e.getMessage());
+                }
+                commit();
+            });
         }
     }
 
