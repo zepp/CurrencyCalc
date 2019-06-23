@@ -12,8 +12,10 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
+import com.currencycalc.R;
 import com.currencycalc.common.AsyncConsumer;
 import com.currencycalc.common.AsyncOperation;
+import com.currencycalc.model.Currency;
 import com.currencycalc.model.CurrencyList;
 import com.currencycalc.model.CustomMatcher;
 import com.currencycalc.network.NetworkHandler;
@@ -118,6 +120,9 @@ public final class Controller {
     private CurrencyList parse(File file) throws Exception {
         Log.d(TAG, "parsing data");
         Serializer serializer = new Persister(new CustomMatcher());
-        return serializer.read(CurrencyList.class, file);
+        CurrencyList list = serializer.read(CurrencyList.class, file);
+        list.add(new Currency("RUB", Integer.MAX_VALUE, context.getString(R.string.currency_rub), 1, 1));
+        list.sort();
+        return list;
     }
 }
