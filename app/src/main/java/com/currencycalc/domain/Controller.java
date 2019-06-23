@@ -12,6 +12,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
+import com.currencycalc.common.AsyncConsumer;
+import com.currencycalc.common.AsyncOperation;
 import com.currencycalc.model.CurrencyList;
 import com.currencycalc.model.CustomMatcher;
 import com.currencycalc.network.NetworkHandler;
@@ -21,7 +23,6 @@ import org.simpleframework.xml.core.Persister;
 
 import java.io.File;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
 
 public final class Controller {
     private final static int REQUEST_CODE = 0;
@@ -55,23 +56,21 @@ public final class Controller {
         return instance;
     }
 
-    public CurrencyList fetch() throws Exception {
-        NetworkInfo info = connectivityManager.getActiveNetworkInfo();
+    public void asyncFetch(AsyncConsumer<CurrencyList> consumer) {
         File file = state.getFileName();
+        NetworkInfo info = connectivityManager.getActiveNetworkInfo();
         if (info != null) {
-            file = networkHandler.fetch();
-            state.setFileName(file);
-            state.setFetchTime(System.currentTimeMillis());
-            return parse(file);
+            networkHandler.asyncFetch((newFile, e) ->
+                    executor.execute(new AsyncOperation<>(() -> {
+                        state.setFileName(newFile);
+                        state.setFetchTime(System.currentTimeMillis());
+                        return parse(newFile);
+                    }, consumer)));
         } else if (file.exists()) {
-            return parse(file);
+            executor.execute(new AsyncOperation<>(() -> parse(file), consumer));
         } else {
-            throw new Exception("cached data is not available");
+            consumer.accept(null, new RuntimeException("cached data is not available"));
         }
-    }
-
-    public Future<CurrencyList> asyncFetch() {
-        return executor.submit(this::fetch);
     }
 
     public CurrencyList load() throws Exception {
