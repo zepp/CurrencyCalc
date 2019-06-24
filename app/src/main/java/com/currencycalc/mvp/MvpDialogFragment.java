@@ -17,7 +17,7 @@ import java.util.concurrent.ExecutorService;
 
 public abstract class MvpDialogFragment<P extends MvpPresenter<S>, S extends MvpState> extends DialogFragment implements MvpView<P, S>, View.OnClickListener {
     protected ExecutorService executor;
-    protected MvpStateHandler<P, S> stateHandler;
+    protected MvpStateHandler<S> stateHandler;
     protected MvpPresenterManager manager;
     protected P presenter;
 

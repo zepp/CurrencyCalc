@@ -52,7 +52,7 @@ public final class MvpPresenterManager {
     }
 
     // удаляет ссылку на представителя, делая его таким образом доступным для GC
-    public <P extends MvpPresenter<S>, S extends MvpState> void releasePresenter(P presenter) {
+    public void releasePresenter(MvpPresenter<?> presenter) {
         if (presenter.isDetached()) {
             Log.d(tag, "release presenter: " + presenter);
             synchronized (map) {

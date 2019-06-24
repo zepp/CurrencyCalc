@@ -19,7 +19,7 @@ import java.util.concurrent.ExecutorService;
 public abstract class MvpActivity<P extends MvpBasePresenter<S>, S extends MvpState> extends AppCompatActivity
         implements MvpView<P, S>, View.OnClickListener {
     protected ExecutorService executor;
-    protected MvpStateHandler<P, S> stateHandler;
+    protected MvpStateHandler<S> stateHandler;
     protected MvpPresenterManager manager;
     protected P presenter;
 
