@@ -4,7 +4,7 @@
 
 package com.currencycalc.mvp;
 
-import android.support.annotation.LayoutRes;
+import androidx.annotation.LayoutRes;
 
 // интерфейс описывающий представление
 public interface MvpView<P extends MvpPresenter<S>, S extends MvpState> {

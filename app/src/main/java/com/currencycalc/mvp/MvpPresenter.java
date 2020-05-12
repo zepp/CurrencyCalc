@@ -5,7 +5,7 @@
 package com.currencycalc.mvp;
 
 import android.content.Intent;
-import android.support.annotation.IdRes;
+import androidx.annotation.IdRes;
 
 public interface MvpPresenter<S extends MvpState> {
     void attach(MvpView<?, S> view);

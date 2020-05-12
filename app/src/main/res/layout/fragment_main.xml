@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     tools:context="com.currencycalc.main.MainActivity">
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/background_frame"
@@ -70,7 +70,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/result_amount"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/result_amount" />
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <Space
         android:layout_width="match_parent"
