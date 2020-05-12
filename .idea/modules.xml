@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/CurrencyCalc.iml" filepath="$PROJECT_DIR$/CurrencyCalc.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/CurrencyCalc-app.iml" filepath="$PROJECT_DIR$/app/CurrencyCalc-app.iml" group="CurrencyCalc/app" />
+      <module fileurl="file://$PROJECT_DIR$/android-CurrencyCalc.iml" filepath="$PROJECT_DIR$/android-CurrencyCalc.iml" group="CurrencyCalc" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
